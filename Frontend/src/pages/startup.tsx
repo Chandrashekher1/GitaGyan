@@ -45,7 +45,6 @@ export function Startup() {
                 alphaParticles={false}
                 disableRotation={false}
             />
-            
             <div className="absolute inset-0 flex justify-center items-center z-10">
                 <TypingAnimation 
                     key={name[currentIndex]?.id} 

@@ -125,7 +125,7 @@ export function Chat() {
                     {message.sender === 'user' ? (
                       <User className="w-4 h-4" />
                     ) : (
-                      <img src="/src/pages/krishna.png" className="w-6 h-6 bg-primary rounded-full"></img>
+                      <img src="/src/assets/krishna.png" className="w-6 h-6 bg-primary rounded-full"></img>
                     )}
                     <span className="text-sm font-medium">
                       {message.sender === 'user' ? 'You' : 'Krishna'}

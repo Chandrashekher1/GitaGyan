@@ -59,9 +59,7 @@ const ReviewCard = ({
     <figure
       className={cn(
         "relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
-        // light styles
         "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-        // dark styles
         "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
       )}
     >
@@ -83,7 +81,7 @@ export function Testimonials() {
   return (
     <div>
         <div className="text-center py-16">
-            <h1 className="text-6xl font-bold text-primary">Spiritual <Highlighter action="underline" color="#FF9800" >Transformations</Highlighter>{" "} </h1>
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold my-4 text-primary leading-tight">Spiritual <Highlighter action="underline" color="#FF9800" >Transformations</Highlighter>{" "} </h1>
             <p className="text-2xl text-white/50 my-8">Discover how GitaVerse has touched hearts and minds around the world</p>
         </div>
         <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">

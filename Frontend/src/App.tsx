@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react'
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Startup } from './pages/startup'
 import { Home } from './pages/Home'
 import { ThemeProvider } from './components/ui/theme-provider'
 import { Header } from './components/Header'
@@ -10,7 +8,6 @@ import LoginPage from './pages/Login'
 import SignUpPage from './pages/Signup'
 
 function App() {
-  const [showStartup, setShowStartup] = useState(true)
 
   // useEffect(() => {
   //   const timer = setTimeout(() => {
@@ -34,8 +31,6 @@ function App() {
             <Route path='/chat' element={<Chat/>}/>
             <Route path='/signIn' element={<LoginPage/>}/>
             <Route path='/register' element={<SignUpPage/>}/>
-
-
           </Routes>
         </Router>
       </div>

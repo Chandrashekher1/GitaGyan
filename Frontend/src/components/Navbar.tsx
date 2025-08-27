@@ -1,3 +1,4 @@
+import { token } from "@/utils/constant";
 import { BookIcon, HeartIcon, MessageCircleIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -7,7 +8,7 @@ export function Navbar() {
       <ul className="flex py-1">
         <li className="mx-4">
           <NavLink
-            to="/chat"
+            to={`${token ? '/chat' : 'singIn'}`}
             className={({ isActive }) =>
               `flex font-semibold items-center gap-2 py-2 px-2 rounded-md cursor-pointer transition ${
                 isActive

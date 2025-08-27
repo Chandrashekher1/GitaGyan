@@ -1,14 +1,16 @@
-import { token } from "@/utils/constant";
+import { useContext } from "react";
+import AuthContext from "@/context/AuthContext";
 import { BookIcon, HeartIcon, MessageCircleIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export function Navbar() {
+  const { token } = useContext(AuthContext)
   return (
     <div>
       <ul className="flex py-1">
         <li className="mx-4">
           <NavLink
-            to={`${token ? '/chat' : 'singIn'}`}
+            to={`${token ? '/chat' : 'signIn'}`}
             className={({ isActive }) =>
               `flex font-semibold items-center gap-2 py-2 px-2 rounded-md cursor-pointer transition ${
                 isActive

@@ -9,7 +9,7 @@
     "connect": "node dist/connection.js",
     "create": "node dist/create.js",
     "find": "node dist/find.js",
-    "insert": "node dist/insert_collection.js",
+    "insert": "node dist/astrDB/insert_collection.js",
     "index": "node dist/index.js",
     "dev": "npm run build && npm run index"
   },
@@ -33,9 +33,12 @@
     "@datastax/astra-db-ts": "^2.0.2",
     "@google/genai": "^1.15.0",
     "@langchain/textsplitters": "^0.1.0",
+    "bcrypt": "^6.0.0",
     "config": "^4.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.2",
     "url": "^0.11.4"
   }

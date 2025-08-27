@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom"
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar"
 import { useContext } from "react"
 import AuthContext from "@/context/AuthContext"
-import { SpeakerIcon, Volume1Icon } from "lucide-react"
+import { Volume1Icon } from "lucide-react"
 
 export function Header() {
   const navigate = useNavigate()
@@ -24,7 +24,7 @@ export function Header() {
   }
 
   return (
-    <div className="flex justify-between px-6 md:px-16 border sticky top-0 z-10 bg-accent text-accent-foreground opacity-70">
+    <div className="flex justify-between px-6 md:px-16 sticky z-10 bg-accent text-accent-foreground opacity-70">
       <div
         className="font-bold text-2xl py-2 cursor-pointer text-primary flex"
         onClick={() => navigate("/")}

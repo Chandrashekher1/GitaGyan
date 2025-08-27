@@ -1,5 +1,4 @@
 import { Features } from "@/components/FeaturesCard";
-import Footer from "@/components/Footer";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { Meteors } from "@/components/magicui/meteors";
 import { NumberTicker } from "@/components/magicui/number-ticker";
@@ -8,114 +7,185 @@ import { SparklesText } from "@/components/magicui/sparkles-text";
 import { Testimonials } from "@/components/Testimonials";
 import { Button } from "@/components/ui/button";
 import { InView } from "@/components/ui/in-view";
-import { Heart, BookOpen, MessageCircle, ArrowRight } from "lucide-react";
+import { ArrowRight, File, Settings, Search } from "lucide-react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import Footer from "@/components/Footer";
 
 export function Home() {
+  const navigate = useNavigate()
   return (
-    <div className="min-h-screen relative z-0">
+    <div className="min-h-screen relative z-0 overflow-hidden">
       <Meteors />
-      
-      <div className="relative z-0 flex flex-col lg:flex-row items-center justify-center min-h-screen">
-        <div className="text-center lg:text-left max-w-2xl">
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-            Converse with <SparklesText className="text-primary">Krishna</SparklesText> Anytime
-          </h1>
-          
-          <p className="text-lg lg:text-2xl text-white/70 leading-relaxed">
+
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative z-0 flex flex-col-reverse lg:flex-row items-center justify-center min-h-screen px-6 md:px-12 lg:px-20"
+      >
+        <div className="text-center lg:text-left max-w-2xl mt-10 lg:mt-0">
+          <motion.h1
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight"
+          >
+            Converse with{" "}
+            <SparklesText className="text-primary">Krishna</SparklesText> Anytime
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/70 leading-relaxed"
+          >
             Seek timeless wisdom from the Bhagavad Gita in an interactive, modern way.
-          </p>
-          
-          <div className="mt-4">
-            <SparklesText className="">
-              <InteractiveHoverButton className="bg-primary text-primary-foreground font-bold text-xl hover:bg-primary/90 hover:scale-105 hover:shadow-2xl shadow-krishna-gold">
-                Ask Now!
-              </InteractiveHoverButton>
-            </SparklesText> 
-          </div>
+          </motion.p>
+
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="mt-6 flex justify-center lg:justify-start"
+          >
+            <InteractiveHoverButton className="bg-primary text-primary-foreground font-bold text-lg sm:text-xl px-6 sm:px-10 py-3 hover:bg-primary/90 hover:scale-105 hover:shadow-2xl shadow-krishna-gold" onClick={() => navigate('/chat')}>
+              Ask to Gita
+            </InteractiveHoverButton>
+          </motion.div>
         </div>
 
-        <div className="relative h-[600px] w-[600px] flex items-center justify-center">
-          <div className="relative z-20">
-            <div className="absolute inset-0 gradient-krishna rounded-full blur-2xl opacity-30 animate-pulse"></div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+          className="relative h-[300px] w-[300px] sm:h-[380px] sm:w-[380px] md:h-[480px] md:w-[480px] lg:h-[600px] lg:w-[600px] flex items-center justify-center"
+        >
+          <motion.img
+            src="https://cf-img-a-in.tosshub.com/sites/visualstory/wp/2024/08/arjun-krishna-during-mahabharata-4.jpg?size=*:900"
+            alt="Krishna Avatar"
+            className="relative w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover shadow-2xl border-4 border-primary/30 z-20"
+            whileHover={{ scale: 1.05 }}
+          />
+
+          <OrbitingCircles radius={220}>
             <img
-              src="https://cf-img-a-in.tosshub.com/sites/visualstory/wp/2024/08/arjun-krishna-during-mahabharata-4.jpg?size=*:900"
-              alt="Krishna Avatar"
-              className="relative w-80 h-80 rounded-full object-cover shadow-2xl border-4 border-primary/30"
+              src="https://cdn-icons-png.flaticon.com/512/2907/2907253.png"
+              alt="Book"
+              className="w-12 h-12 rounded-full shadow-lg bg-white p-2"
             />
-          </div>
-
-          <OrbitingCircles radius={220} className="absolute inset-0">
-            <div className="bg-white/20 backdrop-blur-md rounded-full p-4 hover:bg-primary/30 transition hover:scale-110 border border-primary/30 cursor-pointer">
-              <BookOpen className="w-10 h-10 text-primary" />
-            </div>
-            <div className="bg-white/20 backdrop-blur-md rounded-full p-4 hover:bg-accent/30 transition hover:scale-110 border border-accent/30 cursor-pointer">
-              <Heart className="w-10 h-10 text-accent" />
-            </div>
-            <div className="bg-white/20 backdrop-blur-md rounded-full p-4 hover:bg-secondary/30 transition hover:scale-110 border border-secondary/30 cursor-pointer">
-              <MessageCircle className="w-10 h-10 text-secondary" />
-            </div>
+            <Settings className="w-10 h-10 text-primary" />
+            <File className="w-10 h-10 text-secondary" />
+            <Search className="w-10 h-10 text-accent" />
           </OrbitingCircles>
-        </div>
-      </div>
+
+          <OrbitingCircles radius={120} reverse>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1055/1055646.png"
+              alt="Heart"
+              className="w-10 h-10 rounded-full shadow-lg bg-white p-2"
+            />
+            <File className="w-8 h-8 text-primary" />
+            <Search className="w-8 h-8 text-secondary" />
+            <Settings className="w-8 h-8 text-accent" />
+          </OrbitingCircles>
+        </motion.div>
+      </motion.div>
 
       <InView
         variants={{
-          hidden: { opacity: 0, y: 100, filter: 'blur(4px)' },
-          visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
+          hidden: { opacity: 0, y: 100, filter: "blur(4px)" },
+          visible: { opacity: 1, y: 0, filter: "blur(0px)" },
         }}
-        viewOptions={{ margin: '0px 0px -200px 0px' }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
       >
-        <div className="text-center my-16 py-16">
-          <h1 className="text-6xl font-bold my-4 text-primary">Bhagavad Gita</h1>
-          
-          <p className="text-xl text-white/50">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center my-12 sm:my-16 py-12 sm:py-16 px-6"
+        >
+          <motion.h1
+            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+            transition={{ delay: 0.2 }}
+            
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold my-4 text-primary"
+          >
+            Bhagavad Gita
+          </motion.h1>
+
+          <motion.p
+            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+            transition={{ delay: 0.4 }}
+            className="text-base sm:text-lg md:text-xl text-white/50 max-w-3xl mx-auto"
+          >
             Timeless wisdom from ancient Sanskrit scripture, guiding humanity towards righteousness, purpose, and enlightenment.
-          </p>
-          
-          <div className="my-8">
-            <Button className="mx-8 bg-primary text-primary-foreground hover:bg-primary/90 text-lg">
-              Start Reading {<ArrowRight/>}
+          </motion.p>
+
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}
+            transition={{ delay: 0.6 }}
+            className="my-8 flex flex-col sm:flex-row justify-center gap-4"
+          >
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 text-base sm:text-lg px-6 sm:px-8">
+              Start Reading <ArrowRight className="ml-2" />
             </Button>
-            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 text-lg">
+            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 text-base sm:text-lg px-6 sm:px-8">
               Learn More
             </Button>
-          </div>
+          </motion.div>
 
-          <div className="flex justify-center items-center">
+          <motion.div
+            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+            transition={{ delay: 0.8 }}
+            className="flex flex-col sm:flex-row justify-center items-center gap-8 sm:gap-16"
+          >
             <div>
               <NumberTicker
                 value={18}
-                className="whitespace-pre-wrap text-6xl font-medium tracking-tighter text-primary border border-primary/30 rounded-md px-16 dark:bg-black shadow-lg shadow-primary/50 mx-4"
+                className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tighter text-primary border border-primary/30 rounded-md px-10 sm:px-16 dark:bg-black shadow-lg shadow-primary/50"
               />
               <p className="text-white/50 my-4 font-semibold">Chapters</p>
             </div>
             <div>
               <NumberTicker
                 value={700}
-                className="whitespace-pre-wrap text-6xl font-medium tracking-tighter text-primary border border-primary/30 rounded-md px-16 dark:bg-black shadow-lg shadow-primary/50 mx-4"
+                className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tighter text-primary border border-primary/30 rounded-md px-10 sm:px-16 dark:bg-black shadow-lg shadow-primary/50"
               />
               <p className="text-white/50 my-4 font-semibold">Verses</p>
             </div>
             <div>
               <NumberTicker
-                value={35} 
-                className="whitespace-pre-wrap text-6xl font-medium tracking-tighter text-primary border border-primary/30 rounded-md px-16 dark:bg-black shadow-lg shadow-primary/50 mx-4"
+                value={35}
+                className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tighter text-primary border border-primary/30 rounded-md px-10 sm:px-16 dark:bg-black shadow-lg shadow-primary/50"
               />
               <p className="text-white/50 my-4 font-semibold">Readers</p>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </InView>
-      
-      <div className="py-16">
-        <Features/>
-      </div>
-      
-      <div className="px-16">
-        <Testimonials/>
-      </div>
-      <Footer/>
+
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        viewport={{ once: true }}
+        className="py-12 sm:py-16 px-4 sm:px-8 lg:px-16"
+      >
+        <Features />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        viewport={{ once: true }}
+        className="px-4 sm:px-8 lg:px-16"
+      >
+        <Testimonials />
+      </motion.div>
+        <Footer/>
     </div>
   );
 }

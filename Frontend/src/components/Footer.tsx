@@ -2,7 +2,7 @@ import { FacebookIcon, InstagramIcon, TwitterIcon } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white border-t border-white/10 mt-16">
+    <footer className="bg-accent text-accent-foreground border-t border-white/10 mt-16 opacity-70">
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-20">
         
         <div>
@@ -10,14 +10,14 @@ export default function Footer() {
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg animate-pulse">
               <span className="text-xl">🕉️</span>
             </div>
-            <h2 className="text-2xl font-bold">GitaVerse</h2>
+            <h2 className="text-2xl font-bold">गीताVerse</h2>
           </div>
-          <p className="text-white/50  leading-relaxed">
+          <p className="leading-relaxed">
             Experience the timeless wisdom of the Bhagavad Gita through interactive
             conversations with divine characters. Seek guidance, find peace, and
             discover your spiritual path.
           </p>
-          <p className="mt-4 text-lg text-white/60">
+          <p className="mt-4 text-lg">
             Made with <span className="text-red-500">❤</span> for spiritual seekers
             worldwide
           </p>
@@ -25,7 +25,7 @@ export default function Footer() {
 
         <div>
           <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-          <ul className="space-y-2 text-white/70">
+          <ul className="space-y-2">
             <li>
               <a href="/" className="hover:text-yellow-400 transition">Home</a>
             </li>
@@ -54,8 +54,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-6 text-center text-sm text-white/60">
-        © 2024 GitaVerse. All rights reserved.{" "}
+      <div className="border-t border-white/10 py-6 text-center text-sm ">
+        © 2024 गीताVerse. All rights reserved.{" "}
         <span className="mx-1">🕉️</span> Hare Krishna <span className="mx-1">🕉️</span>
       </div>
     </footer>

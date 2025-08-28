@@ -3,6 +3,7 @@ import express from "express"
 import startup from "./startup/route.js"
 import * as dotenv from "dotenv"
 import cors from "cors"
+import { connectToDatabase } from "./config/db.astra.js"
 
 dotenv.config()
 const app = express()
@@ -19,6 +20,8 @@ startup(app)
 
 // mongoDB connection
 db
+//astraDB connection
+connectToDatabase()
 app.listen(process.env.PORT, () => {
-    console.log(`listening on pot: ${process.env.PORT}`);
+    console.log(`listening on port: ${process.env.PORT}`);
 })

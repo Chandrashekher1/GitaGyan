@@ -2,8 +2,12 @@ import { DataAPIClient, Db } from "@datastax/astra-db-ts";
 import * as dotenv from "dotenv"
 dotenv.config()
 
+let dbAstra: Db | null = null
+
 export function connectToDatabase(): Db {
+  if(dbAstra) return dbAstra
   const { ASTRA_DB_API_ENDPOINT: endpoint, ASTRA_DB_APPLICATION_TOKEN: token } = process.env;
+
 
   if (!token || !endpoint) {
     throw new Error(
@@ -12,7 +16,7 @@ export function connectToDatabase(): Db {
   }
 
   const client = new DataAPIClient();
-  const database = client.db(endpoint, { token });
-  console.log(`Connected to database ${database.id}`);
-  return database;
+  dbAstra = client.db(endpoint, { token });
+  console.log(`Connected to database ${dbAstra.id}`);
+  return dbAstra;
 }

@@ -5,7 +5,6 @@ import * as dotenv from "dotenv"
 import cors from "cors"
 
 dotenv.config()
-
 const app = express()
 
 // CORS middleware
@@ -20,8 +19,6 @@ startup(app)
 
 // mongoDB connection
 db
-const port = 3000
-app.listen(port, () => {
-    console.log(`listening on pot: ${port}`);
-    
+app.listen(process.env.PORT, () => {
+    console.log(`listening on pot: ${process.env.PORT}`);
 })

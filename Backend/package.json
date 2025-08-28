@@ -9,9 +9,9 @@
     "connect": "node dist/connection.js",
     "create": "node dist/create.js",
     "find": "node dist/find.js",
-    "insert": "node dist/astrDB/insert_collection.js",
+    "load-gita":"node dist/startup/loadGita.js",
     "index": "node dist/index.js",
-    "dev": "npm run build && npm run index"
+    "dev": "npm run build && npm run load-gita && npm run index"
   },
   "keywords": [],
   "author": "",

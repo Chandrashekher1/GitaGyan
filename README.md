@@ -26,9 +26,13 @@ npm run dev
 
 ## API Endpoint
 
-**> POST /api/v1/user**
-**> POST /api/v1/login**
-**> POST /api/v1/chat**
-**> POST /api/v1/guest-login**
+> POST /api/v1/user
+
+**> POST /api/v1/login**  
+
+**> POST /api/v1/chat**  
+
+**> POST /api/v1/guest-login**  
+
 
 

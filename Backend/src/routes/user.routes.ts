@@ -2,8 +2,10 @@ import bcrypt from 'bcrypt'
 import { Users, Validate as validate } from '../models/User.model.js'
 import express from 'express'
 import auth from '../middleware/auth.middleware.js'
+import jwt from 'jsonwebtoken'
+import * as dotenv from "dotenv"
+dotenv.config()
 const router = express.Router()
-
 
 //@ts-ignore
 router.get('/me',[auth], async (req,res) => {
@@ -50,6 +52,15 @@ router.post('/', async (req,res) => {
     } catch (err:any) {
         res.status(500).json({ success: false, message: "Registration failed", error: err.message });
     }
+})
+
+router.post('/guest-login', (req,res) => {
+    const guestPayload = {
+        role: "guest",
+    }
+    const token = jwt.sign(guestPayload,process.env.jwtPrivateKey as string, {expiresIn: "5m"})
+    
+    res.json({token, expiresIn: 5*60})
 })
 
 router.put('/:id', auth, async(req,res) => {

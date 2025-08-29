@@ -12,7 +12,7 @@ npm install
 # .env file
 
 ```
-PORT=5000
+PORT=3000
 MONGO_URI=your_mongodb_connection_string
 ASTRA_DB_API_ENDPOINT=your_vector_database_api_key
 ASTRA_DB_APPLICATION_TOKEN=your_astraDB_token
@@ -26,9 +26,9 @@ npm run dev
 
 ## API Endpoint
 
-POST /api/v1/user
-POST /api/v1/login
-POST /api/v1/chat
-POST /api/v1/guest-login
+> POST /api/v1/user
+> POST /api/v1/login
+> POST /api/v1/chat
+> POST /api/v1/guest-login
 
 

@@ -15,8 +15,13 @@ export function connectToDatabase(): Db {
     );
   }
 
-  const client = new DataAPIClient();
-  dbAstra = client.db(endpoint, { token });
+  const client = new DataAPIClient({timeoutDefaults: { requestTimeoutMs: 60000 }});
+  dbAstra = client.db(endpoint, { token, 
+    timeoutDefaults: {
+      requestTimeoutMs: 60000,
+      generalMethodTimeoutMs: 120000
+    }
+   });
   console.log(`Connected to database ${dbAstra.id}`);
   return dbAstra;
 }

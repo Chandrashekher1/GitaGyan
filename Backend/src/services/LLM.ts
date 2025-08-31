@@ -16,14 +16,20 @@ export async function LLMQuery(query:string, context : string) {
     ${context}
     Your task:
     - Answer ONLY using the provided context (do not invent or add external information).  
-    - Keep the response **concise, clear, and meaningful** (2-4 sentences).  
-    - Explain in **simple English and briefly describe solutions** that anyone can easily understand.  
+    - Keep the response **concise, clear, and meaningful**  give response in (2-5 sentences)
+    - Explain in ** Easy and understandable English and briefly describe ** that anyone can easily understand.  
     - If the answer is not found in the given context, reply exactly: "Not found in the given context."  
-    - Speak with **compassion, wisdom, and authority**, like Krishna guiding arjuna.  
+    - Speak with **compassion, wisdom, and authority**, like Krishna guiding.  
     `;
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: prompt
+    contents: [
+      {
+        role: 'user',
+        parts: [{text: prompt}]
+      }
+    ]
   });
+  
   return response.text
 }

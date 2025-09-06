@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export function Features() {
     const fadeInUp = {
       hidden: {opacity:0, y:500},
-      visible: {opacity:1, y:-100, transition:{duration: 2,ease: 'easeOut'}}
+      visible: {opacity:1, y:-100, transition:{duration: 2,ease: 'easeInOut' as const}}
     }
     const features = [
         {

@@ -4,7 +4,7 @@ import { Card, CardContent } from "./ui/card";
 export function Quote() {
     const fadeInUp = {
       hidden: {opacity:0, y:500},
-      visible: {opacity:1, y:-100, transition:{duration: 2,ease: 'easeOut'}}
+      visible: {opacity:1, y:-100, transition:{duration: 2,ease: 'easeInOut' as const}}
     }
     return (
         <motion.div

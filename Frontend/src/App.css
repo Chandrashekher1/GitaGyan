@@ -1,42 +1,134 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@import "tailwindcss";
+
+/* Dark Mode Variant */
+@custom-variant dark (&:is(.dark *));
+
+/* === THEME TOKENS === */
+@theme {
+  /* Typography */
+  --font-comic: "Comic Sans MS", cursive, sans-serif;
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "Fira Code", monospace;
+
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Radii */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  /* === COLORS (Lovable spiritual palette) === */
+  --color-primary: #f4a261; /* saffron */
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #2a9d8f; /* sage */
+  --color-secondary-foreground: #ffffff;
+  --color-accent: #e9c46a; /* lotus gold */
+  --color-accent-foreground: #1a1a1a;
+  --color-background: #fffaf0; /* warm ivory */
+  --color-foreground: #1a1a1a;
+  --color-muted: #d3d3d3;
+  --color-muted-foreground: #666666;
+  --color-card: #ffffff;
+  --color-card-foreground: #1a1a1a;
+  --color-border: #e0e0e0;
+  --color-input: #f7f7f7;
+  --color-ring: #f4a261;
+  --color-destructive: #e63946;
+  --color-destructive-foreground: #ffffff;
+
+  /* Gradients */
+  --gradient-sunrise: linear-gradient(135deg, #f4a261, #e76f51);
+  --gradient-serenity: linear-gradient(135deg, #2a9d8f, #264653);
+  --gradient-wisdom: linear-gradient(135deg, #e9c46a, #f4a261, #2a9d8f);
+  --gradient-spiritual: linear-gradient(135deg, #8ecae6, #219ebc, #023047);
+
+  /* Shadows */
+  --shadow-soft: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 15px rgba(244, 162, 97, 0.6);
+  --shadow-spiritual: 0 0 20px rgba(138, 180, 248, 0.5);
+
+  /* Sidebar Layout */
+  --sidebar-background: var(--color-background);
+  --sidebar-foreground: var(--color-foreground);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: var(--color-primary-foreground);
+  --sidebar-accent: var(--color-accent);
+  --sidebar-accent-foreground: var(--color-accent-foreground);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-ring);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* === BASE UTILITIES === */
+@layer base {
+  * {
+    @apply border-border;
   }
-  to {
-    transform: rotate(360deg);
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  /* Glass Effect */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+  }
+
+  /* Sacred Text */
+  .sacred-text {
+    font-family: var(--font-comic);
+    background: var(--gradient-wisdom);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: bold;
+  }
+
+  /* Wisdom Text Glow */
+  .wisdom-text {
+    font-family: var(--font-heading);
+    color: var(--color-accent);
+    text-shadow: 0 0 10px rgba(233, 196, 106, 0.7);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* === ANIMATIONS (Lovable spiritual motions) === */
+@keyframes lotus-bloom {
+  0%   { transform: scale(0.8); opacity: 0.5; }
+  50%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
 }
 
-.card {
-  padding: 2em;
+@keyframes wisdom-glow {
+  0%, 100% { text-shadow: 0 0 5px #e9c46a, 0 0 10px #f4a261; }
+  50%      { text-shadow: 0 0 20px #f4a261, 0 0 30px #e76f51; }
 }
 
-.read-the-docs {
-  color: #888;
+@keyframes peaceful-float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-lotus {
+  animation: lotus-bloom 2s ease-in-out infinite;
+}
+
+.animate-wisdom {
+  animation: wisdom-glow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: peaceful-float 4s ease-in-out infinite;
 }

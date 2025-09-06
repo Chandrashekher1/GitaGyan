@@ -9,7 +9,7 @@ import { motion } from "motion/react"
 export function Home() {
     const fadeInUp = {
       hidden: {opacity:0, y:50},
-      visible: {opacity:1, y:0, transition:{duration: 2,ease: 'easeOut'}}
+      visible: {opacity:1, y:0, transition:{duration: 2,ease: 'easeInOut' as const}}
     }
     
     return (

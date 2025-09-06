@@ -1,8 +1,12 @@
 import { BookOpen, Heart, MessageCircle, Users } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
+import { motion } from "framer-motion";
 
 export function Features() {
-
+    const fadeInUp = {
+      hidden: {opacity:0, y:500},
+      visible: {opacity:1, y:-100, transition:{duration: 2,ease: 'easeOut'}}
+    }
     const features = [
         {
         icon: MessageCircle,
@@ -27,7 +31,12 @@ export function Features() {
     ];
 
     return (
-        <div className="mx-16 px-4 py-40 relative z-10">
+        <motion.div 
+            variants={fadeInUp}
+              initial = "hidden"
+              whileInView="visible"
+            //   viewport={{once:true}}
+        className="mx-16 px-4 py-40 relative z-10">
             <div className="text-center mb-16">
                 <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4 wisdom-text">
                     Your Digital Sanctuary
@@ -54,6 +63,6 @@ export function Features() {
                     </Card>
                 ))}
             </div>
-      </div>
+      </motion.div>
     )
 }

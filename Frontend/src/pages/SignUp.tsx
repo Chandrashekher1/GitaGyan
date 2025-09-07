@@ -18,9 +18,12 @@ export function SignUp() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSignUp = async() => {
+        setLoading(true);
         const response = await fetch(`${Backend_Url}/user`, {
             method: "POST",
             headers: {
@@ -33,14 +36,15 @@ export function SignUp() {
             })
         });
         const json = await response.json();
-        console.log(json);
 
         if (json?.success) {
             localStorage.setItem("token", json?.token);
             navigate("/chat");
         } else {
-            alert("Sign up failed: " + json.message);
+            setError("Sign up failed: " + json.message);
         }
+        setLoading(false);
+
     }
 
   return (
@@ -90,11 +94,12 @@ export function SignUp() {
                 className="rounded-lg border shadow focus:ring-2 focus:ring-primary text-muted-foreground"
               />
             </div>
+            <p className="text-sm text-destructive">{error}</p>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
-          <Button className="w-full rounded-xl py-5 font-semibold shadow-md hover:shadow-lg transition-all" onClick={handleSignUp}>
-            Create Account
+          <Button className="w-full rounded-xl py-5 font-semibold shadow-md hover:shadow-lg transition-all" onClick={handleSignUp} disabled={loading}>
+            {loading ? "Loading..." : "Create Account"}
           </Button>
           <p className="text-sm text-muted-foreground text-center my-4">
             Already have an account?

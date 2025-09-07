@@ -12,46 +12,45 @@ import { Label } from "@/components/ui/label";
 import { ShineBorder } from "@/components/magicui/shine-border";
 import { Link, useNavigate } from "react-router-dom";
 import React from "react";
+import { Backend_Url } from "@/utils/constant";
 
 export function Login() {
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const navigate = useNavigate();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const navigate = useNavigate();
 
-    const handleLogin = async() => {
-        const response = await fetch("http://localhost:3000/api/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        });
-        const json = await response.json();
-        console.log(json);
-        
-        if(json?.success) {
-            localStorage.setItem("token", json?.token);
-            navigate("/chat");
-        } else {
-            alert("Login failed: " + json.message);
-        }
+  const handleLogin = async () => {
+    const response = await fetch(`${Backend_Url}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+    const json = await response.json();
+    if (json?.success) {
+      localStorage.setItem("token", json?.token);
+      navigate("/chat");
+    } else {
+      alert("Login failed: " + json.message);
     }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50 p-6">
-      <Card className="relative overflow-hidden w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50 p-4 sm:p-6">
+      <Card className="relative overflow-hidden w-full max-w-[95%] md:max-w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
         <ShineBorder
           className="rounded-2xl"
           shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
         />
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-3xl font-bold text-accent-foreground wave-text">
+          <CardTitle className="text-2xl md:text-3xl font-bold text-accent-foreground wave-text">
             Welcome Back
           </CardTitle>
-          <CardDescription className="text-muted-foreground text-md">
+          <CardDescription className="text-muted-foreground text-sm md:text-md">
             Sign in to continue your sacred dialogue ✨
           </CardDescription>
         </CardHeader>
@@ -88,12 +87,18 @@ export function Login() {
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
-          <Button className="w-full rounded-xl py-5 font-semibold shadow-md hover:shadow-lg transition-all" onClick={handleLogin}>
+          <Button
+            className="w-full rounded-xl py-4 md:py-5 font-semibold shadow-md hover:shadow-lg transition-all"
+            onClick={handleLogin}
+          >
             Sign In
           </Button>
           <p className="text-sm text-muted-foreground text-center my-4">
             Don't have an account?
-            <Link to="/signup" className="text-primary hover:underline mx-2 font-semibold">
+            <Link
+              to="/signup"
+              className="text-primary hover:underline mx-2 font-semibold"
+            >
               Create one
             </Link>
           </p>

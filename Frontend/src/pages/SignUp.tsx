@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { ShineBorder } from "@/components/magicui/shine-border";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Backend_Url } from "@/utils/constant";
 
 export function SignUp() {
     const [name, setName] = useState("");
@@ -20,7 +21,7 @@ export function SignUp() {
     const navigate = useNavigate();
 
     const handleSignUp = async() => {
-        const response = await fetch("http://localhost:3000/api/user", {
+        const response = await fetch(`${Backend_Url}/user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -44,7 +45,7 @@ export function SignUp() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50 p-6">
-      <Card className="relative overflow-hidden w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
+      <Card className="relative overflow-hidden w-full max-w-[95%] md:w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
         <ShineBorder
           className="rounded-2xl"
           shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]}

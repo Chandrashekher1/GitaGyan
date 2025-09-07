@@ -19,7 +19,7 @@ export async function LLMQuery(query:string, context : string) {
     - Keep the response **concise, clear, and meaningful**  give response in (2-5 sentences)
     - Explain in ** Easy and understandable English and briefly describe ** that anyone can easily understand.  
     - If the answer is not found in the given context, reply exactly: "Not found in the given context."  
-    - Speak with **compassion, wisdom, and authority**, like Krishna guiding.  
+    - Speak with **compassion, wisdom, and authority**, like krishna guiding but not include any names.  
     `;
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",

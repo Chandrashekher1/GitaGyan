@@ -17,9 +17,12 @@ import { Backend_Url } from "@/utils/constant";
 export function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    setLoading(true);
     const response = await fetch(`${Backend_Url}/login`, {
       method: "POST",
       headers: {
@@ -35,8 +38,9 @@ export function Login() {
       localStorage.setItem("token", json?.token);
       navigate("/chat");
     } else {
-      alert("Login failed: " + json.message);
+      setError("Login failed: " + json.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -76,6 +80,7 @@ export function Login() {
                 className="rounded-lg border shadow focus:ring-2 focus:ring-primary text-muted-foreground"
               />
             </div>
+            <p className="text-sm text-destructive">{error}</p>
             <div className="flex justify-end">
               <a
                 href="#"
@@ -90,8 +95,10 @@ export function Login() {
           <Button
             className="w-full rounded-xl py-4 md:py-5 font-semibold shadow-md hover:shadow-lg transition-all"
             onClick={handleLogin}
+            disabled={loading}
+
           >
-            Sign In
+            {loading ? "Loading..." : "Sign In"}
           </Button>
           <p className="text-sm text-muted-foreground text-center my-4">
             Don't have an account?

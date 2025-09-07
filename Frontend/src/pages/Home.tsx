@@ -9,7 +9,7 @@ import { motion } from "motion/react"
 export function Home() {
     const fadeInUp = {
       hidden: {opacity:0, y:50},
-      visible: {opacity:1, y:0, transition:{duration: 2,ease: 'easeInOut' as const}}
+      visible: {opacity:1, y:0, transition:{duration: 0.9,ease: 'easeInOut' as const}}
     }
     
     return (
@@ -145,7 +145,7 @@ export function Home() {
                         whileInView="visible"
                     className="max-w-4xl mx-auto relative z-10">
                         <div className="animate-bounce-in animation-delay-2000">
-                            <h2 className="text-4xl md:text-6xl text-foreground mb-8 font-bold wisdom-text hover:sacred-text transition-all duration-500 cursor-default leading-tight">
+                            <h2 className="text-5xl md:text-7xl text-foreground mb-8 font-bold wisdom-text hover:sacred-text transition-all duration-500 cursor-default leading-tight">
                                 <span className="inline-block hover:animate-enlighten-glow">Begin Your</span>
                                 <br />
                                 <span className="inline-block hover:animate-sacred-pulse">Journey Today</span>

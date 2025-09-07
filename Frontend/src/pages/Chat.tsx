@@ -98,7 +98,7 @@ export function Chat() {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 overflow-hidden">
+    <div className="flex flex-col h-screen overflow-hidden">
       <header className="flex-shrink-0 h-16 bg-white/90 backdrop-blur-sm border-b border-orange-200/60 shadow-sm z-10">
         <Header />
       </header>
@@ -119,7 +119,7 @@ export function Chat() {
               <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-3 border-white shadow-sm animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-3xl font-bold font-display text-foreground">
+              <h1 className="text-3xl font-bold font-display text-foreground wave-text">
                 Sacred Dialogue
               </h1>
               <p className="text-muted-foreground flex items-center gap-2 text-sm font-medium">

@@ -116,7 +116,7 @@ export function Home() {
                             className="text-xl px-12 py-8 glass-effect hover:shadow-elevated transition-all duration-500 bg-white/90 hover:bg-white hover:rounded-3xl transform hover:scale-105 hover:-translate-y-1 border-2 border-accent/30 hover:border-accent/60 font-semibold group relative overflow-hidden" 
                             asChild
                         >
-                            <Link to="/auth/signup" className="flex items-center relative z-10">
+                            <Link to="/signup" className="flex items-center relative z-10">
                                 <Sparkles className="mr-2 group-hover:animate-spin" size={20} />
                                 <span>Create Account</span>
                                 <div className="absolute inset-0 bg-gradient-wisdom opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10"></div>

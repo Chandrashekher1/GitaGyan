@@ -1,7 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Home } from './pages/Home'
-import { ThemeProvider } from './components/ui/theme-provider'
 import { Chat } from './pages/Chat'
 import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
@@ -9,7 +8,6 @@ import { SignUp } from './pages/SignUp'
 function App() {
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div>
         <Router>
           <Routes>
@@ -21,7 +19,6 @@ function App() {
           </Routes>
         </Router>
       </div>
-    </ThemeProvider>
   )
 }
 

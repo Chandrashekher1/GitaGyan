@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ChatAPI, Lotus_Image } from "@/utils/constant";
 import { Send, User, Sparkles } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
@@ -41,7 +42,7 @@ export function Chat() {
     setIsTyping(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/chat", {
+      const response = await fetch(ChatAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,18 +85,18 @@ export function Chat() {
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setInputValue(suggestion);
-  };
+  // const handleSuggestionClick = (suggestion: string) => {
+  //   setInputValue(suggestion);
+  // };
 
-  const suggestions = [
-    "What is dharma in daily life?",
-    "How to find inner peace?",
-    "What is the purpose of life?",
-    "How to overcome fear and anxiety?",
-    "What does Krishna teach about duty?",
-    "How to practice detachment?"
-  ];
+  // const suggestions = [
+  //   "What is dharma in daily life?",
+  //   "How to find inner peace?",
+  //   "What is the purpose of life?",
+  //   "How to overcome fear and anxiety?",
+  //   "What does Krishna teach about duty?",
+  //   "How to practice detachment?"
+  // ];
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -104,22 +105,22 @@ export function Chat() {
       </header>
 
       <div className="flex-shrink-0 ">
-        <div className="container mx-auto max-w-5xl px-6 py-5 border-border/70 border-b">
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto max-w-5xl md:px-6 px-2 md:py-5 py-2 border-border border-b">
+          <div className="flex items-center md:gap-4 gap-2">
             <div className="relative group">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-orange-400 via-red-400 to-orange-600 p-0.5 shadow-lg">
+              <div className="md:w-14 md:h-14 w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 via-red-400 to-orange-600 p-0.5 shadow-lg">
                 <div className="w-full h-full rounded-full bg-white p-2">
                   <img
-                    src="https://www.freevector.com/uploads/vector/preview/2916/FreeVector-Lotus-Icon.jpg"
+                    src={`${Lotus_Image}`}
                     alt="Sacred Lotus"
                     className="w-full h-full rounded-full object-cover"
                   />
                 </div>
               </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-3 border-white shadow-sm animate-pulse"></div>
+              <div className="absolute -bottom-1 -right-1 md:w-5 md:h-5 w-3 h-3 bg-green-500 rounded-full border-3 border-white shadow-sm animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-3xl font-bold font-display text-foreground wave-text">
+              <h1 className="md:text-3xl text-xl font-bold font-display text-foreground wave-text mx-1">
                 Sacred Dialogue
               </h1>
               <p className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
@@ -139,17 +140,17 @@ export function Chat() {
                 <div className=" text-center">
 
                   <div className="space-y-3">
-                    <h2 className="font-display text-lg font-bold text-muted-foreground mb-2 ">
+                    <h2 className="font-display text-xl font-bold text-muted-foreground mb-2 ">
                       Welcome to Sacred Dialogue
                     </h2>
-                    <p className="text-muted-foreground text-md  leading-relaxed">
+                    <p className="text-muted-foreground text-sm md:text-lg  leading-relaxed">
                       Discover timeless wisdom from the Bhagavad Gita. Ask any question about life, 
                       purpose, relationships, or spiritual growth, and receive guidance rooted in 
                       ancient teachings.
                     </p>
                   </div>
 
-                  <div className="space-y-8">
+                  {/* <div className="space-y-8">
                     <p className="text-sm text-muted-foreground font-bold  uppercase tracking-wide my-8">
                       Try asking about
                     </p>
@@ -167,7 +168,7 @@ export function Chat() {
                         </button>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}
@@ -182,15 +183,15 @@ export function Chat() {
               >
                 <div className="flex-shrink-0">
                   {msg.isUser ? (
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg ring-3 ring-orange-200">
-                      <User size={20} className="text-white" />
+                    <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center shadow-lg ring-3 ring-orange-200">
+                      <User  className="text-white" />
                     </div>
                   ) : (
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-200 to-red-200 border-2 border-orange-300 flex items-center justify-center shadow-md">
+                    <div className="md:w-11 md:h-11 w-8 h-8 rounded-full bg-gradient-to-br from-orange-200 to-red-200 border-2 border-orange-300 flex items-center justify-center shadow-md">
                       <img
-                        src="https://www.freevector.com/uploads/vector/preview/2916/FreeVector-Lotus-Icon.jpg"
+                        src={`${Lotus_Image}`}
                         alt="Sacred Wisdom"
-                        className="w-7 h-7 rounded-full object-cover"
+                        className="md:w-7 md:h-7 w-5 h-5 rounded-full object-cover"
                       />
                     </div>
                   )}
@@ -198,24 +199,19 @@ export function Chat() {
 
                 <div className={`flex flex-col max-w-[80%] ${msg.isUser ? "items-end" : "items-start"}`}>
                   <div
-                    className={`rounded-2xl px-5 py-4 shadow-md relative leading-relaxed ${
+                    className={`rounded-2xl md:px-5 md:py-4 p-2 shadow-md relative leading-relaxed ${
                       msg.isUser
-                        ? "bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-tr-md shadow-orange-200"
-                        : "bg-white border border-orange-100 text-gray-800 rounded-tl-md shadow-gray-100 hover:shadow-lg transition-shadow duration-300"
+                        ? "bg-primary "
+                        : "bg-card hover:shadow-accent border border-border text-muted-foreground font-semibold rounded-tl-md shadow-gray-100 hover:shadow-lg transition-shadow duration-300"
                     }`}
                   >
-                    <div className={`text-base ${msg.isUser ? "font-medium" : "font-normal"} whitespace-pre-line`}>
+                    <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground "} whitespace-pre-line`}>
                       {msg.content}
                     </div>
                     
-                    <div className={`absolute top-4 ${
-                      msg.isUser 
-                        ? "-right-2 w-0 h-0 border-l-8 border-l-red-600 border-t-4 border-t-transparent border-b-4 border-b-transparent" 
-                        : "-left-2 w-0 h-0 border-r-8 border-r-white border-t-4 border-t-transparent border-b-4 border-b-transparent"
-                    }`}></div>
                   </div>
                   
-                  <span className={`text-xs text-gray-500 mt-2 px-3 ${msg.isUser ? "text-right" : "text-left"}`}>
+                  <span className={`text-xs text-muted-foreground mt-2 px-3 ${msg.isUser ? "text-right" : "text-left"}`}>
                     {msg.timestamp.toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -229,7 +225,7 @@ export function Chat() {
               <div className="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
                 <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-200 to-red-200 border-2 border-orange-300 flex items-center justify-center shadow-md">
                   <img
-                    src="https://www.freevector.com/uploads/vector/preview/2916/FreeVector-Lotus-Icon.jpg"
+                    src={`${Lotus_Image}`}
                     alt="Sacred Wisdom"
                     className="w-7 h-7 rounded-full object-cover animate-pulse"
                   />
@@ -263,7 +259,7 @@ export function Chat() {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Ask for wisdom and guidance from the Bhagavad Gita..."
-                className="w-full px-6 py-4 pr-14 rounded-full text-base border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
+                className="w-full md:px-6 md:py-6 py-4 pr-14 rounded-full text-base font-semibold border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
                 disabled={isTyping}
               />
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -273,7 +269,7 @@ export function Chat() {
             <Button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || isTyping}
-              className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg group"
+              className="md:h-12 h-8 md:w-12 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg group"
             >
               <Send size={22} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
             </Button>

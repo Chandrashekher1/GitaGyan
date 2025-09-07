@@ -1,9 +1,10 @@
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChatAPI, Lotus_Image } from "@/utils/constant";
+import { Backend_Url, Lotus_Image } from "@/utils/constant";
 import { Send, User, Sparkles } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -17,6 +18,7 @@ export function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const token = localStorage.getItem("token") 
 
   const scrollToBottom = () => {
@@ -42,7 +44,7 @@ export function Chat() {
     setIsTyping(true);
 
     try {
-      const response = await fetch(ChatAPI, {
+      const response = await fetch(`${Backend_Url}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,6 +99,10 @@ export function Chat() {
   //   "What does Krishna teach about duty?",
   //   "How to practice detachment?"
   // ];
+
+  if(!token && token === null) {
+      navigate('/login')
+  }
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">

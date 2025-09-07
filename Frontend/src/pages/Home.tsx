@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Sparkles, Star, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react"
+import { Lotus_Image } from "@/utils/constant";
 
 export function Home() {
     const fadeInUp = {
@@ -47,7 +48,7 @@ export function Home() {
                     <div className="relative group">
                         <div className="absolute inset-0 bg-gradient-sacred rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-500 animate-sacred-pulse"></div>
                         <img 
-                            src="https://www.freevector.com/uploads/vector/preview/2916/FreeVector-Lotus-Icon.jpg" 
+                            src={`${Lotus_Image}`}
                             alt="Sacred Lotus Logo" 
                             className="relative w-32 h-32 rounded-full object-cover shadow-divine hover:shadow-sacred transition-all duration-500 animate-lotus-bloom hover:scale-110 border-4 border-primary/20 group-hover:border-primary/50" 
                         />

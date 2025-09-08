@@ -100,9 +100,11 @@ export function Chat() {
   //   "How to practice detachment?"
   // ];
 
-  if(!token && token === null) {
-      navigate('/login')
+ useEffect(() => {
+  if (!token) {
+    navigate("/login");
   }
+}, [token, navigate]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -126,7 +128,7 @@ export function Chat() {
               <div className="absolute -bottom-1 -right-1 md:w-5 md:h-5 w-3 h-3 bg-green-500 rounded-full border-3 border-white shadow-sm animate-pulse"></div>
             </div>
             <div>
-              <h1 className="md:text-3xl text-xl font-bold font-display text-foreground wave-text mx-1">
+              <h1 className="md:text-3xl text-xl font-bold font-display text-primary wave-text mx-1">
                 Sacred Dialogue
               </h1>
               <p className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
@@ -146,7 +148,7 @@ export function Chat() {
                 <div className=" text-center">
 
                   <div className="space-y-3">
-                    <h2 className="font-display text-xl font-bold text-muted-foreground mb-2 ">
+                    <h2 className="font-display text-xl font-bold text-primary mb-2 ">
                       Welcome to Sacred Dialogue
                     </h2>
                     <p className="text-muted-foreground text-sm md:text-lg  leading-relaxed">
@@ -208,10 +210,10 @@ export function Chat() {
                     className={`rounded-2xl md:px-5 md:py-4 p-2 shadow-md relative leading-relaxed ${
                       msg.isUser
                         ? "bg-primary "
-                        : "bg-card hover:shadow-accent border border-border text-muted-foreground font-semibold rounded-tl-md shadow-gray-100 hover:shadow-lg transition-shadow duration-300"
+                        : "bg-card hover:shadow-primary border border-border text-muted-foreground font-semibold rounded-tl-md shadow-gray-100 hover:shadow-md transition-shadow duration-300"
                     }`}
                   >
-                    <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground "} whitespace-pre-line`}>
+                    <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-sans text-muted-foreground text-md "} whitespace-pre-line`}>
                       {msg.content}
                     </div>
                     

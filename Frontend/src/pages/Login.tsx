@@ -49,7 +49,7 @@ export function Login() {
       <Card className="relative overflow-hidden w-full max-w-[95%] md:max-w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
         <ShineBorder
           className="rounded-2xl"
-          shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+          shineColor={["#ff6633", "#8ba960", "#fffaf0", "#e9c46a"]}
         />
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl md:text-3xl font-bold text-accent-foreground wave-text">

@@ -1,18 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Dark Mode Variant */
 @custom-variant dark (&:is(.dark *));
 
-/* === THEME TOKENS === */
 @theme {
-  /* Typography */
   --font-comic: "Comic Sans MS", cursive, sans-serif;
   --font-heading: "Poppins", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "Fira Code", monospace;
 
-  /* Spacing Scale */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -20,7 +16,6 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
 
-  /* Radii */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -28,10 +23,9 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
 
-  /* === COLORS (Lovable spiritual palette) === */
-  --color-primary: #f4a261; /* saffron */
+  --color-primary: #ff6633; /* saffron */
   --color-primary-foreground: #ffffff;
-  --color-secondary: #2a9d8f; /* sage */
+  --color-secondary: #8ba960; /* sage */
   --color-secondary-foreground: #ffffff;
   --color-accent: #e9c46a; /* lotus gold */
   --color-accent-foreground: #1a1a1a;
@@ -68,8 +62,42 @@
   --sidebar-border: var(--color-border);
   --sidebar-ring: var(--color-ring);
 }
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 
-/* === BASE UTILITIES === */
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -79,7 +107,6 @@
     @apply bg-background text-foreground antialiased;
   }
 
-  /* Glass Effect */
   .glass-effect {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -87,7 +114,6 @@
     border-radius: var(--radius-lg);
   }
 
-  /* Sacred Text */
   .sacred-text {
     font-family: var(--font-comic);
     background: var(--gradient-wisdom);
@@ -96,7 +122,6 @@
     font-weight: bold;
   }
 
-  /* Wisdom Text Glow */
   .wisdom-text {
     font-family: var(--font-heading);
     color: var(--color-accent);
@@ -104,7 +129,6 @@
   }
 }
 
-/* === ANIMATIONS (Lovable spiritual motions) === */
 @keyframes lotus-bloom {
   0%   { transform: scale(0.8); opacity: 0.5; }
   50%  { transform: scale(1.05); opacity: 1; }
@@ -144,7 +168,19 @@
     boxShadow: 0 0 0 8px var(--pulse-color);
     }
   }
-}
+  --animate-shine: shine var(--duration) infinite linear
+;
+  @keyframes shine {
+  0% {
+    background-position: 0% 0%;
+    }
+  50% {
+    background-position: 100% 100%;
+    }
+  to {
+    background-position: 0% 0%;
+    }
+  }}
 
 @layer base {
   * {

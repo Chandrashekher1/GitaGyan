@@ -14,7 +14,7 @@ export function Home() {
     }
     
     return (
-        <div className="min-h-screen bg-gradient-sunrise relative overflow-hidden">
+        <div className="min-h-screen bg-[var(--color-background)] relative overflow-hidden">
             <motion.div 
                 initial={{ opacity: 0 }}
             className="absolute inset-0 opacity-30">
@@ -65,7 +65,7 @@ export function Home() {
                                 Find Wisdom in
                             </span>
                             <br />
-                            <span className="wisdom-text block animate-bounce-in animation-delay-500 hover:scale-105 transition-transform duration-300 cursor-default relative">
+                            <span className="wisdom-text text-primary block animate-bounce-in animation-delay-500 hover:scale-105 transition-transform duration-300 cursor-default relative">
                                 Sacred Dialogue
                                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-sacred rounded-full animate-divine-shimmer"></div>
                             </span>
@@ -146,7 +146,7 @@ export function Home() {
                         whileInView="visible"
                     className="max-w-4xl mx-auto relative z-10">
                         <div className="animate-bounce-in animation-delay-2000">
-                            <h2 className="text-5xl md:text-7xl text-foreground mb-8 font-bold wisdom-text hover:sacred-text transition-all duration-500 cursor-default leading-tight">
+                            <h2 className="text-5xl md:text-7xl text-primary mb-8 font-bold wisdom-text hover:sacred-text transition-all duration-500 cursor-default leading-tight">
                                 <span className="inline-block hover:animate-enlighten-glow">Begin Your</span>
                                 <br />
                                 <span className="inline-block hover:animate-sacred-pulse">Journey Today</span>

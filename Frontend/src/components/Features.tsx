@@ -38,7 +38,7 @@ export function Features() {
             //   viewport={{once:true}}
         className="md:mx-16 px-4 py-40 relative z-10">
             <div className="text-center mb-16">
-                <h2 className="font-display text-5xl md:text-7xl font-bold text-foreground mb-4 wisdom-text">
+                <h2 className="font-display text-5xl md:text-7xl font-bold text-primary  mb-4 wisdom-text">
                     Your Digital Sanctuary
                 </h2>
                 <p className="text-lg text-muted-foreground font-semibold">
@@ -53,7 +53,7 @@ export function Features() {
                             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 mb-4 group-hover:animate-sacred-pulse">
                                 <feature.icon className="text-primary group-hover:scale-110 transition-transform duration-300" size={24} />
                             </div>
-                            <h3 className="font-display font-bold  text-xl text-foreground mb-2">
+                            <h3 className="font-display font-bold  text-xl text-primary mb-2">
                                 {feature.title}
                             </h3>
                             <p className="text-muted-foreground text-lg leading-relaxed">

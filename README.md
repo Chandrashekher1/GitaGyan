@@ -54,7 +54,7 @@ GitaVerse/
 
 ```
 # Clone the repo
-git clone https://github.com/your-username/gitaverse.git
+https://github.com/Chandrashekher1/Chat-with-Gita.git
 cd GitaGyan
 
 cd backend
@@ -92,5 +92,3 @@ Authorization: `${token}`
 - Designed for scalability with modular frontend + backend architecture.
 - Provides real-time spiritual guidance from the Bhagavad Gita.
 
-# Contributors
-Chandrashekher Prasad (Developer)

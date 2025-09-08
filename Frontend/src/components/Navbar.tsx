@@ -13,7 +13,7 @@ export function Navbar() {
   return (
     <div className="hidden md:flex items-center gap-6 relative">
       <div className="relative group">
-        <Button variant="outline" className=" rounded-full">
+        <Button variant="secondary" className=" rounded-full">
           <UserIcon />
         </Button>
         <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm sacred-text px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
@@ -23,7 +23,7 @@ export function Navbar() {
 
       <div className="relative group">
         <Button
-          variant="outline"
+          variant="secondary"
           className="rounded-full"
           onClick={handleLogOut}
         >

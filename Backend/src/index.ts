@@ -18,10 +18,16 @@ app.use(cors({
 }))
 startup(app)
 
-// mongoDB connection
+// mongoDB connection   
 db
 //astraDB connection
 connectToDatabase()
+
+app.get("/timer", (req,res) => {
+    const currentTime = new Date().toISOString();
+    res.json({ time: currentTime , message: "Server is running fine!"});
+})
+
 app.listen(process.env.PORT, () => {
     console.log(`listening on port: ${process.env.PORT}`);
 })

@@ -14,7 +14,7 @@ export function Home() {
     }
     
     return (
-        <div className="min-h-screen bg-gradient-peaceful relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-sunrise relative overflow-hidden">
             <motion.div 
                 initial={{ opacity: 0 }}
             className="absolute inset-0 opacity-30">
@@ -113,7 +113,7 @@ export function Home() {
                         <Button 
                             variant="outline" 
                             size="lg" 
-                            className="text-xl px-12 py-8 glass-effect hover:shadow-elevated transition-all duration-500 bg-white/90 hover:bg-white hover:rounded-3xl transform hover:scale-105 hover:-translate-y-1 border-2 border-accent/30 hover:border-accent/60 font-semibold group relative overflow-hidden" 
+                            className="text-xl px-12 py-8 glass-effect hover:shadow-elevated transition-all duration-500 bg-white/90 hover:bg-secondary hover:rounded-3xl transform hover:scale-105 hover:-translate-y-1 border-2 border-accent/30 hover:border-accent/60 font-semibold group relative overflow-hidden" 
                             asChild
                         >
                             <Link to="/signup" className="flex items-center relative z-10">
@@ -177,9 +177,9 @@ export function Home() {
                             {[...Array(5)].map((_, i) => (
                                 <div
                                     key={i}
-                                    className={`w-2 h-2 bg-primary/40 rounded-full animate-peaceful-float hover:bg-primary hover:scale-150 transition-all duration-300 cursor-pointer`}
+                                    className={`w-2 h-2 bg-primary/40 rounded-full animate-peaceful-float hover:bg-primary hover:scale-150 transition-all duration-300 cursor-pointer animated-bounce-in`}
                                     style={{
-                                        animationDelay: `${i * 200}ms`
+                                        animationDelay: `${i * 10}ms`
                                     }}
                                 ></div>
                             ))}

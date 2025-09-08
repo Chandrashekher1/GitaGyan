@@ -21,7 +21,8 @@ export function Login() {
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setLoading(true);
     const response = await fetch(`${Backend_Url}/login`, {
       method: "POST",
@@ -59,12 +60,13 @@ export function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={(e) => handleLogin(e)}>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
+                required
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="arjun@gmail.com"
                 className="rounded-lg border-input focus:ring-2 focus:ring-primary text-muted-foreground shadow"
@@ -75,6 +77,7 @@ export function Login() {
               <Input
                 id="password"
                 type="password"
+                required
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="password"
                 className="rounded-lg border shadow focus:ring-2 focus:ring-primary text-muted-foreground"
@@ -89,17 +92,17 @@ export function Login() {
                 Forgot password?
               </a>
             </div>
+            <Button
+              className="w-full rounded-xl py-4 md:py-5 font-semibold shadow-md hover:shadow-lg transition-all"
+              disabled={loading}
+              type="submit"
+            >
+              {loading ? "Loading..." : "Sign In"}
+          </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
-          <Button
-            className="w-full rounded-xl py-4 md:py-5 font-semibold shadow-md hover:shadow-lg transition-all"
-            onClick={handleLogin}
-            disabled={loading}
-
-          >
-            {loading ? "Loading..." : "Sign In"}
-          </Button>
+          
           <p className="text-sm text-muted-foreground text-center my-4">
             Don't have an account?
             <Link

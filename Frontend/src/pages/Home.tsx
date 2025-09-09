@@ -6,6 +6,7 @@ import { MessageCircle, Sparkles, Star, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react"
 import { Lotus_Image } from "@/utils/constant";
+import { TypingAnimation } from "@/components/magicui/typing-animation";
 
 export function Home() {
     const fadeInUp = {
@@ -65,10 +66,12 @@ export function Home() {
                                 Find Wisdom in
                             </span>
                             <br />
-                            <span className="wisdom-text text-primary block animate-bounce-in animation-delay-500 hover:scale-105 transition-transform duration-300 cursor-default relative">
-                                Sacred Dialogue
-                                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-sacred rounded-full animate-divine-shimmer"></div>
-                            </span>
+                            <TypingAnimation className="wisdom-text text-primary block animate-bounce-in animation-delay-500 hover:scale-105 transition-transform duration-300 cursor-default relative text-8xl">
+                                
+                                    Sacred Dialogue
+                                    {/* <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-sacred rounded-full animate-divine-shimmer"></div> */}
+                                
+                            </TypingAnimation>
                         </h1>
                         
                         <div className="absolute -top-8 left-1/4 opacity-60 animate-peaceful-float animation-delay-1000">

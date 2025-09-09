@@ -2,17 +2,37 @@ import { Features } from "@/components/Features";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { Quote } from "@/components/Quote";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Sparkles, Star, Heart } from "lucide-react";
+import { MessageCircle, Sparkles, Star, Heart, Volume2Icon, VolumeOffIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react"
-import { Lotus_Image } from "@/utils/constant";
+import { Krishna_Flute, Lotus_Image } from "@/utils/constant";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
+import { useEffect, useRef, useState } from "react";
 
 export function Home() {
+    const [isOpen, setIsOpen] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
     const fadeInUp = {
       hidden: {opacity:0, y:50},
       visible: {opacity:1, y:0, transition:{duration: 0.9,ease: 'easeInOut' as const}}
     }
+
+     const toggleSound = () => {
+        if (isOpen) {
+          audioRef?.current?.pause();
+        } else {
+          audioRef?.current?.play();
+        }
+        setIsOpen(!isOpen);
+      };
+    
+      useEffect(() => {
+        if (audioRef?.current) {
+          audioRef.current.volume = 1; 
+          audioRef.current.loop = true; 
+        }
+      }, []);
     
     return (
         <div className="min-h-screen bg-[var(--color-background)] relative overflow-hidden">
@@ -47,7 +67,7 @@ export function Home() {
                 <motion.div style={{ originX: 0.5, originY: 0.5 }}>
                      <div className="flex items-center justify-center pt-20 pb-8">
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-gradient-sacred rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-500 animate-sacred-pulse"></div>
+                        <div className="absolute inset-0 bg-primary rounded-full blur-lg opacity-50 group-hover:opacity-100 transition-opacity duration-500 animate-sacred-pulse"></div>
                         <img 
                             src={`${Lotus_Image}`}
                             alt="Sacred Lotus Logo" 
@@ -84,11 +104,11 @@ export function Home() {
 
                     <p className="text-xl md:text-3xl text-muted-foreground mb-12 leading-relaxed animate-slide-in-right animation-delay-800 max-w-4xl mx-auto hover:text-foreground transition-colors duration-500">
                         <span className="inline-block hover:wisdom-text transition-all duration-300 cursor-default">
-                            Connect with the timeless teachings of the Bhagavad Gita
+                            Ask life's deepest questions and and receive personalized guidance
                         </span>
                         <br />
                         <span className="inline-block hover:sacred-text transition-all duration-300 cursor-default animation-delay-1000 animate-fade-in">
-                            through AI-powered conversations. Discover insights, save meaningful responses,
+                            from the timeless teachings of the Bhagavad Gita
                         </span>
                         <br />
                         <span className="inline-block hover:divine-text transition-all duration-300 cursor-default animation-delay-1200 animate-fade-in font-medium">
@@ -124,6 +144,10 @@ export function Home() {
                                 <span>Create Account</span>
                                 <div className="absolute inset-0 bg-gradient-wisdom opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10"></div>
                             </Link>
+                        </Button>
+                        <audio ref={audioRef} src={Krishna_Flute} preload="auto" />
+                        <Button variant="outline" onClick={toggleSound} className="rounded-full ml-4 w-12 h-12 md:w-16 md:h-16">
+                            {isOpen ? <Volume2Icon/> : <VolumeOffIcon/>}
                         </Button>
                     </div>
                 </div>

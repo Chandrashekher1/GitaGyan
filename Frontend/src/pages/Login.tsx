@@ -52,9 +52,8 @@ export function Login() {
       method: "POST",
     });
     const json = await response.json();
-    console.log(json);
-    
     if (json?.token) {
+      alert("Logged in as Guest. You can use 2 minutes.");
       localStorage.setItem("token", json?.token);
       navigate("/chat");
     } else {

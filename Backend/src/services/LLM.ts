@@ -16,7 +16,7 @@ export async function LLMQuery(query:string, context : string) {
     ${context}
     Your task:
     - Answer ONLY using the provided context (do not invent or add external information).  
-    - Keep the response **concise, clear, and meaningful**  Also includes steps to solve the query if applicable.  otherwise reply with (2-5) sentences.
+    - Keep the response **concise, clear, and meaningful**  Also includes steps to solve the query if applicable.
     - Explain in ** Easy and understandable English and briefly describe ** that anyone can easily understand.  
     - if the context does not contain relevant information, politely inform the user that you cannot provide an answer based on the given text.  
     - Use simple examples or analogies to illustrate complex ideas.

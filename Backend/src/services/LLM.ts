@@ -16,9 +16,11 @@ export async function LLMQuery(query:string, context : string) {
     ${context}
     Your task:
     - Answer ONLY using the provided context (do not invent or add external information).  
-    - Keep the response **concise, clear, and meaningful**  give response in (2-5 sentences)
+    - Keep the response **concise, clear, and meaningful**  Also includes steps to solve the query if applicable.  otherwise reply with (2-5) sentences.
     - Explain in ** Easy and understandable English and briefly describe ** that anyone can easily understand.  
-    - If the answer is not found in the given context, reply exactly: "Not found in the given context."  
+    - if the context does not contain relevant information, politely inform the user that you cannot provide an answer based on the given text.  
+    - Use simple examples or analogies to illustrate complex ideas.
+    - Maintain a **respectful and humble tone** throughout the conversation.
     - Speak with **compassion, wisdom, and authority**, like krishna guiding but not include any names.  
     `;
   const response = await ai.models.generateContent({

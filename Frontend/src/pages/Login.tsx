@@ -13,6 +13,8 @@ import { ShineBorder } from "@/components/magicui/shine-border";
 import { Link, useNavigate } from "react-router-dom";
 import React from "react";
 import { Backend_Url } from "@/utils/constant";
+import { UserIcon } from "lucide-react";
+
 
 export function Login() {
   const [email, setEmail] = React.useState("");
@@ -44,8 +46,25 @@ export function Login() {
     setLoading(false);
   };
 
+  const handleGuest = async () => {
+    setLoading(true);
+    const response = await fetch(`${Backend_Url}/user/guest-login`, {
+      method: "POST",
+    });
+    const json = await response.json();
+    console.log(json);
+    
+    if (json?.token) {
+      localStorage.setItem("token", json?.token);
+      navigate("/chat");
+    } else {
+      setError("Login failed: " + json.message);
+    }
+    setLoading(false);
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50 p-4 sm:p-6">
+    <div className="min-h-screen flex items-center justify-center  p-4 sm:p-6">
       <Card className="relative overflow-hidden w-full max-w-[95%] md:max-w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
         <ShineBorder
           className="rounded-2xl"
@@ -102,7 +121,8 @@ export function Login() {
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
-          
+          <Button variant="outline" type="button" className="relative flex items-center justify-center" disabled={loading} onClick={handleGuest}>
+             <UserIcon className="pt-1"/> {loading ? 'Logging...' : (<span className="flex items-center">  Login as Guest</span>)}</Button>
           <p className="text-sm text-muted-foreground text-center my-4">
             Don't have an account?
             <Link

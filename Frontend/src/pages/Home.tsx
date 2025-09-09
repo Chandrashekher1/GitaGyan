@@ -86,7 +86,7 @@ export function Home() {
                                 Find Wisdom in
                             </span>
                             <br />
-                            <TypingAnimation className="wisdom-text text-primary block animate-bounce-in animation-delay-500 hover:scale-105 transition-transform duration-300 cursor-default relative text-8xl">
+                            <TypingAnimation className="wisdom-text text-primary block animate-bounce-in animation-delay-500 hover:scale-105 transition-transform duration-300 cursor-default relative md:text-8xl text-6xl">
                                 
                                     Sacred Dialogue
                                     {/* <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-sacred rounded-full animate-divine-shimmer"></div> */}

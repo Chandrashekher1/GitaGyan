@@ -1,4 +1,4 @@
-import { BookOpen, Heart, MessageCircle, Users } from "lucide-react";
+import { BookOpen, Heart, MessageCircle, Users ,BotIcon} from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { motion } from "framer-motion";
 
@@ -14,9 +14,9 @@ export function Features() {
         description: "Engage in meaningful dialogue with timeless wisdom from the Bhagavad Gita"
         },
         {
-        icon: Heart,
-        title: "Save Insights",
-        description: "Preserve the most profound responses in your personal collection of wisdom"
+        icon: BotIcon,
+        title: "RAG-Powered Guidance",
+        description: "Get precise, context-rich answers through Retrieval-Augmented Generation, ensuring responses are scripture-based, not generic."
         },
         {
         icon: BookOpen,
@@ -24,10 +24,18 @@ export function Features() {
         description: "Find answers to life's questions through ancient teachings and modern clarity"
         },
         {
+        icon: Heart,
+        title: "Save Insights",
+        description: "Preserve the most profound responses in your personal collection of wisdom"
+        },
+        {
         icon: Users,
-        title: "Personal Journey",
-        description: "Track your spiritual growth with personalized insights and reflection tools"
-        }
+        title: "Personalized Journey",
+        description: "Track your spiritual growth with saved conversations, personalized insights, and reflection tools."
+        },
+        
+        
+        
     ];
 
     return (

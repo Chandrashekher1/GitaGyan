@@ -47,20 +47,26 @@ export function Login() {
   };
 
   const handleGuest = async () => {
-    setLoading(true);
-    const response = await fetch(`${Backend_Url}/user/guest-login`, {
-      method: "POST",
-    });
-    const json = await response.json();
-    if (json?.token) {
-      alert("Logged in as Guest. You can use 2 minutes.");
-      localStorage.setItem("token", json?.token);
+    const res = await fetch(`${Backend_Url}/user/guest-login`, { method: "POST" });
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", "guest");
+      localStorage.setItem("exp", data.exp * 1000); 
+
+      setTimeout(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("exp");
+        alert("Guest session expired. Please register to continue.");
+        navigate("/login");
+      }, data.expiresIn * 1000);
+
       navigate("/chat");
-    } else {
-      setError("Login failed: " + json.message);
     }
-    setLoading(false);
-  }
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center  p-4 sm:p-6">

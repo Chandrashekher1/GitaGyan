@@ -53,7 +53,7 @@ export function Login() {
     if (data.success) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", "guest");
-      localStorage.setItem("exp", data.exp * 1000); 
+      // localStorage.setItem("exp", data.exp * 1000); 
 
       setTimeout(() => {
         localStorage.removeItem("token");

@@ -14,13 +14,15 @@ const BATCH_SIZE = 200
 
 export async function InsertCollection() {
   const database = await connectToDatabase();
-  const collection = database.collection("Bhagwat_Gita");
+  const collection = database.collection("Bhagwat_Gita_As_It_Is");
 
-  const pdfPath = path.resolve(__dirname, "../../src/data/Bhagavad_gita.pdf")
+  const pdfPath = path.resolve(__dirname, "../../src/data/Bhagavad-gita.pdf")
   const dataBuffer = fs.readFileSync(pdfPath);
 
   const pdf: typeof pdfParse = require("pdf-parse");
   const parsed = await pdf(dataBuffer);
+  console.log(parsed);
+  
 
   const splitter = new TokenTextSplitter({
     encodingName: "cl100k_base",

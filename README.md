@@ -55,7 +55,7 @@ GitaVerse/
 ```
 # Clone the repo
 https://github.com/Chandrashekher1/Chat-with-Gita.git
-cd GitaGyan
+cd Chat_With_Gita
 
 cd backend
 npm install

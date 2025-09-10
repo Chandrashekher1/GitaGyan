@@ -1,22 +1,25 @@
 import { connectToDatabase } from "../config/db.astra.js";
 import { LLMQuery } from "../services/LLM.js";
 
-export async function embedding({query}:{query:string}) {
-  const database =  connectToDatabase();
-  const collection = database.collection("Bhagwat_Gita");
+export async function embedding({ query }: { query: string }) {
+  const database = await connectToDatabase();
+  const collection = database.collection("Bhagwat_Gita_As_It_Is");
+
   const vectorCursor = collection.find(
     {},
     {
       sort: { $vectorize: query },
       limit: 3,
-      projection: { text: true},
+      projection: { text: true },
     },
   );
-  let context = ""
+
+  let context = "";
   for await (const document of vectorCursor) {
-    context += `\n- ${document.text}`
+    context += `\n- ${document.text}`;
+
   }
+  const result = await LLMQuery(query, context);
 
-  return await LLMQuery(query, context)
-
+  return result;
 }

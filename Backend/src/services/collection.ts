@@ -3,7 +3,7 @@ import { connectToDatabase } from "../config/db.astra.js";
 export async function Collection() {
   const database = connectToDatabase();
   const collection = await database.createCollection(
-    "Bhagwat_Gita",
+    "Bhagwat_Gita_As_It_Is",
     {
       vector: {
         service: {
@@ -15,4 +15,5 @@ export async function Collection() {
   );
 
   // console.log(`Created collection ${collection.keyspace}.${collection.name}`);
+  return database.collection("Bhagwat_Gita_As_It_Is");
 }

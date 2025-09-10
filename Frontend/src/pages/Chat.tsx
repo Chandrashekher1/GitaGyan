@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
@@ -20,6 +19,11 @@ export function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token") 
+  const guest = localStorage.getItem("role")
+
+  console.log(token);
+  console.log(guest);
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -100,7 +104,7 @@ export function Chat() {
   //   "How to practice detachment?"
   // ];
 
- useEffect(() => {
+  useEffect(() => {
   if (!token) {
     navigate("/login");
   }
@@ -108,9 +112,9 @@ export function Chat() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <header className="flex-shrink-0 h-16 bg-white/90 backdrop-blur-sm border-b border-orange-200/60 shadow-sm z-10">
+      {/* <header className="flex-shrink-0 h-16 bg-white/90 backdrop-blur-sm border-b border-orange-200/60 shadow-sm z-10">
         <Header />
-      </header>
+      </header> */}
 
       <div className="flex-shrink-0 ">
         <div className="container mx-auto max-w-5xl md:px-6 px-2 md:py-5 py-2 border-border border-b">
@@ -184,7 +188,7 @@ export function Chat() {
             {messages.map((msg, index) => (
               <div
                 key={msg.id}
-                className={`flex items-start gap-4 ${
+                className={`flex items-start gap-2 md:gap-4 ${
                   msg.isUser ? "flex-row-reverse" : "flex-row"
                 } animate-in fade-in slide-in-from-bottom-4 duration-500`}
                 style={{ animationDelay: `${index * 100}ms` }}
@@ -207,13 +211,13 @@ export function Chat() {
 
                 <div className={`flex flex-col max-w-[80%] ${msg.isUser ? "items-end" : "items-start"}`}>
                   <div
-                    className={`rounded-2xl md:px-5 md:py-4 p-2 shadow-md relative leading-relaxed ${
+                    className={`md:rounded-2xl rounded-xl md:px-5 md:py-4 p-2 shadow-md relative leading-relaxed ${
                       msg.isUser
                         ? "bg-primary "
                         : "bg-card hover:shadow-primary border border-border text-muted-foreground font-semibold rounded-tl-md shadow-gray-100 hover:shadow-md transition-shadow duration-300"
                     }`}
                   >
-                    <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-sans text-muted-foreground text-md "} whitespace-pre-line`}>
+                    <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground text-md "}`}>
                       {msg.content}
                     </div>
                     
@@ -260,14 +264,14 @@ export function Chat() {
 
       <footer className="flex-shrink-0 bg-white/95 backdrop-blur-md border-t border-orange-200/60 shadow-lg">
         <div className="container mx-auto max-w-5xl px-6 py-5">
-          <div className="flex items-end gap-4">
+          <div className="flex items-end md:gap-4 gap-2">
             <div className="flex-1 relative">
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Ask for wisdom and guidance from the Bhagavad Gita..."
-                className="w-full md:px-6 md:py-6 py-4 pr-14 rounded-full text-base font-semibold border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
+                className="w-full md:px-6 md:py-6 py-4 pr-12 rounded-full text-base font-semibold border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
                 disabled={isTyping}
               />
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">

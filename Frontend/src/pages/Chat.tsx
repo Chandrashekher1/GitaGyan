@@ -1,3 +1,4 @@
+import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
@@ -112,9 +113,9 @@ export function Chat() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      {/* <header className="flex-shrink-0 h-16 bg-white/90 backdrop-blur-sm border-b border-orange-200/60 shadow-sm z-10">
+      <header className="flex-shrink-0 h-16 bg-white/90 backdrop-blur-sm border-b border-orange-200/60 shadow-sm z-10">
         <Header />
-      </header> */}
+      </header>
 
       <div className="flex-shrink-0 ">
         <div className="container mx-auto max-w-5xl md:px-6 px-2 md:py-5 py-2 border-border border-b">

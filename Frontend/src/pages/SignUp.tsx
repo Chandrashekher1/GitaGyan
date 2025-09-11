@@ -49,8 +49,8 @@ export function SignUp() {
     }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50 p-6">
-      <Card className="relative overflow-hidden w-full max-w-[95%] md:w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <Card className="relative overflow-hidden w-full max-w-[95%] md:max-w-[30%] rounded-2xl shadow-xl border border-border/40 backdrop-blur bg-background/80">
         <ShineBorder
           className="rounded-2xl"
           shineColor={["#ff6633", "#8ba960", "#fffaf0", "#e9c46a"]}

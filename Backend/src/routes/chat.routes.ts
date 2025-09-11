@@ -6,8 +6,10 @@ const router = express.Router()
 
 router.post('/', [auth], async (req : any,res:any) => {
   try {
-    const {query} = req.body
-    const context = await embedding({query})
+    const {query, language} = req.body
+    console.log(language);
+    
+    const context = await embedding({query, language})
     res.json({context})
   } catch (error:any) {
     res.status(500).json({error:error.message})

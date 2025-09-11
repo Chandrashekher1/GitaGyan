@@ -218,9 +218,13 @@ export function Chat() {
                         : "bg-card hover:shadow-primary border border-border text-muted-foreground font-semibold rounded-tl-md shadow-gray-100 hover:shadow-md transition-shadow duration-300"
                     }`}
                   >
-                    <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground text-md "}`}>
+                    <div
+                      className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground text-md "}`}
+                      dangerouslySetInnerHTML={{ __html: msg.content }}
+                    />
+                    {/* <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground text-md "}`}>
                       {msg.content}
-                    </div>
+                    </div> */}
                     
                   </div>
                   
@@ -272,7 +276,7 @@ export function Chat() {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Ask for wisdom and guidance from the Bhagavad Gita..."
-                className="w-full md:px-6 md:py-6 py-4 pr-12 rounded-full text-base font-semibold border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
+                className="w-full md:px-6 md:py-6 py-4 pr-12 rounded-full text-base md:font-semibold border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
                 disabled={isTyping}
               />
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">

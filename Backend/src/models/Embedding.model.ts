@@ -1,7 +1,7 @@
 import { connectToDatabase } from "../config/db.astra.js";
 import { LLMQuery } from "../services/LLM.js";
 
-export async function embedding({ query }: { query: string }) {
+export async function embedding({ query , language }: { query: string , language :string }) {
   const database = await connectToDatabase();
   const collection = database.collection("Bhagwat_Gita_As_It_Is");
 
@@ -19,7 +19,7 @@ export async function embedding({ query }: { query: string }) {
     context += `\n- ${document.text}`;
 
   }
-  const result = await LLMQuery(query, context);
+  const result = await LLMQuery(query, context , language);
 
   return result;
 }

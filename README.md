@@ -1,9 +1,9 @@
-## 🌸 GitaGyan – AI-Powered Spiritual Companion
+##  GitaGyan – AI-Powered Spiritual Companion
 
 ```
   Connect with the timeless teachings of the Bhagavad Gita through AI-powered conversations. Discover insights, save meaningful responses, and embark on your spiritual journey.
 ```
-# 📖 About the Project
+#  About the Project
 GitaGyan is an AI-powered web application that allows users to interact with the wisdom of the Bhagavad Gita.
 Using Retrieval-Augmented Generation (RAG), the system fetches the most relevant verses and explains them in simple, personalized language.
 
@@ -13,7 +13,7 @@ It’s designed for:
  - Anyone curious about Indian philosophy in an interactive way
  - Bhakts, elders, and aged individuals who wish to ask their problems directly and receive guidance from the Gita
 
-# ✨Features
+# Features
  - Verse Retrieval – Get context-based answers directly from the Bhagavad Gita
  - AI Conversations – Chat with an AI persona of Lord Krishna
  - Multi-language Support – Choose from multiple Indian & global languages
@@ -45,7 +45,7 @@ To address these challenges, GitaGyan provides an AI-powered platform that makes
 <img width="1902" height="871" alt="image" src="https://github.com/user-attachments/assets/b0034fb3-a68a-4f6c-8e16-17560d8202d9" />
 <img width="1920" height="882" alt="image" src="https://github.com/user-attachments/assets/105eb590-c8a5-42b7-8aa4-355a23367a19" />
 
-# 🛠 Tech Stack
+# Tech Stack
 Frontend:
 - React.js/ TypeScript, Tailwind CSS and ShadCN UI
   
@@ -56,13 +56,13 @@ Backend:
 AI Layer:
 - Gemini API (for response generation)
   
-📚 Vector Database (Astra DB) for RAG
+ Vector Database (Astra DB) for RAG
 
 Deployment:
 - Vercel (Frontend)
 - Render  (Backend)
 
-# ⚙️ Installation & Setup
+#  Installation & Setup
 Clone the repo:
 ```
 git clone https://github.com/Chandrashekher1/Chat-with-Gita.git
@@ -97,7 +97,7 @@ Authorization: `${token}`
 }
 ```
 
-# 📜 License
+# License
 This project is licensed under the MIT License.
 
 # Quote 

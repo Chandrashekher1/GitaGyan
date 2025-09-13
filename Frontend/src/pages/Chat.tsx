@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/context/Language";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
 import { Send, User, Sparkles } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
@@ -10,6 +11,7 @@ interface Message {
   id: string;
   content: string;
   isUser: boolean;
+  language : string;
   timestamp: Date;
 }
 
@@ -20,11 +22,8 @@ export function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token") 
-  const guest = localStorage.getItem("role")
 
-  console.log(token);
-  console.log(guest);
-  
+  const {language} = useLanguage()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -41,6 +40,7 @@ export function Chat() {
       id: Date.now().toString(),
       content: inputValue,
       isUser: true,
+      language: language,
       timestamp: new Date(),
     };
 
@@ -55,16 +55,17 @@ export function Chat() {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        body: JSON.stringify({ query: userMessage.content }),
+        body: JSON.stringify({ query: userMessage.content , language: language}),
       });
 
       const json = await response.json();
-      const reply = json?.context || "I apologize, but I couldn't process your request at this time.";
+      const reply = json?.context || "I couldn't process your request at this time.";
 
       const AiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: reply,
         isUser: false,
+        language: language,
         timestamp: new Date(),
       };
 
@@ -75,8 +76,9 @@ export function Chat() {
         ...prev,
         {
           id: (Date.now() + 1).toString(),
-          content: "I apologize, but I'm experiencing technical difficulties. Please try again in a moment.",
+          content: "Experiencing technical difficulties. Please try again in a moment.",
           isUser: false,
+          language:language,
           timestamp: new Date(),
         },
       ]);
@@ -134,11 +136,11 @@ export function Chat() {
             </div>
             <div>
               <h1 className="md:text-3xl text-xl font-bold font-display text-primary wave-text mx-1">
-                Sacred Dialogue
+                {language === 'en' ? "Sacred Dialogue" : "पवित्र संवाद"}
               </h1>
               <p className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
                 <Sparkles size={16} className="text-orange-500" />
-                Ancient wisdom for modern questions
+                {language === 'en' ? "Ancient wisdom for modern questions" : "प्राचीन ज्ञान आधुनिक प्रश्नों के लिए"}
               </p>
             </div>
           </div>
@@ -154,12 +156,11 @@ export function Chat() {
 
                   <div className="space-y-3">
                     <h2 className="font-display text-xl font-bold text-primary mb-2 ">
-                      Welcome to Sacred Dialogue
+                      {language === 'en' ? "Welcome to Sacred Dialogue 🙏" : "पवित्र संवाद में आपका स्वागत है 🙏"}
                     </h2>
                     <p className="text-muted-foreground text-sm md:text-lg  leading-relaxed">
-                      Discover timeless wisdom from the Bhagavad Gita. Ask any question about life, 
-                      purpose, relationships, or spiritual growth, and receive guidance rooted in 
-                      ancient teachings.
+                      {language === 'en' ? "Discover timeless wisdom from the Bhagavad Gita. Ask any question about life, purpose, relationships, or spiritual growth, and receive guidance rooted in ancient teachings." : 
+                      "भगवद्गीता से शाश्वत ज्ञान की खोज करें। जीवन, उद्देश्य, संबंधों या आध्यात्मिक विकास से जुड़े किसी भी प्रश्न को पूछें और प्राचीन शिक्षाओं में निहित मार्गदर्शन प्राप्त करें।" }
                     </p>
                   </div>
 
@@ -215,11 +216,11 @@ export function Chat() {
                     className={`md:rounded-2xl rounded-xl md:px-5 md:py-4 p-2 shadow-md relative leading-relaxed ${
                       msg.isUser
                         ? "bg-primary "
-                        : "bg-card hover:shadow-primary border border-border text-muted-foreground font-semibold rounded-tl-md shadow-gray-100 hover:shadow-md transition-shadow duration-300"
+                        : "bg-card hover:shadow-primary border border-border md:font-semibold md:text-muted-foreground text-md rounded-tl-md shadow-gray-100 hover:shadow-md transition-shadow duration-300"
                     }`}
                   >
                     <div
-                      className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground text-md "}`}
+                      className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "prose prose-lg max-w-none"}`}
                       dangerouslySetInnerHTML={{ __html: msg.content }}
                     />
                     {/* <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground text-md "}`}>
@@ -275,7 +276,7 @@ export function Chat() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Ask for wisdom and guidance from the Bhagavad Gita..."
+                placeholder={language === 'en' ? "Ask for wisdom and guidance from the Bhagavad Gita..." : "भगवद्गीता से ज्ञान और मार्गदर्शन प्राप्त करें..."}
                 className="w-full md:px-6 md:py-6 py-4 pr-12 rounded-full text-base md:font-semibold border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
                 disabled={isTyping}
               />

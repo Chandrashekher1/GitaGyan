@@ -4,7 +4,7 @@ import { LogOutIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Krishna_Flute } from "@/utils/constant";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useLanguage } from "@/context/Language";
+import { Language, useLanguage } from "@/context/Language";
 
 
 export function Navbar() {
@@ -47,7 +47,7 @@ export function Navbar() {
       </div> */}
 
       <div className="">
-        <Select value={language} onValueChange={(val) => setLanguage(val as any)}>
+        <Select value={language} onValueChange={(val: Language) => setLanguage(val)}>
           <SelectTrigger className="w-16 md:w-24 rounded-xl border border-border hover:bg-primary hover:text-primary-foreground font-semibold">
             <SelectValue placeholder={`${language}`} className="font-semibold" />
           </SelectTrigger>

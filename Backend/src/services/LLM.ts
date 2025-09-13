@@ -26,22 +26,34 @@ IMPORTANT RESPONSE RULES:
 - Use **HTML tags** for structured formatting.  
 - Use the following format:
 
-<h2>🌿 From the Bhagavad Gita</h2>
+<br/>
+<h1 className="font-bold text-xl my-2">🌿 From the Bhagavad Gita</h1> 
+if language in hindi then write 
+<h1>🌿 भगवद् गीता के अनुसार</h1> 
+<br/>
+
 <ul>
   <li>Point 1</li>
   <li>Point 2</li>
   <li>Point 3</li>
 
 </ul>
+<br/>
 
-<h2>🌿 Practical Guidance</h2>
+<h1>🌿 Practical Guidance</h1>
+if language in hindi then write 
+<h1>🌿 व्यावहारिक मार्गदर्शन</h1> 
+<br/>
+
 <ul>
   <li>Step 1</li>
   <li>Step 2</li>
   <li>Step 3</li>
 
 </ul>
+<br/>
 
+- always use break tag after ending of ul tag
 - Each <li> should be in simple and easy english that to be understand by any age of people.  
 - Each <li> should be in the point number form like 1,2 ,3 ... etc.
 - Use examples or analogies only inside <li> if needed.  

@@ -2,8 +2,9 @@ import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/Language";
+import { useSpeechToText } from "@/Hooks/useSpeechToText";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
-import { Send, User, Sparkles } from "lucide-react";
+import { Send, User, Sparkles, MicIcon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,8 +23,19 @@ export function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token") 
-
   const {language} = useLanguage()
+  const { listening, transcript, startListening } = useSpeechToText();
+
+  // const {
+  //     transcript,
+  //     listening,
+  //     browserSupportsSpeechRecognition
+  //   } = useSpeechRecognition();
+
+  //   if (!browserSupportsSpeechRecognition) {
+  //       alert("Browser doesn't support speech recognition.");
+  //   }
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,6 +44,13 @@ export function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+
+  useEffect(() => {
+  if (transcript) {
+    setInputValue(transcript);
+  }
+}, [transcript]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -273,7 +292,7 @@ export function Chat() {
           <div className="flex items-end md:gap-4 gap-2">
             <div className="flex-1 relative">
               <Input
-                value={inputValue}
+                value={inputValue || transcript}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder={language === 'en' ? "Ask for wisdom and guidance from the Bhagavad Gita..." : "भगवद्गीता से ज्ञान और मार्गदर्शन प्राप्त करें..."}
@@ -284,6 +303,7 @@ export function Chat() {
                 <Sparkles size={20} className={isTyping ? "animate-spin" : ""} />
               </div>
             </div>
+            <Button onClick={startListening} disabled={listening} className="md:h-12 h-8 md:w-12 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg group"><MicIcon/></Button>
             <Button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || isTyping}

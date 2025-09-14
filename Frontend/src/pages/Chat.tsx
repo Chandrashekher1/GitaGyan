@@ -45,12 +45,23 @@ export function Chat() {
     scrollToBottom();
   }, [messages]);
 
-
   useEffect(() => {
-  if (transcript) {
-    setInputValue(transcript);
-  }
-}, [transcript]);
+    if (!listening) {
+      if (transcript && transcript.trim() !== "") {
+        setInputValue(transcript);
+         setTimeout(() => {
+          handleSendMessage()
+        }, 10000)
+      } else {
+        setInputValue("")
+      }
+    } else {
+      setInputValue(transcript);
+    }
+  }, [transcript, listening]);
+
+ 
+
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -106,6 +117,8 @@ export function Chat() {
     }
   };
 
+
+ 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -303,7 +316,7 @@ export function Chat() {
                 <Sparkles size={20} className={isTyping ? "animate-spin" : ""} />
               </div>
             </div>
-            <Button onClick={startListening} disabled={listening} className="md:h-12 h-8 md:w-12 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg group"><MicIcon/></Button>
+            <Button type="button" onClick={startListening} disabled={listening} className="md:h-12 h-8 md:w-12 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg group"><MicIcon/></Button>
             <Button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || isTyping}

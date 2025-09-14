@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 export function useSpeechToText(){
     const [listening, setListening] = useState(false)
     const [transcript,setTranscript] = useState("")
-    const [lang, setlang] = useState("")
+    const [lang1, setlang1] = useState("")
     const {language} = useLanguage()
-    
     useEffect(() => {
-        if(language === "en"){
-            setlang("en-US")
+        if(language === "hi"){
+            setlang1("hi-IN")
         }
         else{
-            setlang("hi-IN")
+            setlang1("en-US")
         }
     },[language])
 
@@ -21,28 +20,29 @@ export function useSpeechToText(){
             if (!SpeechRecognition) {
             console.error("SpeechRecognition not supported in this browser.");
         }
-
         const recognition = new SpeechRecognition()
-        recognition.lang = lang
-        recognition.continues = false
+        recognition.lang = `${lang1}`
+        recognition.continues = false;
         recognition.interimResults = false
-        recognition.onstart = () => setListening(true);
-        recognition.onend = () => setListening(false);
+        recognition.onstart = () => {
+            setListening(true)
+            setTranscript("")
+        }
+        recognition.onend = () => {
+            setListening(false)
+            setTimeout(() => setTranscript("") , 10000)
+        }
         recognition.onresult = (event: any) => {
             const text = event.results[0][0].transcript;
             setTranscript(text);
         };
 
         (window as any).recognitionInstance = recognition;
-    },[])
+    },[lang1])
 
     const startListening = () => {
         (window as any).recognitionInstance?.start();
     }
     
-    // const stopListening = () => {
-    //     (window as any).recognitionInstance?.stop();
-    // };
-
     return { listening, transcript, startListening };
 }

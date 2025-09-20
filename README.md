@@ -65,8 +65,8 @@ Deployment:
 #  Installation & Setup
 Clone the repo:
 ```
-git clone https://github.com/Chandrashekher1/Chat-with-Gita.git
-cd Chat-wWth-Gita
+git clone https://github.com/Chandrashekher1/gitagyan.git
+cd chat-with-gita
 ```
 Frontend Setup
 ```

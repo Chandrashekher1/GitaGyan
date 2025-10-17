@@ -7,7 +7,7 @@ import { SignUp } from './pages/SignUp'
 import About from './pages/About'
 import Chapters from './pages/Chapters'
 import Verses from './pages/Verses'
-// import { Header } from './components/Header'
+import { Header } from './components/Header'
 import Meditation from './pages/Meditations'
 import { LanguageProvider } from './context/Language'
 
@@ -17,7 +17,7 @@ function App() {
       <div>
         <LanguageProvider>
             <Router>
-          {/* <Header/> */}
+          <Header/>
           <Routes>
             <Route path='/' element = {<Home/>}/>
             <Route path='/chat' element = {<Chat/>}/>

@@ -1,104 +1,102 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "./ui/button";
 import {
+  Home,
+  Book,
+  BookOpen,
+  MessageCircle,
+  Info,
   LogOutIcon,
-  Volume2Icon,
-  VolumeOffIcon,
+  UserIcon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { Krishna_Flute } from "@/utils/constant";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Language, useLanguage } from "@/context/Language";
+import { Button } from "./ui/button";
 
 export function Navbar() {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { language, setLanguage } = useLanguage();
+  const isLoggedIn = !!localStorage.getItem("token");
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
 
-  const toggleSound = () => {
-    if (isOpen) {
-      audioRef.current?.pause();
-    } else {
-      audioRef.current?.play();
-    }
-    setIsOpen(!isOpen);
+  const handleSignIn = () => {
+    navigate("/login");
   };
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 1;
-      audioRef.current.loop = true;
-    }
-  }, []);
+  const navItems = [
+    { id: "", label: "Home", icon: Home },
+    { id: "chat", label: "Ask Gita", icon: MessageCircle },
+    { id: "about", label: "About Gita", icon: Info },
+    { id: "chapters", label: "Chapters", icon: Book },
+    { id: "verses", label: "Verses", icon: BookOpen },
+    { id: "meditation", label: "Meditation", icon: BookOpen },
+
+  ];
 
   return (
-    <div className="flex items-center gap-6 relative">
-      <div>
-        <Select
-          value={language}
-          onValueChange={(val: Language) => setLanguage(val)}
-        >
-          <SelectTrigger className="w-16 md:w-24 rounded-xl border border-border hover:bg-primary hover:text-primary-foreground font-semibold">
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent className="py-2 bg-white rounded-xl">
-            <SelectItem
-              value="en"
-              className="px-12 border-b py-2 hover:bg-primary hover:text-primary-foreground font-semibold"
-            >
-              English
-            </SelectItem>
-            <SelectItem
-              value="hi"
-              className="px-12 border-b py-2 hover:bg-primary hover:text-primary-foreground font-semibold"
-            >
-              हिन्दी
-            </SelectItem>
-            {/* <SelectItem
-              value="sanskrit"
-              className="px-12 border-b py-2 hover:bg-primary hover:text-primary-foreground font-semibold"
-            >
-              संस्कृत
-            </SelectItem> */}
-          </SelectContent>
-        </Select>
-      </div>
+    <nav className="sticky top-0 z-50">
+      <div className="mx-auto  sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(`/${item.id}`)}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-md text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-all duration-200"
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex items-center gap-4">
+            {isLoggedIn ? (
+              <>
+                <div className="relative group">
+                  <Button variant="outline" className="rounded-full">
+                    <UserIcon />
+                  </Button>
+                  <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm text-orange-700 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
+                    Profile
+                  </p>
+                </div>
 
-      <audio ref={audioRef} src={Krishna_Flute} preload="auto" />
-      <div>
-        <Button
-          variant="outline"
-          onClick={toggleSound}
-          className="rounded-full w-8 h-8 md:w-10 md:h-10"
-        >
-          {isOpen ? <Volume2Icon /> : <VolumeOffIcon />}
-        </Button>
+                <div className="relative group">
+                  <Button
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={handleLogOut}
+                  >
+                    <LogOutIcon />
+                  </Button>
+                  <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm text-orange-700 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
+                    Logout
+                  </p>
+                </div>
+              </>
+            ) : (
+              <div className="relative group">
+                <Button
+                  variant="outline"
+                  className="rounded-full"
+                  onClick={handleSignIn}
+                >
+                  <UserIcon />
+                </Button>
+                <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm text-orange-700 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
+                  Sign In
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-
-      <div className="relative group">
-        <Button
-          variant="default"
-          className="rounded-full w-8 h-8 md:w-10 md:h-10"
-          onClick={handleLogOut}
-        >
-          <LogOutIcon />
-        </Button>
-        <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm text-primary-foreground bg-primary px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
-          Logout
-        </p>
-      </div>
-    </div>
+    </nav>
   );
 }
+
+export default Navbar;

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/Language";
 import { useSpeechToText } from "@/Hooks/useSpeechToText";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
-import { Send, User, Sparkles, MicIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
+import { Send, User, Sparkles, MicIcon, Volume2Icon, VolumeOffIcon, HeartIcon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -281,6 +281,7 @@ export function Chat() {
                           <VolumeOffIcon/>
                         </span>}
                     </Button>}
+                    <Button type="button" variant="outline" size="icon"><HeartIcon/></Button>
                   </div>
                 </div>
               </div>

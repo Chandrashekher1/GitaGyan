@@ -281,7 +281,7 @@ export function Chat() {
                           <VolumeOffIcon/>
                         </span>}
                     </Button>}
-                    <Button type="button" variant="outline" size="icon"><HeartIcon/></Button>
+                    {/* <Button type="button" variant="outline" size="icon"><HeartIcon/></Button> */}
                   </div>
                 </div>
               </div>

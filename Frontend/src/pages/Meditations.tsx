@@ -7,6 +7,7 @@ import {
   Clock,
   Sparkles,
 } from "lucide-react";
+import useFocusMode from "../Hooks/useFocusMode";
 
 interface MeditationSession {
   id: string;
@@ -27,6 +28,9 @@ const Meditation: React.FC = () => {
   const [sessionStarted, setSessionStarted] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [focusMode, setFocusMode] = useState(false);
+
+  useFocusMode(focusMode);
 
   const durations = [5, 10, 15, 20, 30];
 
@@ -125,12 +129,15 @@ const Meditation: React.FC = () => {
     if (!sessionStarted) {
       setTimeRemaining(selectedDuration * 60);
       setSessionStarted(true);
+      setFocusMode(true);
     }
     setIsPlaying(!isPlaying);
+    
   };
 
   const handleReset = () => {
     setIsPlaying(false);
+    setFocusMode(false);
     setSessionStarted(false);
     setTimeRemaining(selectedDuration * 60);
     if (audioRef.current) {
@@ -145,7 +152,6 @@ const Meditation: React.FC = () => {
         <div className="text-center mb-12">
           <div
             className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 shadow-xl animate-lotus bg-primary"
-            // style={{ background: "var(--gradient-sunrise)" }}
           >
             <Sparkles className="w-8 h-8 text-white animate-wisdom" />
           </div>
@@ -201,7 +207,6 @@ const Meditation: React.FC = () => {
               <button
                 onClick={handlePlay}
                 className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg shadow-[var(--color-ring)] bg-primary"
-                // style={{ background: "var(--gradient-sunrise)" }}
               >
                 {isPlaying ? (
                   <Pause className="w-8 h-8 text-white" />

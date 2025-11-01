@@ -11,6 +11,7 @@ import { Header } from './components/Header'
 import Meditation from './pages/Meditations'
 import { LanguageProvider } from './context/Language'
 import { Toaster } from 'sonner'
+import Profile from './pages/Profile'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Header/>
           <Routes>
             <Route path='/' element = {<Home/>}/>
+            <Route path='/profile' element = {<Profile/>}/>
             <Route path='/chat' element = {<Chat/>}/>
             <Route path='/login' element = {<Login/>}/>
             <Route path='/signup' element = {<SignUp/>}/>

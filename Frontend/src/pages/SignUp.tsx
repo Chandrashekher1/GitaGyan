@@ -49,9 +49,8 @@ export function SignUp() {
   const handleGoogle = async () => {
     setLoading(true);
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider)
       const user = result.user;
-
       await setDoc(doc(db, "users", user.uid), {
         name: user.displayName,
         email: user.email,

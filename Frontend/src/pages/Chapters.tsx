@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Book, BookOpen, ChevronRight, Users } from "lucide-react";
+import { Book, ChevronRight, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface Chapter {
   chapter_number: number;
@@ -14,6 +16,7 @@ interface Chapter {
 const Chapters: React.FC = () => {
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchChapters = async () => {
@@ -29,8 +32,10 @@ const Chapters: React.FC = () => {
     fetchChapters();
   }, []);
 
-  console.log(selectedChapter);
-    
+  const handleVerses = (selectedChapter) => {
+    navigate('/verses/' + selectedChapter)
+  }
+
   return (
     <div className="min-h-screen bg-[var(--color-background)]">
       <div className="max-w-6xl mx-auto px-4 py-16">
@@ -101,14 +106,17 @@ const Chapters: React.FC = () => {
                     <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
                       Summary
                     </h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                    <p className="text-md leading-relaxed">
                       {chapter.summary?.en}
                     </p>
                   </div>
+                  <Button type="button" variant="default" onClick={() => handleVerses(selectedChapter)}>Read All Verses</Button>
                 </div>
               ) : null}
             </div>
           ))}
+          <div>
+          </div>
         </div>
 
         <div className="mt-16 bg-primary dark:bg-white rounded-2xl p-8 text-white dark:text-black text-center">

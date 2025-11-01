@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/Language";
 import { useSpeechToText } from "@/Hooks/useSpeechToText";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
-import { Send, User, Sparkles, MicIcon } from "lucide-react";
+import { Send, User, Sparkles, MicIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,23 +15,21 @@ interface Message {
   language : string;
   timestamp: Date;
 }
-
 export function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isOn, setIsOn] = useState(false)
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token") 
+  // const token = localStorage.getItem("token") 
   const {language} = useLanguage()
   const { listening, transcript, startListening } = useSpeechToText();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  console.log(localStorage.getItem("uid"));
-  
 
   useEffect(() => {
     scrollToBottom();
@@ -66,7 +64,7 @@ export function Chat() {
       }
 
     }, []);
-
+    console.log(messages);
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
@@ -87,7 +85,6 @@ export function Chat() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
         },
         body: JSON.stringify({ query: userMessage.content , language: language}),
       });
@@ -120,6 +117,31 @@ export function Chat() {
       setIsTyping(false);
     }
   };
+  const handleSpeechText = async (text: string) => {
+      try {
+        const response = await fetch(`${Backend_Url}/google-tts`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({text : text, language: language})
+        });
+        const data = await response.json();
+        if(data.success && data.audioContent) {
+          const audio = new Audio(`data:audio/mpeg;base64,${data.audioContent}`)
+          setAudio(audio)
+          audio.play();
+          setIsOn(!isOn)
+        }
+      } catch(error) {
+        console.error("Error in text to speech:", error);
+      }
+  }
+
+  const handleOff = () => {
+    audio?.pause()
+    setIsOn(!isOn)
+  }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -127,20 +149,6 @@ export function Chat() {
       handleSendMessage();
     }
   };
-
-  // const handleSuggestionClick = (suggestion: string) => {
-  //   setInputValue(suggestion);
-  // };
-
-  // const suggestions = [
-  //   "What is dharma in daily life?",
-  //   "How to find inner peace?",
-  //   "What is the purpose of life?",
-  //   "How to overcome fear and anxiety?",
-  //   "What does Krishna teach about duty?",
-  //   "How to practice detachment?"
-  // ];
-
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -257,13 +265,23 @@ export function Chat() {
                     </div> */}
                     
                   </div>
-                  
-                  <span className={`text-xs text-muted-foreground mt-2 px-3 ${msg.isUser ? "text-right" : "text-left"}`}>
-                    {msg.timestamp.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+                  <div className="flex justify-between w-full items-center">
+                    <span className={`text-xs text-muted-foreground mt-2 px-3 ${msg.isUser ? "text-right" : "text-left"}`}>
+                      {msg.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                    {!msg.isUser &&
+                    <Button type="button" variant="outline" size="icon" className="" 
+                      >
+                        {!isOn ? <span onClick={() => handleSpeechText(msg.content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim())}>
+                          <Volume2Icon/>
+                        </span> : <span onClick={() => handleOff()}>
+                          <VolumeOffIcon/>
+                        </span>}
+                    </Button>}
+                  </div>
                 </div>
               </div>
             ))}
@@ -280,7 +298,6 @@ export function Chat() {
                 <div className="bg-white rounded-2xl rounded-tl-md px-5 py-4 shadow-md border border-orange-100">
                   <div className="flex items-center space-x-1">
                     {/* <TextShimmerWave className="text-orange-600 font-medium">
-                    
                     </TextShimmerWave> */}
                     <div className="flex space-x-1 ml-2">
                       <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>

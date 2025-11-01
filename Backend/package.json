@@ -9,7 +9,7 @@
     "connect": "node dist/connection.js",
     "create": "node dist/create.js",
     "find": "node dist/find.js",
-    "load-gita":"node dist/startup/loadGita.js",
+    "load-gita": "node dist/startup/loadGita.js",
     "index": "node dist/index.js",
     "dev": "npm run build && npm run load-gita && npm run index"
   },
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@datastax/astra-db-ts": "^2.0.2",
+    "@google-cloud/text-to-speech": "^6.4.0",
     "@google/genai": "^1.15.0",
     "@langchain/textsplitters": "^0.1.0",
     "bcrypt": "^6.0.0",

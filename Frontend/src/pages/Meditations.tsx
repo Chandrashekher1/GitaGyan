@@ -151,11 +151,11 @@ const Meditation: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 shadow-xl animate-lotus bg-primary"
+            className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 shadow-xl bg-primary"
           >
             <Sparkles className="w-8 h-8 text-white animate-wisdom" />
           </div>
-          <h1 className="text-5xl font-bold text-primary mb-4 animate-float">
+          <h1 className="text-5xl font-bold text-primary mb-4">
             Meditation Mode
           </h1>
           <p className="text-xl text-accent-foreground wisdom-text">

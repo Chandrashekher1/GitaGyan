@@ -30,6 +30,9 @@ export function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  console.log(localStorage.getItem("uid"));
+  
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -50,14 +53,15 @@ export function Chat() {
   }, [transcript, listening]);
 
   useEffect(() => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
-      const storedToken = localStorage.getItem('token');
-      if (token) {
-        localStorage.setItem('token', token);
-      }
+      // const urlParams = new URLSearchParams(window.location.search);
+      // const token = urlParams.get('token');
+      // const storedToken = localStorage.getItem('token');
+      // if (token) {
+      //   localStorage.setItem('token', token);
+      // }
       
-      if(!token && !storedToken) {
+
+      if(!localStorage.getItem("uid")) {
         navigate('/login');
       }
 

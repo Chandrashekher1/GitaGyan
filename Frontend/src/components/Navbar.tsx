@@ -10,16 +10,20 @@ import {
   UserIcon,
   Menu,
   X,
+  HeartIcon,
 } from "lucide-react";
 import { Button } from "./ui/button";
+import { Language, useLanguage } from "@/context/Language";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 export function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isLoggedIn = !!localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("uid");
+  const { language, setLanguage } = useLanguage();
 
   const handleLogOut = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("uid");
     navigate("/");
   };
 
@@ -33,13 +37,14 @@ export function Navbar() {
     { id: "about", label: "About Gita", icon: Info },
     { id: "chapters", label: "Chapters", icon: Book },
     { id: "verses", label: "Verses", icon: BookOpen },
-    { id: "meditation", label: "Meditation", icon: BookOpen },
+    { id: "meditation", label: "Meditation", icon: HeartIcon },
   ];
 
   return (
-    <nav className="">
+    <nav>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center ">
+        <div className="flex justify-between items-center">
+          {/* Left side nav */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -56,47 +61,56 @@ export function Navbar() {
             })}
           </div>
 
+          {/* Right side */}
           <div className="hidden md:flex items-center gap-4">
+            <Select
+              value={language}
+              onValueChange={(val: Language) => setLanguage(val)}
+            >
+              <SelectTrigger className="w-24 rounded-xl border border-border hover:bg-primary hover:text-primary-foreground font-semibold">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent className="py-2 bg-white rounded-xl z-50">
+                <SelectItem
+                  value="en"
+                  className="px-12 border-b py-2 hover:bg-primary hover:text-primary-foreground font-semibold"
+                >
+                  English
+                </SelectItem>
+                <SelectItem
+                  value="hi"
+                  className="px-12 border-b py-2 hover:bg-primary hover:text-primary-foreground font-semibold"
+                >
+                  हिन्दी
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
             {isLoggedIn ? (
               <>
-                <div className="relative group">
-                  <Button variant="outline" className="rounded-full">
-                    <UserIcon />
-                  </Button>
-                  <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm text-orange-700 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
-                    Profile
-                  </p>
-                </div>
-
-                <div className="relative group">
-                  <Button
-                    variant="outline"
-                    className="rounded-full"
-                    onClick={handleLogOut}
-                  >
-                    <LogOutIcon />
-                  </Button>
-                  <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm text-orange-700 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
-                    Logout
-                  </p>
-                </div>
-              </>
-            ) : (
-              <div className="relative group">
+                <Button variant="outline" className="rounded-full">
+                  <UserIcon />
+                </Button>
                 <Button
                   variant="outline"
                   className="rounded-full"
-                  onClick={handleSignIn}
+                  onClick={handleLogOut}
                 >
-                  <UserIcon />
+                  <LogOutIcon />
                 </Button>
-                <p className="absolute left-1/2 -translate-x-1/2 top-12 text-sm text-orange-700 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition">
-                  Sign In
-                </p>
-              </div>
+              </>
+            ) : (
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={handleSignIn}
+              >
+                <UserIcon />
+              </Button>
             )}
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             className="md:hidden text-orange-700 p-2 rounded-md hover:bg-orange-100"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -105,8 +119,9 @@ export function Navbar() {
           </button>
         </div>
 
+        {/* Mobile Menu */}
         {menuOpen && (
-          <div className="md:hidden flex flex-col space-y-2 pb-3 animate-slideDown">
+          <div className="md:hidden flex flex-col space-y-2 pb-3 animate-slideDown z-50 bg-white">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -124,23 +139,27 @@ export function Navbar() {
               );
             })}
 
+            {/* Language Selector for Mobile */}
+            <Select
+              value={language}
+              onValueChange={(val: Language) => setLanguage(val)}
+            >
+              <SelectTrigger className="w-24 rounded-xl border border-border hover:bg-primary hover:text-primary-foreground font-semibold">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent className="py-2 bg-white rounded-xl z-50">
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="hi">हिन्दी</SelectItem>
+              </SelectContent>
+            </Select>
+
             <div className="border-t border-orange-100 mt-2 pt-2 flex gap-2">
               {isLoggedIn ? (
-                <>
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={handleLogOut}
-                  >
-                    Logout
-                  </Button>
-                </>
+                <Button variant="outline" className="flex-1" onClick={handleLogOut}>
+                  Logout
+                </Button>
               ) : (
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={handleSignIn}
-                >
+                <Button variant="outline" className="flex-1" onClick={handleSignIn}>
                   Sign In
                 </Button>
               )}

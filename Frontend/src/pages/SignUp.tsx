@@ -1,57 +1,72 @@
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  Card, CardContent, CardDescription,
+  CardFooter, CardHeader, CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ShineBorder } from "@/components/magicui/shine-border";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Backend_Url } from "@/utils/constant";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db, provider } from "@/utils/firebase";
 
 export function SignUp() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSignUp = async(e : React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-        setLoading(true);
-        const response = await fetch(`${Backend_Url}/user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                password: password
-            })
-        });
-        const json = await response.json();
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-        if (json?.success) {
-            localStorage.setItem("token", json?.token);
-            navigate("/chat");
-        } else {
-            setError("Sign up failed: " + json.message);
-        }
-        setLoading(false);
+    try {
+      // Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
+      // Store additional info in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        email,
+        createdAt: new Date(),
+      });
+
+      localStorage.setItem("uid", user.uid);
+      navigate("/chat");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleGoogle = async() => {
-      setLoading(true);
-      window.location.href = `${Backend_Url}/login/auth/google`;
+  const handleGoogle = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        createdAt: new Date(),
+      }, { merge: true });
+
+      localStorage.setItem("uid", user.uid);
+      navigate("/chat");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
@@ -72,48 +87,27 @@ export function SignUp() {
           <form className="space-y-6" onSubmit={(e) => handleSignUp(e)}>
             <div className="grid gap-2">
               <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                required
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Arjun"
-                className="rounded-lg border-input focus:ring-2 focus:ring-primary text-muted-foreground shadow"
-              />
+              <Input id="name" type="text" required onChange={(e) => setName(e.target.value)} placeholder="Arjun" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                required
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="arjun@gmail.com"
-                className="rounded-lg border-input focus:ring-2 focus:ring-primary text-muted-foreground shadow"
-              />
+              <Input id="email" type="email" required onChange={(e) => setEmail(e.target.value)} placeholder="arjun@gmail.com" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="password"
-                required
-                className="rounded-lg border shadow focus:ring-2 focus:ring-primary text-muted-foreground"
-              />
+              <Input id="password" type="password" required onChange={(e) => setPassword(e.target.value)} placeholder="password" />
             </div>
             <p className="text-sm text-destructive">{error}</p>
             <Button className="w-full rounded-xl py-5 font-semibold shadow-md hover:shadow-lg transition-all" disabled={loading} type="submit">
               {loading ? "Loading..." : "Create Account"}
-          </Button>
-          <Button variant="outline" type="button" className="flex items-center justify-center mx-auto" disabled={loading} onClick={handleGoogle}>
-              <img src="https://storage.googleapis.com/libraries-lib-production/images/GoogleLogo-canvas-404-300px.original.png" alt="google_icon" className="w-5 h-5"/> {loading ? 'Logging...' : (<span className="flex items-center">  Signup with Google</span>)}
-          </Button>
+            </Button>
+            <Button variant="outline" type="button" className="flex items-center justify-center mx-auto" disabled={loading} onClick={handleGoogle}>
+              <img src="https://storage.googleapis.com/libraries-lib-production/images/GoogleLogo-canvas-404-300px.original.png" alt="google_icon" className="w-5 h-5"/> 
+              {loading ? 'Logging...' : <span className="flex items-center">Signup with Google</span>}
+            </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
-          
           <p className="text-sm text-muted-foreground text-center my-4">
             Already have an account?
             <Link to="/login" className="text-primary hover:underline mx-2 font-semibold">

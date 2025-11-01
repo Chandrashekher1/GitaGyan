@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/Language";
 import { useSpeechToText } from "@/Hooks/useSpeechToText";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
-import { Send, User, Sparkles, MicIcon } from "lucide-react";
+import { Send, User, Sparkles, MicIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +22,8 @@ export function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isOn, setIsOn] = useState(false)
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token") 
   const {language} = useLanguage()
@@ -30,6 +32,9 @@ export function Chat() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  console.log(token);
+  
 
   useEffect(() => {
     scrollToBottom();
@@ -57,11 +62,10 @@ export function Chat() {
       if (token) {
         localStorage.setItem('token', token);
       }
-      
+
       if(!token && !storedToken) {
         navigate('/login');
       }
-
     }, []);
 
   const handleSendMessage = async () => {
@@ -117,6 +121,35 @@ export function Chat() {
       setIsTyping(false);
     }
   };
+
+  const handleSpeechText = async (text: string) => {
+      try {
+        const response = await fetch(`${Backend_Url}/google-tts`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({text : text, language: language})
+        });
+        const data = await response.blob();
+
+        if(data) {
+          const audio = new Audio(URL.createObjectURL(data))
+          setAudio(audio)
+          audio.play();
+          setIsOn(!isOn)
+        }
+      } catch(error) {
+        console.error("Error in text to speech:", error);
+      }
+  }
+
+  const handleOff = () => {
+    audio?.pause()
+    setIsOn(!isOn)
+  }
+
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -255,12 +288,24 @@ export function Chat() {
                     
                   </div>
                   
-                  <span className={`text-xs text-muted-foreground mt-2 px-3 ${msg.isUser ? "text-right" : "text-left"}`}>
-                    {msg.timestamp.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+                  <div className="flex justify-between w-full items-center">
+                    <span className={`text-xs text-muted-foreground mt-2 px-3 ${msg.isUser ? "text-right" : "text-left"}`}>
+                      {msg.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                    {!msg.isUser &&
+                    <Button type="button" variant="outline" size="icon" className="" 
+                      >
+                        {!isOn ? <span onClick={() => handleSpeechText(msg.content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim())}>
+                          <Volume2Icon/>
+                        </span> : <span onClick={() => handleOff()}>
+                          <VolumeOffIcon/>
+                        </span>}
+                    </Button>}
+                    {/* <Button type="button" variant="outline" size="icon"><HeartIcon/></Button> */}
+                  </div>
                 </div>
               </div>
             ))}

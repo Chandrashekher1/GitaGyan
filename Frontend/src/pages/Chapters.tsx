@@ -32,7 +32,7 @@ const Chapters: React.FC = () => {
     fetchChapters();
   }, []);
 
-  const handleVerses = (selectedChapter) => {
+  const handleVerses = (selectedChapter:number) => {
     navigate('/verses/' + selectedChapter)
   }
 

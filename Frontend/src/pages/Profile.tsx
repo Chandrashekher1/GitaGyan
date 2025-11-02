@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  User,
-  MessageCircle,
-  Calendar,
-  Search,
-  Trash2,
-  Download,
-  Star,
-} from 'lucide-react';
-import {
-  collection,
-  getDocs,
-  doc,
-  deleteDoc,
-  Timestamp,
-} from 'firebase/firestore';
-import { db , auth } from '@/utils/firebase';
+import { User, MessageCircle, Calendar, Search, Trash2, Download, Star } from 'lucide-react';
 
-// ✅ Type definitions
+// ✅ Inline type definitions
 interface Verse {
   sanskrit: string;
   english: string;
@@ -43,90 +27,87 @@ interface ChatSession {
   messages: ChatMessage[];
 }
 
-const user = auth.currentUser
-
 const Profile: React.FC = () => {
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
-  const [selectedSession, setSelectedSession] = useState<ChatSession | null>(
-    null
-  );
+  const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Mock user data
   const userData = {
     name: 'Spiritual Seeker',
     email: 'seeker@gitagyan.com',
     joinDate: new Date('2024-01-15'),
     totalQuestions: 47,
     favoriteChapter: 'Chapter 2 - Sankhya Yoga',
-    streak: 12,
-  }
+    streak: 12
+  };
 
+  // Load chat sessions from localStorage
   useEffect(() => {
-    const fetchUser = async () => {
-        try{
-            const user = await auth.currentUser
-            console.log(user);
-            
-            if(user){
-                // Fetch additional user data from Firestore if needed
-                console.log(user);
-                
+    const savedSessions = localStorage.getItem('gitagyan-chat-sessions');
+    if (savedSessions) {
+      const sessions = JSON.parse(savedSessions).map((session: any) => ({
+        ...session,
+        createdAt: new Date(session.createdAt),
+        lastUpdated: new Date(session.lastUpdated),
+        messages: session.messages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }))
+      }));
+      setChatSessions(sessions);
+    } else {
+      // Demo data
+      const sampleSessions: ChatSession[] = [
+        {
+          id: '1',
+          title: 'Finding Life Purpose',
+          createdAt: new Date('2024-01-20'),
+          lastUpdated: new Date('2024-01-20'),
+          messages: [
+            {
+              id: '1',
+              type: 'user',
+              content: 'How do I find my life purpose according to the Gita?',
+              category: 'spiritual',
+              timestamp: new Date('2024-01-20T10:00:00')
+            },
+            {
+              id: '2',
+              type: 'bot',
+              content:
+                'According to the Bhagavad Gita, your life purpose is found through understanding your dharma - your righteous duty...',
+              timestamp: new Date('2024-01-20T10:01:00'),
+              verse: {
+                sanskrit: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।',
+                english: 'karmaṇy evādhikāras te mā phaleṣu kadācana',
+                meaning:
+                  'You have the right to perform action, but never to its fruits...',
+                chapter: 2,
+                verseNumber: 47
+              }
             }
+          ]
         }
-        catch(error){
-            console.log(error);
-            
-        }
+      ];
+      setChatSessions(sampleSessions);
+      localStorage.setItem('gitagyan-chat-sessions', JSON.stringify(sampleSessions));
     }
-fetchUser()
-
-  },[])
-
-
-
-  useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'chatSessions'));
-        const sessions: ChatSession[] = querySnapshot.docs.map((docSnap) => {
-          const data = docSnap.data();
-
-          return {
-            id: docSnap.id,
-            title: data.title || 'Untitled Chat',
-            createdAt: data.createdAt
-              ? (data.createdAt as Timestamp).toDate()
-              : new Date(),
-            lastUpdated: data.lastUpdated
-              ? (data.lastUpdated as Timestamp).toDate()
-              : new Date(),
-            messages:
-              data.messages?.map((msg: any) => ({
-                ...msg,
-                timestamp: msg.timestamp
-                  ? new Date(msg.timestamp.seconds * 1000)
-                  : new Date(),
-              })) || [],
-          };
-        });
-
-        setChatSessions(sessions);
-      } catch (error) {
-        console.error('Error fetching chats:', error);
-      }
-    };
-
-    fetchChats();
   }, []);
 
-  const deleteSession = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, 'chatSessions', id));
-      setChatSessions((prev) => prev.filter((s) => s.id !== id));
-      if (selectedSession?.id === id) setSelectedSession(null);
-    } catch (error) {
-      console.error('Error deleting chat:', error);
-    }
+  const filteredSessions = chatSessions.filter(
+    (session) =>
+      session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      session.messages.some((msg) =>
+        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  );
+
+  const deleteSession = (id: string) => {
+    const updated = chatSessions.filter((s) => s.id !== id);
+    setChatSessions(updated);
+    localStorage.setItem('gitagyan-chat-sessions', JSON.stringify(updated));
+    if (selectedSession?.id === id) setSelectedSession(null);
   };
 
   const exportSession = (session: ChatSession) => {
@@ -150,14 +131,6 @@ fetchUser()
     URL.revokeObjectURL(url);
   };
 
-  const filteredSessions = chatSessions.filter(
-    (session) =>
-      session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      session.messages.some((msg) =>
-        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -166,8 +139,8 @@ fetchUser()
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full mb-6 shadow-xl">
             <User className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-5xl font-bold text-primary mb-4">Your Profile</h1>
-          <p className="text-xl text-shadow-primary mx-auto">
+          <h1 className="text-5xl font-bold text-orange-800 mb-4">Your Profile</h1>
+          <p className="text-xl text-orange-600 max-w-2xl mx-auto">
             Track your spiritual journey and revisit past conversations
           </p>
         </div>
@@ -200,9 +173,7 @@ fetchUser()
                     <MessageCircle className="w-5 h-5 text-orange-600" />
                     <span className="text-gray-700">Questions Asked</span>
                   </div>
-                  <span className="font-semibold text-gray-800">
-                    {userData.totalQuestions}
-                  </span>
+                  <span className="font-semibold text-gray-800">{userData.totalQuestions}</span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
@@ -210,9 +181,7 @@ fetchUser()
                     <Star className="w-5 h-5 text-orange-600" />
                     <span className="text-gray-700">Daily Streak</span>
                   </div>
-                  <span className="font-semibold text-gray-800">
-                    {userData.streak} days
-                  </span>
+                  <span className="font-semibold text-gray-800">{userData.streak} days</span>
                 </div>
               </div>
 
@@ -268,9 +237,7 @@ fetchUser()
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <h3 className="font-semibold text-gray-800 mb-1">
-                            {session.title}
-                          </h3>
+                          <h3 className="font-semibold text-gray-800 mb-1">{session.title}</h3>
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-4 h-4" />
@@ -311,15 +278,9 @@ fetchUser()
                           {session.messages.map((msg) => (
                             <div
                               key={msg.id}
-                              className={`flex ${
-                                msg.type === 'user' ? 'justify-end' : 'justify-start'
-                              }`}
+                              className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
-                              <div
-                                className={`max-w-3xl ${
-                                  msg.type === 'user' ? 'ml-12' : 'mr-12'
-                                }`}
-                              >
+                              <div className={`max-w-3xl ${msg.type === 'user' ? 'ml-12' : 'mr-12'}`}>
                                 <div
                                   className={`rounded-2xl px-4 py-3 ${
                                     msg.type === 'user'
@@ -330,9 +291,7 @@ fetchUser()
                                   <p className="text-sm">{msg.content}</p>
                                   <p
                                     className={`text-xs mt-2 ${
-                                      msg.type === 'user'
-                                        ? 'text-blue-100'
-                                        : 'text-gray-500'
+                                      msg.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                                     }`}
                                   >
                                     {msg.timestamp.toLocaleTimeString()}
@@ -343,8 +302,7 @@ fetchUser()
                                   <div className="mt-3 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200">
                                     <div className="text-center mb-3">
                                       <span className="inline-block bg-orange-100 text-orange-800 text-xs px-3 py-1 rounded-full font-semibold">
-                                        Chapter {msg.verse.chapter}, Verse{' '}
-                                        {msg.verse.verseNumber}
+                                        Chapter {msg.verse.chapter}, Verse {msg.verse.verseNumber}
                                       </span>
                                     </div>
                                     <p className="text-orange-800 font-sanskrit text-center mb-2 text-sm">

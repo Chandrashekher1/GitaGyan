@@ -140,7 +140,7 @@ const Profile: React.FC = () => {
             <User className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-5xl font-bold text-orange-800 mb-4">Your Profile</h1>
-          <p className="text-xl text-orange-600 max-w-2xl mx-auto">
+          <p className="text-xl text-orange-600 mx-auto">
             Track your spiritual journey and revisit past conversations
           </p>
         </div>

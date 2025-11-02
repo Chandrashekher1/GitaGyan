@@ -8,7 +8,7 @@ dotenv.config();
 const router = express.Router();
 const client = new textToSpeech.TextToSpeechClient();
 
-router.post("/", [auth], async (req: any, res: any) => {
+router.post("/", async (req: any, res: any) => {
   try {
     const { text, language } = req.body;
 

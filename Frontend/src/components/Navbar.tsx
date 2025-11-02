@@ -28,7 +28,12 @@ export function Navbar() {
   };
 
   const handleSignIn = () => {
-    navigate("/login");
+    if (localStorage.getItem("uid")) {
+      navigate("/profile");
+    }
+    else {
+      navigate("/login");
+    }
   };
 
   const navItems = [
@@ -139,7 +144,6 @@ export function Navbar() {
               );
             })}
 
-            {/* Language Selector for Mobile */}
             <Select
               value={language}
               onValueChange={(val: Language) => setLanguage(val)}

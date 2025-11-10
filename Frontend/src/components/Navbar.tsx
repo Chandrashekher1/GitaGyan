@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   HeartIcon,
+  Flower2,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Language, useLanguage } from "@/context/Language";
@@ -43,6 +44,7 @@ export function Navbar() {
     { id: "chapters", label: "Chapters", icon: Book },
     { id: "verses", label: "Verses", icon: BookOpen },
     { id: "meditation", label: "Meditation", icon: HeartIcon },
+    { id: "yoga", label: "Yoga", icon: Flower2 },
   ];
 
   return (

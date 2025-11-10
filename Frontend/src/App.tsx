@@ -12,6 +12,7 @@ import Meditation from './pages/Meditations'
 import { LanguageProvider } from './context/Language'
 import { Toaster } from 'sonner'
 import Profile from './pages/Profile'
+import Yoga from './pages/Yoga'
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
             <Route path='/chapters' element = {<Chapters/>}/>
             <Route path='/verses' element = {<Verses/>}/>
             <Route path='/meditation' element = {<Meditation/>}/>
+            <Route path='/yoga' element = {<Yoga/>}/>
             
 
           </Routes>

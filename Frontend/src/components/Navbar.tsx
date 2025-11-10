@@ -45,6 +45,7 @@ export function Navbar() {
     { id: "verses", label: "Verses", icon: BookOpen },
     { id: "meditation", label: "Meditation", icon: HeartIcon },
     { id: "yoga", label: "Yoga", icon: Flower2 },
+    { id: "profile", label: "Profile", icon: UserIcon },
   ];
 
   return (

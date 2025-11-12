@@ -93,7 +93,7 @@ const YogaTab: React.FC = () => {
   };
 
   // Use yoga session hook
-  const { state: sessionState, handlers: sessionHandlers, audioRef } = useYogaSession({
+  const { state: sessionState, handlers: sessionHandlers} = useYogaSession({
     selectedAsana,
     selectedSound,
     focusMode,

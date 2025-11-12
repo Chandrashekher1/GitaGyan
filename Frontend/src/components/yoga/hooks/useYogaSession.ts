@@ -39,7 +39,6 @@ export interface YogaSessionHandlers {
 export const useYogaSession = ({
   selectedAsana,
   selectedSound,
-  focusMode,
   showSessionModal,
   onSessionComplete,
 }: UseYogaSessionProps): {

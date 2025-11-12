@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, MessageCircle, Calendar, Search, Trash2, Download, Star, Flower2, Clock, TrendingUp } from 'lucide-react';
+import { useLanguage } from '@/context/Language';
 
 // ✅ Inline type definitions
 interface Verse {
@@ -39,6 +40,7 @@ interface YogaSession {
 }
 
 const Profile: React.FC = () => {
+  const { t } = useLanguage();
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -200,7 +202,7 @@ const Profile: React.FC = () => {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full mb-6 shadow-xl">
             <User className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-5xl font-bold text-orange-800 mb-4">Your Profile</h1>
+          <h1 className="text-5xl font-bold text-orange-800 mb-4">{t("profile")}</h1>
           <p className="text-xl text-orange-600 mx-auto">
             Track your spiritual journey and revisit past conversations
           </p>
@@ -277,7 +279,7 @@ const Profile: React.FC = () => {
                   >
                     <div className="flex items-center space-x-2">
                       <MessageCircle className="w-5 h-5" />
-                      <span>Chat History</span>
+                      <span>{t("chatHistory")}</span>
                     </div>
                   </button>
                   <button
@@ -290,7 +292,7 @@ const Profile: React.FC = () => {
                   >
                     <div className="flex items-center space-x-2">
                       <Flower2 className="w-5 h-5" />
-                      <span>Yoga Activity</span>
+                      <span>{t("yogaActivity")}</span>
                     </div>
                   </button>
                 </div>
@@ -315,7 +317,7 @@ const Profile: React.FC = () => {
                 <div className="text-center py-12">
                   <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                    No conversations found
+                    {t("noChatHistory")}
                   </h3>
                   <p className="text-gray-500">
                     Start a conversation to see your chat history here.
@@ -434,7 +436,7 @@ const Profile: React.FC = () => {
                     <div className="text-center py-12">
                       <Flower2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                       <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                        No yoga sessions yet
+                        {t("noYogaSessions")}
                       </h3>
                       <p className="text-gray-500">
                         Complete yoga sessions to see your activity here.
@@ -447,7 +449,7 @@ const Profile: React.FC = () => {
                         <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-200">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-gray-600 mb-1">Total Sessions</p>
+                              <p className="text-sm text-gray-600 mb-1">{t("totalSessions")}</p>
                               <p className="text-2xl font-bold text-orange-800">{yogaSessions.length}</p>
                             </div>
                             <Flower2 className="w-8 h-8 text-orange-600" />
@@ -456,7 +458,7 @@ const Profile: React.FC = () => {
                         <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-gray-600 mb-1">Total Time</p>
+                              <p className="text-sm text-gray-600 mb-1">{t("totalTime")}</p>
                               <p className="text-2xl font-bold text-green-800">
                                 {yogaSessions.reduce((sum, s) => sum + s.duration, 0)} min
                               </p>
@@ -467,7 +469,7 @@ const Profile: React.FC = () => {
                         <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-gray-600 mb-1">Levels Completed</p>
+                              <p className="text-sm text-gray-600 mb-1">{t("levelsCompleted")}</p>
                               <p className="text-2xl font-bold text-blue-800">
                                 {new Set(yogaSessions.map(s => s.level)).size}
                               </p>

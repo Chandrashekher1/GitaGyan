@@ -2,6 +2,7 @@ import React from "react";
 import { Clock, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import { useLanguage } from "@/context/Language";
 import { Asana } from "./data/asanasData";
 
 interface YogaAsanaListProps {
@@ -15,6 +16,8 @@ export const YogaAsanaList: React.FC<YogaAsanaListProps> = ({
   onStartSession,
   completedSessions,
 }) => {
+  const { t } = useLanguage();
+  
   if (asanas.length === 0) {
     return (
       <div className="text-center py-16">
@@ -22,16 +25,22 @@ export const YogaAsanaList: React.FC<YogaAsanaListProps> = ({
           <Sparkles className="w-10 h-10 text-[var(--color-primary)]" />
         </div>
         <p className="text-xl text-[var(--color-muted-foreground)]">
-          Select your level to view guided yoga sessions.
+          {t("selectLevelToView")}
         </p>
       </div>
     );
   }
 
+  const levelMap: Record<string, string> = {
+    beginner: t("beginner"),
+    intermediate: t("intermediate"),
+    advanced: t("advanced"),
+  };
+
   return (
     <>
       <h2 className="text-2xl font-bold text-[var(--color-primary)] mb-6">
-        {asanas[0]?.level.charAt(0).toUpperCase() + asanas[0]?.level.slice(1)} Asanas
+        {levelMap[asanas[0]?.level] || asanas[0]?.level} {t("asanas")}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {asanas.map((asana) => (
@@ -47,13 +56,13 @@ export const YogaAsanaList: React.FC<YogaAsanaListProps> = ({
               */}
               <div className="w-full rounded-lg mb-4 overflow-hidden relative bg-black/5">
                 {/* Aspect ratio container: prefer using Tailwind's aspect-* (e.g. aspect-video or aspect-[4/3]) */}
-                <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64 xl:h-72 flex items-center justify-center">
+                <div className="w-full h-80 object-center flex items-center justify-center">
                   <img
                     src={asana.image}
                     alt={asana.name}
                     loading="lazy"
                     className={
-                      "w-full h-full object-contain md:object-cover object-center transition-all duration-200"
+                      "w-full h-full object-contain  transition-all duration-200"
                     }
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
@@ -81,7 +90,7 @@ export const YogaAsanaList: React.FC<YogaAsanaListProps> = ({
               <div className="flex items-center mb-4">
                 <Clock className="w-4 h-4 mr-2 text-[var(--color-muted-foreground)]" />
                 <span className="text-sm text-[var(--color-muted-foreground)]">
-                  {asana.totalDuration} minutes • {asana.steps.length} steps
+                  {asana.totalDuration} {t("minutes")} • {asana.steps.length} {t("steps")}
                 </span>
               </div>
               <Button
@@ -93,7 +102,7 @@ export const YogaAsanaList: React.FC<YogaAsanaListProps> = ({
                     : {}
                 }
               >
-                {completedSessions.includes(asana.id) ? "✓ Completed" : "Start Session"}
+                {completedSessions.includes(asana.id) ? t("completed") : t("startSession")}
               </Button>
             </CardContent>
           </Card>

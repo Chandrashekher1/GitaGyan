@@ -1,6 +1,7 @@
 import React from "react";
 import { Volume2, X } from "lucide-react";
 import { Button } from "../ui/button";
+import { useLanguage } from "@/context/Language";
 
 export interface AmbientSound {
   id: string;
@@ -23,13 +24,14 @@ export const YogaAmbientSoundSelector: React.FC<YogaAmbientSoundSelectorProps> =
   ambientSounds,
   compact = false,
 }) => {
+  const { t } = useLanguage();
   if (compact) {
     return (
       <div className="mb-6 bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] p-6">
         <div className="flex items-center mb-4">
           <Volume2 className="w-5 h-5 text-[var(--color-primary)] mr-2" />
           <h5 className="font-semibold text-[var(--color-primary)]">
-            Ambient Sound
+            {t("ambientSound")}
           </h5>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -87,11 +89,11 @@ export const YogaAmbientSoundSelector: React.FC<YogaAmbientSoundSelectorProps> =
       <div className="flex items-center mb-6">
         <Volume2 className="w-6 h-6 text-[var(--color-primary)] mr-3" />
         <h2 className="text-2xl font-bold text-[var(--color-primary)]">
-          Ambient Sound
+          {t("ambientSound")}
         </h2>
       </div>
       <p className="text-sm text-[var(--color-muted-foreground)] mb-4">
-        Select an ambient sound to play during your yoga session
+        {t("selectAmbientSound")}
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {ambientSounds.map((sound) => (

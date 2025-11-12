@@ -10,8 +10,10 @@ import { TypingAnimation } from "@/components/magicui/typing-animation";
 import { useEffect, useRef, useState } from "react";
 import { MarqueeDemo } from "@/components/magicui/marquee";
 import { Analytics } from "@vercel/analytics/react"
+import { useLanguage } from "@/context/Language";
 
 export function Home() {
+    const { t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -85,12 +87,12 @@ export function Home() {
                     <div className="relative">
                         <h1 className="text-6xl md:text-8xl font-bold text-foreground mb-8 leading-tight">
                             <span className="inline-block animate-fade-in hover:animate-enlighten-glow transition-all duration-300 cursor-default">
-                                Find Wisdom in
+                                {t("findWisdomIn")}
                             </span>
                             <br />
                             <TypingAnimation className="wisdom-text text-primary block animate-bounce-in animation-delay-500 hover:scale-105 transition-transform duration-300 cursor-default relative md:text-8xl text-6xl">
                                 
-                                    Sacred Dialogue
+                                    {t("sacredDialogue")}
                                     {/* <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-sacred rounded-full animate-divine-shimmer"></div> */}
                                 
                             </TypingAnimation>
@@ -106,15 +108,15 @@ export function Home() {
 
                     <p className="text-xl md:text-3xl text-muted-foreground mb-12 leading-relaxed animate-slide-in-right animation-delay-800 max-w-4xl mx-auto hover:text-foreground transition-colors duration-500">
                         <span className="inline-block hover:wisdom-text transition-all duration-300 cursor-default">
-                            Ask life's deepest questions and and receive personalized guidance
+                            {t("askLifesDeepestQuestions")}
                         </span>
                         <br />
                         <span className="inline-block hover:sacred-text transition-all duration-300 cursor-default animation-delay-1000 animate-fade-in">
-                            from the timeless teachings of the Bhagavad Gita
+                            {t("fromTimelessTeachings")} {t("ofBhagavadGita")}
                         </span>
                         <br />
                         <span className="inline-block hover:divine-text transition-all duration-300 cursor-default animation-delay-1200 animate-fade-in font-medium">
-                            and embark on your spiritual journey.
+                            {t("embarkOnSpiritualJourney")}
                         </span>
                     </p>
                 </div>
@@ -128,7 +130,7 @@ export function Home() {
                         >
                             <Link to="/chat" className="flex items-center group">
                                 <MessageCircle className="mr-3" size={24} />
-                                <span className="group-hover:animate-pulse">Start Sacred Chat</span>
+                                <span className="group-hover:animate-pulse">{t("startSacredChat")}</span>
                                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-ping"></div>
                             </Link>
                         </InteractiveHoverButton>
@@ -143,7 +145,7 @@ export function Home() {
                         >
                             <Link to="/signup" className="flex items-center relative z-10">
                                 <Sparkles className="mr-2 group-hover:animate-spin" size={20} />
-                                <span>Create Account</span>
+                                <span>{t("createAccount")}</span>
                                 <div className="absolute inset-0 bg-gradient-wisdom opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10"></div>
                             </Link>
                         </Button>
@@ -180,18 +182,18 @@ export function Home() {
                     className="max-w-4xl mx-auto relative z-10">
                         <div className="animate-bounce-in animation-delay-2000">
                             <h2 className="text-5xl md:text-7xl text-primary mb-8 font-bold wisdom-text hover:sacred-text transition-all duration-500 cursor-default leading-tight">
-                                <span className="inline-block hover:animate-enlighten-glow">Begin Your</span>
+                                <span className="inline-block hover:animate-enlighten-glow">{t("beginYourJourney")}</span>
                                 <br />
-                                <span className="inline-block hover:animate-sacred-pulse">Journey Today</span>
+                                <span className="inline-block hover:animate-sacred-pulse">{t("beginYourJourneyToday")}</span>
                             </h2>
                         </div>
 
                         <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-fade-in animation-delay-2200 hover:text-foreground transition-colors duration-500 leading-relaxed">
                             <span className="inline-block hover:wisdom-text transition-all duration-300 cursor-default">
-                                Join thousands seeking wisdom and clarity 
+                                {t("joinThousandsSeeking")} {t("wisdomAndClarity")}
                             </span>
                             <span className="inline-block hover:sacred-text transition-all duration-300 cursor-default ml-2">
-                                through sacred dialogue
+                                {t("throughSacredDialogue")}
                             </span>
                         </p>
 
@@ -200,7 +202,7 @@ export function Home() {
                             className="relative text-xl  px-6 py-4 shadow-divine hover:shadow-sacred transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 font-semibold border-2 border-primary/20 hover:border-primary/50"
                                 >
                                 <Link to="/chat" className="flex items-center group">
-                                    <span className="group-hover:animate-pulse">Enter the Sacred Space</span>
+                                    <span className="group-hover:animate-pulse">{t("enterSacredSpace")}</span>
                                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-ping"></div>
                                 </Link>
                             </InteractiveHoverButton>

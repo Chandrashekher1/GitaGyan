@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Book, ChevronRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/context/Language";
 
 interface Chapter {
   chapter_number: number;
@@ -14,6 +15,7 @@ interface Chapter {
 }
 
 const Chapters: React.FC = () => {
+  const { t } = useLanguage();
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const navigate = useNavigate()
@@ -43,9 +45,9 @@ const Chapters: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full mb-6 shadow-lg">
             <Book className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-orange-800 mb-4">18 Chapters of the Gita</h1>
+          <h1 className="text-4xl font-bold text-orange-800 mb-4">{t("chaptersOfGita")}</h1>
           <p className="text-lg text-orange-600">
-            Explore the profound teachings organized into 18 chapters, each focusing on different aspects of spiritual wisdom
+            {t("exploreTeachings")}
           </p>
         </div>
 
@@ -92,7 +94,7 @@ const Chapters: React.FC = () => {
               <div className="flex items-center space-x-4 mb-4 text-sm text-gray-500">
                 <div className="flex items-center space-x-1">
                   <Book className="w-4 h-4" />
-                  <span>{chapter.verses_count} verses</span>
+                  <span>{chapter.verses_count} {t("verses")}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Users className="w-4 h-4" />

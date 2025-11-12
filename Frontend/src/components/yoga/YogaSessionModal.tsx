@@ -11,6 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { useLanguage } from "@/context/Language";
 import { Asana } from "./data/asanasData";
 import { formatTime } from "./utils/timeUtils";
 import { YogaSessionState, YogaSessionHandlers } from "./hooks/useYogaSession";
@@ -38,6 +39,7 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
   selectedSound,
   onSelectSound,
 }) => {
+  const { t } = useLanguage();
   const { currentStepIndex, stepTimeRemaining, isPlaying, sessionStarted } = sessionState;
   const { handleStart, handlePause, handleNext, handlePrev, handleReset, setCurrentStepIndex, setStepTimeRemaining } = handlers;
 
@@ -139,9 +141,9 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
                       <div className="text-[var(--color-muted-foreground)]">
                         {sessionStarted
                           ? isPlaying
-                            ? "Practicing..."
-                            : "Paused"
-                          : "Ready to begin"}
+                            ? t("practicing")
+                            : t("pause")
+                          : t("readyToBegin")}
                       </div>
                     </div>
                   </div>
@@ -163,13 +165,13 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
                     className="disabled:opacity-50"
                   >
                     <ChevronLeft className="w-4 h-4 mr-2" />
-                    Previous
+                    {t("previous")}
                   </Button>
 
                   {!sessionStarted ? (
                     <Button onClick={handleStart} size="lg" className="px-8">
                       <Play className="w-5 h-5 mr-2" />
-                      Start Session
+                      {t("startSession")}
                     </Button>
                   ) : (
                     <>
@@ -200,7 +202,7 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
                     variant="outline"
                     className="disabled:opacity-50"
                   >
-                    Next
+                    {t("next")}
                     <ChevronRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -217,30 +219,30 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
               {/* Benefits & Precautions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
-                  <h5 className="font-semibold text-[var(--color-primary)] mb-2 flex items-center">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Benefits
-                  </h5>
-                  <p className="text-sm text-[var(--color-muted-foreground)]">
-                    {asana.benefits}
-                  </p>
-                </div>
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-200">
-                  <h5 className="font-semibold text-[var(--color-primary)] mb-2 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-2" />
-                    Precautions
-                  </h5>
+                      <h5 className="font-semibold text-[var(--color-primary)] mb-2 flex items-center">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        {t("benefits")}
+                      </h5>
+                      <p className="text-sm text-[var(--color-muted-foreground)]">
+                        {asana.benefits}
+                      </p>
+                    </div>
+                    <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-200">
+                      <h5 className="font-semibold text-[var(--color-primary)] mb-2 flex items-center">
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                        {t("precautions")}
+                      </h5>
                   <p className="text-sm text-[var(--color-muted-foreground)]">
                     {asana.precautions}
                   </p>
                 </div>
               </div>
 
-              {/* Step List */}
-              <div>
-                <h5 className="font-semibold text-[var(--color-primary)] mb-3">
-                  All Steps
-                </h5>
+                  {/* Step List */}
+                  <div>
+                    <h5 className="font-semibold text-[var(--color-primary)] mb-3">
+                      {t("allSteps")}
+                    </h5>
                 <div className="space-y-2">
                   {asana.steps.map((step, index) => (
                     <button

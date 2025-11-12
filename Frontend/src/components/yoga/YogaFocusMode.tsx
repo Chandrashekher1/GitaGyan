@@ -10,6 +10,7 @@ import {
   Volume2,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { useLanguage } from "@/context/Language";
 import { Asana } from "./data/asanasData";
 import { formatTime } from "./utils/timeUtils";
 import { YogaSessionHandlers } from "./hooks/useYogaSession";
@@ -40,6 +41,7 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
   ambientSounds,
   onExitFocusMode,
 }) => {
+  const { t } = useLanguage();
   const { handlePrev, handleNext, handleReset, handlePause } = handlers;
 
   return (
@@ -55,14 +57,14 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
           className="absolute top-4 right-4 text-white border-white/30 hover:bg-white/10"
         >
           <X className="w-4 h-4 mr-2" />
-          Exit Focus Mode
+          {t("exitFocusMode")}
         </Button>
 
         <div className="mb-8">
           <h2 className="text-4xl font-bold mb-2">{asana.name}</h2>
           <p className="text-xl text-gray-300">{asana.sanskritName}</p>
           <p className="text-lg text-gray-400 mt-2">
-            Step {currentStepIndex + 1} of {asana.steps.length}
+            {t("step")} {currentStepIndex + 1} {t("of")} {asana.steps.length}
           </p>
         </div>
 
@@ -98,7 +100,7 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
               {formatTime(stepTimeRemaining)}
             </div>
             <div className="text-gray-300">
-              {isPlaying ? "Practicing..." : "Paused"}
+              {isPlaying ? t("practicing") : t("pause")}
             </div>
           </div>
         </div>
@@ -114,7 +116,7 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
         <div className="mb-6 max-w-md mx-auto">
           <div className="flex items-center justify-center mb-3">
             <Volume2 className="w-5 h-5 text-white/70 mr-2" />
-            <h4 className="text-lg font-semibold text-white/90">Ambient Sound</h4>
+            <h4 className="text-lg font-semibold text-white/90">{t("ambientSound")}</h4>
           </div>
           <div className="grid grid-cols-2 gap-2 mb-3">
             {ambientSounds.map((sound) => (
@@ -135,7 +137,7 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
           {selectedSound && (
             <div className="text-center">
               <p className="text-sm text-white/70">
-                Currently: <span className="font-semibold text-white">{selectedSound.name}</span>
+                {t("currentlyPlaying")}: <span className="font-semibold text-white">{selectedSound.name}</span>
               </p>
             </div>
           )}
@@ -150,7 +152,7 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
             className="text-white border-white/30 hover:bg-white/10 disabled:opacity-50"
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
-            Prev
+            {t("previous")}
           </Button>
 
           <Button
@@ -160,7 +162,7 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
             className="text-white border-white/30 hover:bg-white/10"
           >
             <RotateCcw className="w-5 h-5 mr-2" />
-            Reset
+            {t("reset")}
           </Button>
 
           <Button
@@ -182,7 +184,7 @@ export const YogaFocusMode: React.FC<YogaFocusModeProps> = ({
             size="lg"
             className="text-white border-white/30 hover:bg-white/10 disabled:opacity-50"
           >
-            Next
+            {t("next")}
             <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
         </div>

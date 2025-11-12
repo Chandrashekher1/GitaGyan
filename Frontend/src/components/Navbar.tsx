@@ -21,7 +21,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = !!localStorage.getItem("uid");
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   const handleLogOut = () => {
     localStorage.removeItem("uid");
@@ -38,14 +38,14 @@ export function Navbar() {
   };
 
   const navItems = [
-    { id: "", label: "Home", icon: Home },
-    { id: "chat", label: "Ask Gita", icon: MessageCircle },
-    { id: "about", label: "About Gita", icon: Info },
-    { id: "chapters", label: "Chapters", icon: Book },
-    { id: "verses", label: "Verses", icon: BookOpen },
-    { id: "meditation", label: "Meditation", icon: HeartIcon },
-    { id: "yoga", label: "Yoga", icon: Flower2 },
-    { id: "profile", label: "Profile", icon: UserIcon },
+    { id: "", label: t("home"), icon: Home },
+    { id: "chat", label: t("askGita"), icon: MessageCircle },
+    { id: "about", label: t("aboutGita"), icon: Info },
+    { id: "chapters", label: t("chapters"), icon: Book },
+    { id: "verses", label: t("verses"), icon: BookOpen },
+    { id: "meditation", label: t("meditation"), icon: HeartIcon },
+    { id: "yoga", label: t("yoga"), icon: Flower2 },
+    { id: "profile", label: t("profile"), icon: UserIcon },
   ];
 
   return (
@@ -163,11 +163,11 @@ export function Navbar() {
             <div className="border-t border-orange-100 mt-2 pt-2 flex gap-2">
               {isLoggedIn ? (
                 <Button variant="outline" className="flex-1" onClick={handleLogOut}>
-                  Logout
+                  {t("logout")}
                 </Button>
               ) : (
                 <Button variant="outline" className="flex-1" onClick={handleSignIn}>
-                  Sign In
+                  {t("login")}
                 </Button>
               )}
             </div>

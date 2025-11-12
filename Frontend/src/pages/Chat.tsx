@@ -24,7 +24,7 @@ export function Chat() {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
   // const token = localStorage.getItem("token") 
-  const {language} = useLanguage()
+  const {language, t} = useLanguage()
   const { listening, transcript, startListening } = useSpeechToText();
 
   const scrollToBottom = () => {
@@ -323,7 +323,7 @@ export function Chat() {
                 value={inputValue || transcript}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder={language === 'en' ? "Ask for wisdom and guidance from the Bhagavad Gita..." : "भगवद्गीता से ज्ञान और मार्गदर्शन प्राप्त करें..."}
+                placeholder={t("askForWisdom")}
                 className="w-full md:px-6 md:py-6 py-4 pr-12 rounded-full text-base md:font-semibold border-2 border-orange-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-200/50 bg-white/90 backdrop-blur-sm placeholder:text-gray-500 shadow-sm transition-all duration-200 hover:shadow-md focus:shadow-lg"
                 disabled={isTyping}
               />

@@ -1,27 +1,29 @@
 import React from "react";
 import { BookOpen, Clock, Globe, Star, Users, Heart } from "lucide-react";
+import { useLanguage } from "@/context/Language";
 
 const About: React.FC = () => {
+  const { t } = useLanguage();
   const highlights = [
     {
       icon: Clock,
-      title: "5000+ Years Old",
-      description: "Ancient wisdom that remains relevant today",
+      title: t("highlights.yearsOld"),
+      description: t("highlights.yearsOldDesc"),
     },
     {
       icon: Globe,
-      title: "Universal Truth",
-      description: "Teachings that transcend culture and religion",
+      title: t("highlights.universalTruth"),
+      description: t("highlights.universalTruthDesc"),
     },
     {
       icon: Star,
-      title: "18 Chapters",
-      description: "700 verses of profound spiritual guidance",
+      title: t("highlights.chapters"),
+      description: t("highlights.chaptersDesc"),
     },
     {
       icon: Users,
-      title: "Global Impact",
-      description: "Studied and revered worldwide",
+      title: t("highlights.globalImpact"),
+      description: t("highlights.globalImpactDesc"),
     },
   ];
 
@@ -33,16 +35,15 @@ const About: React.FC = () => {
             <BookOpen className="w-12 h-12 text-[var(--color-primary-foreground)]" />
           </div>
           <h1 className="mt-6 text-5xl font-bold text-primary">
-            The Bhagavad Gita
+            {t("theBhagavadGita")}
           </h1>
           <p className="text-xl text-[var(--color-muted-foreground)] max-w-3xl mx-auto mt-6 leading-relaxed">
             <span className="sacred-text">
-              "गीता सुगीता कर्तव्या किमन्यैः शास्त्रविस्तरैः"
+              {t("gitaQuote")}
             </span>
             <br />
             <span className="text-lg italic text-gray-700 mt-2 block">
-              "The Gita should be sung (studied) beautifully; what is the need
-              for other elaborate scriptures?"
+              {t("gitaQuoteTranslation")}
             </span>
           </p>
         </div>
@@ -81,23 +82,18 @@ const About: React.FC = () => {
                 <Globe className="w-6 h-6 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-[var(--color-foreground)]">
-                Origin & Context
+                {t("originAndContext")}
               </h2>
             </div>
             <div className="space-y-4 text-[var(--color-foreground)]">
               <p>
-                The Bhagavad Gita, meaning "Song of God," is a 700-verse dialogue
-                between Prince Arjuna and Lord Krishna on the battlefield of
-                Kurukshetra. This sacred text forms part of the Mahabharata.
+                {t("originContent1")}
               </p>
               <p>
-                Facing a moral dilemma, Arjuna questions the purpose of duty and
-                life. Krishna imparts timeless wisdom on dharma, karma, and the
-                nature of reality.
+                {t("originContent2")}
               </p>
               <p>
-                The Gita addresses universal questions: What is the purpose of
-                life? How should we act? How do we find peace?
+                {t("originContent3")}
               </p>
             </div>
           </div>
@@ -110,29 +106,19 @@ const About: React.FC = () => {
                 <Heart className="w-6 h-6 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-[var(--color-foreground)]">
-                Core Teachings
+                {t("teachingsAndPhilosophy")}
               </h2>
             </div>
-            <div className="space-y-6">
-              {[
-                { title: "Dharma", desc: "Living according to one’s duty without attachment to results." },
-                { title: "Karma Yoga", desc: "The path of selfless action, free from ego and desire." },
-                { title: "Bhakti Yoga", desc: "Devotion and surrender to the Divine with love." },
-                { title: "Jnana Yoga", desc: "Wisdom and realization of the Self and ultimate reality." },
-              ].map((t, i) => (
-                <div
-                  key={i}
-                  className="border-l-4 pl-4"
-                  style={{ borderColor: "var(--color-primary)" }}
-                >
-                  <h3 className="font-semibold text-[var(--color-foreground)] mb-1">
-                    {t.title}
-                  </h3>
-                  <p className="text-sm text-[var(--color-muted-foreground)]">
-                    {t.desc}
-                  </p>
-                </div>
-              ))}
+            <div className="space-y-4 text-[var(--color-foreground)]">
+              <p>
+                {t("teachingsContent1")}
+              </p>
+              <p>
+                {t("teachingsContent2")}
+              </p>
+              <p>
+                {t("teachingsContent3")}
+              </p>
             </div>
           </div>
         </div>

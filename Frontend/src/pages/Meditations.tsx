@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import useFocusMode from "../Hooks/useFocusMode";
+import { useLanguage } from "@/context/Language";
 
 interface MeditationSession {
   id: string;
@@ -19,6 +20,7 @@ interface MeditationSession {
 }
 
 const Meditation: React.FC = () => {
+  const { t } = useLanguage();
   const [selectedDuration, setSelectedDuration] = useState(10);
   const [selectedSound, setSelectedSound] = useState<MeditationSession | null>(
     null
@@ -156,7 +158,7 @@ const Meditation: React.FC = () => {
             <Sparkles className="w-8 h-8 text-white animate-wisdom" />
           </div>
           <h1 className="text-5xl font-bold text-primary mb-4">
-            Meditation Mode
+            {t("meditationMode")}
           </h1>
           <p className="text-xl text-accent-foreground wisdom-text">
             Find inner peace through guided meditation with sacred sounds and
@@ -190,7 +192,7 @@ const Meditation: React.FC = () => {
                   {sessionStarted
                     ? isPlaying
                       ? "Meditating..."
-                      : "Paused"
+                      : t("pause")
                     : "Ready to begin"}
                 </div>
               </div>
@@ -238,7 +240,7 @@ const Meditation: React.FC = () => {
             <div className="flex items-center mb-6">
               <Clock className="w-6 h-6 text-[var(--color-primary)] mr-3" />
               <h2 className="text-2xl font-bold text-[var(--color-primary)]">
-                Duration
+                {t("selectDuration")}
               </h2>
             </div>
             <div className="grid grid-cols-5 gap-3">

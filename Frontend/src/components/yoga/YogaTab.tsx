@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Sparkles, Focus } from "lucide-react";
 import useFocusMode from "../../Hooks/useFocusMode";
+import { useLanguage } from "@/context/Language";
 import { asanasData, Asana } from "./data/asanasData";
 import { YogaLevelSelector } from "./YogaLevelSelector";
 import { YogaAsanaList } from "./YogaAsanaList";
@@ -42,6 +43,7 @@ const ambientSounds: AmbientSound[] = [
 ];
 
 const YogaTab: React.FC = () => {
+  const { t } = useLanguage();
   // State management
   const [selectedLevel, setSelectedLevel] = useState<"beginner" | "intermediate" | "advanced" | null>(null);
   const [selectedAsana, setSelectedAsana] = useState<Asana | null>(null);
@@ -148,9 +150,9 @@ const YogaTab: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 shadow-xl bg-primary">
             <Sparkles className="w-8 h-8 text-white animate-wisdom" />
           </div>
-          <h1 className="text-5xl font-bold text-primary mb-4">Yoga Mode</h1>
+          <h1 className="text-5xl font-bold text-primary mb-4">{t("yogaMode")}</h1>
           <p className="text-xl text-accent-foreground wisdom-text">
-            Find balance and strength through guided yoga practice
+            {t("findBalanceAndStrength")}
           </p>
         </div>
 
@@ -167,10 +169,10 @@ const YogaTab: React.FC = () => {
               <Focus className="w-6 h-6 text-[var(--color-primary)] mr-3" />
               <div>
                 <h3 className="text-lg font-semibold text-[var(--color-primary)]">
-                  Focus Mode
+                  {t("focusMode")}
                 </h3>
                 <p className="text-sm text-[var(--color-muted-foreground)]">
-                  Fullscreen mode with minimal distractions during practice
+                  {t("fullscreenModeWithMinimalDistractions")}
                 </p>
               </div>
             </div>
@@ -187,7 +189,7 @@ const YogaTab: React.FC = () => {
                   : {}
               }
             >
-              {focusMode ? "Enabled" : "Enable"}
+              {focusMode ? t("enabled") : t("enable")}
             </button>
           </div>
         </div>

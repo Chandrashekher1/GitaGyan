@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { BookOpen, ChevronRight } from 'lucide-react';
+import { useLanguage } from '@/context/Language';
 
 const Verses = () => {
+  const { t } = useLanguage();
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
 
   const featuredVerses = [
@@ -56,9 +58,9 @@ const Verses = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full mb-6 shadow-lg">
             <BookOpen className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-orange-800 mb-4">Sacred Verses</h1>
+          <h1 className="text-4xl font-bold text-orange-800 mb-4">{t("sacredVerses")}</h1>
           <p className="text-lg text-orange-600">
-            Discover the timeless wisdom through the most profound verses of the Bhagavad Gita
+            {t("discoverWisdom")}
           </p>
         </div>
 
@@ -78,9 +80,9 @@ const Verses = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-bold text-orange-800">
-                      Chapter {verse.chapter}, Verse {verse.verse}
+                      {t("chapter")} {verse.chapter}, {t("verse")} {verse.verse}
                     </h3>
-                    <p className="text-sm text-orange-600 italic">Featured Verse</p>
+                    <p className="text-sm text-orange-600 italic">{t("featuredVerse")}</p>
                   </div>
                   <ChevronRight
                     className={`w-5 h-5 text-orange-500 transition-transform duration-200 ${
@@ -92,21 +94,21 @@ const Verses = () => {
                 {isSelected && (
                   <div className="mt-6 pt-6 border-t border-orange-100 space-y-6">
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Sanskrit</h4>
+                      <h4 className="font-semibold text-gray-800 mb-2">{t("sanskrit")}</h4>
                       <p className="text-xl font-sanskrit text-orange-800 leading-relaxed">
                         {verse.sanskrit}
                       </p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Transliteration</h4>
+                      <h4 className="font-semibold text-gray-800 mb-2">{t("transliteration")}</h4>
                       <p className="text-lg text-gray-700 italic leading-relaxed">
                         {verse.english}
                       </p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Translation</h4>
+                      <h4 className="font-semibold text-gray-800 mb-2">{t("translation")}</h4>
                       <p className="text-lg text-gray-800 leading-relaxed">
                         "{verse.meaning}"
                       </p>

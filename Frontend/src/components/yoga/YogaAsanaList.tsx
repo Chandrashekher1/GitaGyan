@@ -40,18 +40,33 @@ export const YogaAsanaList: React.FC<YogaAsanaListProps> = ({
             className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] shadow-xl glass-effect hover:shadow-2xl transition-all duration-300"
           >
             <CardHeader>
-              <div className="w-full h-48 rounded-lg mb-4 overflow-hidden relative">
-                <img 
-                  src={asana.image} 
-                  alt={asana.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "https://source.unsplash.com/800x600/?yoga";
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              {/*
+                Note: use "aspect-*" utilities for consistent frame ratios (Tailwind aspect-ratio plugin).
+                The image now fills the frame but preserves aspect ratio. On small screens we use "object-contain"
+                to avoid cropping; on md+ we use "object-cover" to create a tighter visual fill.
+              */}
+              <div className="w-full rounded-lg mb-4 overflow-hidden relative bg-black/5">
+                {/* Aspect ratio container: prefer using Tailwind's aspect-* (e.g. aspect-video or aspect-[4/3]) */}
+                <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64 xl:h-72 flex items-center justify-center">
+                  <img
+                    src={asana.image}
+                    alt={asana.name}
+                    loading="lazy"
+                    className={
+                      "w-full h-full object-contain md:object-cover object-center transition-all duration-200"
+                    }
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      // fallback image
+                      target.src = "https://source.unsplash.com/800x600/?yoga";
+                      // ensure fallback fits the frame
+                      target.className = "w-full h-full object-contain object-center";
+                    }}
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
               </div>
+
               <CardTitle className="text-xl font-bold text-[var(--color-primary)]">
                 {asana.name}
               </CardTitle>
@@ -88,3 +103,4 @@ export const YogaAsanaList: React.FC<YogaAsanaListProps> = ({
   );
 };
 
+export default YogaAsanaList;

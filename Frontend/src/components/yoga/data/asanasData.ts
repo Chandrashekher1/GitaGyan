@@ -31,7 +31,7 @@ export const asanasData: Asana[] = [
     description: "A foundational standing pose that teaches proper alignment and grounding.",
     benefits: "Improves posture, strengthens legs, enhances focus and concentration.",
     precautions: "Avoid if you have severe balance issues. Keep knees soft, not locked.",
-    image: "https://source.unsplash.com/800x600/?yoga+tadasana+mountain+pose",
+    image: "/yoga_images/mountain.png",
     totalDuration: 5,
     steps: [
       {
@@ -65,7 +65,7 @@ export const asanasData: Asana[] = [
     description: "A restorative pose that provides deep relaxation and introspection.",
     benefits: "Relieves stress, stretches hips and thighs, calms nervous system.",
     precautions: "Avoid if you have knee injuries. Use a cushion under knees if needed.",
-    image: "https://source.unsplash.com/800x600/?yoga+balasana+child+pose",
+    image: "/yoga_images/child.png",
     totalDuration: 10,
     steps: [
       {
@@ -99,7 +99,7 @@ export const asanasData: Asana[] = [
     description: "A gentle flowing movement that warms up the spine and improves flexibility.",
     benefits: "Improves spinal flexibility, massages internal organs, relieves back tension.",
     precautions: "Move slowly and avoid if you have severe neck or back injuries.",
-    image: "https://source.unsplash.com/800x600/?yoga+cat+cow+pose",
+    image: "/yoga_images/cowcat.png",
     totalDuration: 8,
     steps: [
       {
@@ -140,7 +140,7 @@ export const asanasData: Asana[] = [
     description: "The ultimate relaxation pose, perfect for ending any practice.",
     benefits: "Reduces stress, lowers blood pressure, promotes deep relaxation.",
     precautions: "Use a blanket or pillow for comfort. Cover yourself if you feel cold.",
-    image: "https://source.unsplash.com/800x600/?yoga+savasana+corpse+pose",
+    image: "/yoga_images/corpse.png",
     totalDuration: 10,
     steps: [
       {
@@ -175,7 +175,7 @@ export const asanasData: Asana[] = [
     description: "An energizing pose that strengthens and stretches the entire body.",
     benefits: "Strengthens arms and legs, stretches spine and hamstrings, calms mind.",
     precautions: "Avoid if you have wrist or shoulder injuries. Keep knees bent if hamstrings are tight.",
-    image: "https://source.unsplash.com/800x600/?yoga+downward+dog+pose",
+    image: "/yoga_images/downwardfacingdog.png",
     totalDuration: 8,
     steps: [
       {
@@ -216,7 +216,7 @@ export const asanasData: Asana[] = [
     description: "A powerful standing pose that builds confidence and strength.",
     benefits: "Builds strength, improves balance, opens hips and chest, strengthens legs.",
     precautions: "Avoid if you have knee injuries. Keep front knee aligned over ankle.",
-    image: "https://source.unsplash.com/800x600/?yoga+warrior+pose",
+    image: "/yoga_images/warrior1.png",
     totalDuration: 6,
     steps: [
       {
@@ -257,7 +257,7 @@ export const asanasData: Asana[] = [
     description: "A balancing pose that cultivates focus and stability.",
     benefits: "Improves balance, strengthens legs, enhances concentration and focus.",
     precautions: "Use a wall for support if needed. Avoid if you have severe balance issues.",
-    image: "https://source.unsplash.com/800x600/?yoga+tree+pose",
+    image: "/yoga_images/tree.png",
     totalDuration: 4,
     steps: [
       {
@@ -298,7 +298,7 @@ export const asanasData: Asana[] = [
     description: "A gentle backbend that energizes and strengthens the spine.",
     benefits: "Strengthens back, opens chest, improves spinal flexibility, relieves fatigue.",
     precautions: "Avoid if you have severe back injuries. Keep shoulders away from ears.",
-    image: "https://source.unsplash.com/800x600/?yoga+cobra+pose",
+    image: "/yoga_images/cobra.png",
     totalDuration: 7,
     steps: [
       {
@@ -340,7 +340,7 @@ export const asanasData: Asana[] = [
     description: "The king of all yoga poses, requiring strength, balance, and focus.",
     benefits: "Improves circulation, strengthens core and arms, enhances focus and balance.",
     precautions: "Avoid if you have neck injuries, high blood pressure, or glaucoma. Practice against a wall first.",
-    image: "https://source.unsplash.com/800x600/?yoga+headstand",
+    image: "/yoga_images/headstand.png",
     totalDuration: 5,
     steps: [
       {
@@ -388,7 +388,7 @@ export const asanasData: Asana[] = [
     description: "An arm balance that builds arm strength and core stability.",
     benefits: "Strengthens arms and wrists, improves balance, builds core strength.",
     precautions: "Practice with a cushion in front. Avoid if you have wrist or shoulder injuries.",
-    image: "https://source.unsplash.com/800x600/?yoga+crow+pose",
+    image: "/yoga_images/crow.png",
     totalDuration: 6,
     steps: [
       {
@@ -429,7 +429,7 @@ export const asanasData: Asana[] = [
     description: "A deep backbend that opens the heart and strengthens the entire body.",
     benefits: "Opens chest and shoulders, strengthens back and legs, energizes the body.",
     precautions: "Avoid if you have back, wrist, or shoulder injuries. Warm up thoroughly first.",
-    image: "https://source.unsplash.com/800x600/?yoga+wheel+pose",
+    image: "/yoga_images/wheel.png",
     totalDuration: 5,
     steps: [
       {
@@ -470,7 +470,7 @@ export const asanasData: Asana[] = [
     description: "An inversion that builds strength, balance, and courage.",
     benefits: "Strengthens arms and core, improves balance, builds confidence, reverses blood flow.",
     precautions: "Practice against a wall first. Avoid if you have shoulder, neck, or eye issues.",
-    image: "https://source.unsplash.com/800x600/?yoga+handstand",
+    image: "/yoga_images/handpose.png",
     totalDuration: 5,
     steps: [
       {

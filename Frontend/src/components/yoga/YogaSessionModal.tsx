@@ -76,7 +76,7 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
               </div>
 
               {/* Asana Main Image */}
-              <div className="w-full max-w-2xl mx-auto mb-6 rounded-xl overflow-hidden shadow-lg">
+              {/* <div className="w-full max-w-2xl mx-auto mb-6 rounded-xl overflow-hidden shadow-lg">
                 <img 
                   src={asana.image} 
                   alt={asana.name}
@@ -86,7 +86,7 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
                     target.src = "https://source.unsplash.com/800x600/?yoga";
                   }}
                 />
-              </div>
+              </div> */}
 
               {/* Progress Bar */}
               <div className="mb-6">
@@ -106,7 +106,7 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
               <div className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] p-6 mb-6">
                 <div className="text-center mb-6">
                   {/* Step Image */}
-                  {currentStep?.image && (
+                  {/* {currentStep?.image && (
                     <div className="w-full max-w-md mx-auto mb-6 rounded-xl overflow-hidden shadow-lg">
                       <img 
                         src={currentStep.image} 
@@ -118,7 +118,7 @@ export const YogaSessionModal: React.FC<YogaSessionModalProps> = ({
                         }}
                       />
                     </div>
-                  )}
+                  )} */}
                   
                   <div className="relative inline-flex items-center justify-center w-48 h-48 mx-auto mb-6">
                     <div className="absolute inset-0 rounded-full border-4 border-primary"></div>

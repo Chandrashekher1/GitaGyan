@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, MessageCircle, Calendar, Search, Trash2, Download, Star } from 'lucide-react';
+import { User, MessageCircle, Calendar, Search, Trash2, Download, Star, Flower2, Clock, TrendingUp } from 'lucide-react';
 
 // ✅ Inline type definitions
 interface Verse {
@@ -27,10 +27,23 @@ interface ChatSession {
   messages: ChatMessage[];
 }
 
+interface YogaSession {
+  id: string;
+  asanaId: string;
+  asanaName: string;
+  sanskritName: string;
+  level: "beginner" | "intermediate" | "advanced";
+  completedAt: string;
+  duration: number;
+  steps: number;
+}
+
 const Profile: React.FC = () => {
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [yogaSessions, setYogaSessions] = useState<YogaSession[]>([]);
+  const [activeTab, setActiveTab] = useState<'chat' | 'yoga'>('chat');
 
   // Mock user data
   const userData = {
@@ -41,6 +54,54 @@ const Profile: React.FC = () => {
     favoriteChapter: 'Chapter 2 - Sankhya Yoga',
     streak: 12
   };
+
+  // Load yoga sessions from localStorage
+  useEffect(() => {
+    const savedYogaHistory = localStorage.getItem('gitagyan-yoga-history');
+    if (savedYogaHistory) {
+      const sessions = JSON.parse(savedYogaHistory);
+      // Sort by most recent first
+      sessions.sort((a: YogaSession, b: YogaSession) => 
+        new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
+      );
+      setYogaSessions(sessions);
+    } else {
+      // Sample yoga data for demonstration
+      const sampleYogaSessions: YogaSession[] = [
+        {
+          id: '1',
+          asanaId: 'mountain-pose',
+          asanaName: 'Mountain Pose',
+          sanskritName: 'Tadasana',
+          level: 'beginner',
+          completedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          duration: 5,
+          steps: 3,
+        },
+        {
+          id: '2',
+          asanaId: 'downward-dog',
+          asanaName: 'Downward Facing Dog',
+          sanskritName: 'Adho Mukha Svanasana',
+          level: 'intermediate',
+          completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          duration: 8,
+          steps: 4,
+        },
+        {
+          id: '3',
+          asanaId: 'tree-pose',
+          asanaName: 'Tree Pose',
+          sanskritName: 'Vrikshasana',
+          level: 'intermediate',
+          completedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          duration: 4,
+          steps: 4,
+        },
+      ];
+      setYogaSessions(sampleYogaSessions);
+    }
+  }, []);
 
   // Load chat sessions from localStorage
   useEffect(() => {
@@ -183,6 +244,14 @@ const Profile: React.FC = () => {
                   </div>
                   <span className="font-semibold text-gray-800">{userData.streak} days</span>
                 </div>
+
+                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <Flower2 className="w-5 h-5 text-orange-600" />
+                    <span className="text-gray-700">Yoga Sessions</span>
+                  </div>
+                  <span className="font-semibold text-gray-800">{yogaSessions.length}</span>
+                </div>
               </div>
 
               <div className="mt-6 p-4 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl text-white">
@@ -192,24 +261,57 @@ const Profile: React.FC = () => {
             </div>
           </div>
 
-          {/* Chat History */}
+          {/* Activity History */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-xl border border-orange-100 p-8">
+              {/* Tabs */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Chat History</h2>
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search conversations..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  />
+                <div className="flex space-x-4 border-b border-gray-200">
+                  <button
+                    onClick={() => setActiveTab('chat')}
+                    className={`pb-3 px-2 font-semibold transition-colors ${
+                      activeTab === 'chat'
+                        ? 'text-orange-600 border-b-2 border-orange-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <MessageCircle className="w-5 h-5" />
+                      <span>Chat History</span>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('yoga')}
+                    className={`pb-3 px-2 font-semibold transition-colors ${
+                      activeTab === 'yoga'
+                        ? 'text-orange-600 border-b-2 border-orange-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Flower2 className="w-5 h-5" />
+                      <span>Yoga Activity</span>
+                    </div>
+                  </button>
                 </div>
+                {activeTab === 'chat' && (
+                  <div className="relative">
+                    <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search conversations..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    />
+                  </div>
+                )}
               </div>
 
-              {filteredSessions.length === 0 ? (
+              {/* Chat History Tab */}
+              {activeTab === 'chat' && (
+                <>
+                  {filteredSessions.length === 0 ? (
                 <div className="text-center py-12">
                   <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-gray-600 mb-2">
@@ -321,6 +423,116 @@ const Profile: React.FC = () => {
                     </div>
                   ))}
                 </div>
+                  )}
+                </>
+              )}
+
+              {/* Yoga Activity Tab */}
+              {activeTab === 'yoga' && (
+                <>
+                  {yogaSessions.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Flower2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                        No yoga sessions yet
+                      </h3>
+                      <p className="text-gray-500">
+                        Complete yoga sessions to see your activity here.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Statistics */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-200">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-gray-600 mb-1">Total Sessions</p>
+                              <p className="text-2xl font-bold text-orange-800">{yogaSessions.length}</p>
+                            </div>
+                            <Flower2 className="w-8 h-8 text-orange-600" />
+                          </div>
+                        </div>
+                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-gray-600 mb-1">Total Time</p>
+                              <p className="text-2xl font-bold text-green-800">
+                                {yogaSessions.reduce((sum, s) => sum + s.duration, 0)} min
+                              </p>
+                            </div>
+                            <Clock className="w-8 h-8 text-green-600" />
+                          </div>
+                        </div>
+                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-gray-600 mb-1">Levels Completed</p>
+                              <p className="text-2xl font-bold text-blue-800">
+                                {new Set(yogaSessions.map(s => s.level)).size}
+                              </p>
+                            </div>
+                            <TrendingUp className="w-8 h-8 text-blue-600" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Yoga Sessions List */}
+                      <div className="space-y-3">
+                        {yogaSessions.map((session) => {
+                          const levelColors = {
+                            beginner: 'bg-green-100 text-green-800 border-green-200',
+                            intermediate: 'bg-blue-100 text-blue-800 border-blue-200',
+                            advanced: 'bg-purple-100 text-purple-800 border-purple-200',
+                          };
+                          return (
+                            <div
+                              key={session.id}
+                              className="border rounded-xl p-4 hover:border-orange-300 hover:bg-orange-25 transition-all duration-200"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center space-x-3 mb-2">
+                                    <h3 className="font-semibold text-gray-800 text-lg">
+                                      {session.asanaName}
+                                    </h3>
+                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${levelColors[session.level]}`}>
+                                      {session.level}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-gray-600 italic mb-2">
+                                    {session.sanskritName}
+                                  </p>
+                                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                    <div className="flex items-center space-x-1">
+                                      <Calendar className="w-4 h-4" />
+                                      <span>
+                                        {new Date(session.completedAt).toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center space-x-1">
+                                      <Clock className="w-4 h-4" />
+                                      <span>{session.duration} minutes</span>
+                                    </div>
+                                    <div className="flex items-center space-x-1">
+                                      <TrendingUp className="w-4 h-4" />
+                                      <span>{session.steps} steps</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="ml-4">
+                                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center">
+                                    <Flower2 className="w-6 h-6 text-white" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

@@ -10,9 +10,9 @@ import Verses from './pages/Verses'
 // import { Header } from './components/Header'
 import Meditation from './pages/Meditations'
 import { LanguageProvider } from './context/Language'
+import { Toaster } from './components/ui/sonner'
 
 function App() {
-
   return (
       <div>
         <LanguageProvider>
@@ -27,9 +27,8 @@ function App() {
             <Route path='/chapters' element = {<Chapters/>}/>
             <Route path='/verses' element = {<Verses/>}/>
             <Route path='/meditation' element = {<Meditation/>}/>
-
-
           </Routes>
+          <Toaster duration={5000} position='top-center'/>
         </Router>
         </LanguageProvider>
       </div>

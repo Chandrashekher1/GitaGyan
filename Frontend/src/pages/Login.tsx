@@ -14,12 +14,11 @@ import { Link, useNavigate } from "react-router-dom";
 import React from "react";
 import { Backend_Url } from "@/utils/constant";
 import { UserIcon } from "lucide-react";
-
+import { toast } from "sonner";
 
 export function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
@@ -39,9 +38,10 @@ export function Login() {
     const json = await response.json();
     if (json?.success) {
       localStorage.setItem("token", json?.token);
+      toast.success("Login successfully.")
       navigate("/chat");
     } else {
-      setError("Login failed: " + json?.message);
+      toast.error(json?.message)
     }
     setLoading(false);
   };
@@ -53,14 +53,15 @@ export function Login() {
     if (data.success) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", "guest");
-      alert("Logged In as Guest, 2 min access")
+      // alert("Logged In as Guest, 2 min access")
+      toast.success("Logged In as Guest, 2 min access")
       // localStorage.setItem("exp", data.exp * 1000); 
 
       setTimeout(() => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         localStorage.removeItem("exp");
-        alert("Guest session expired. Please register to continue.");
+        toast.info("Guest session expired. Please register to continue.")
         navigate("/login");
       }, data.expiresIn * 1000);
 
@@ -113,7 +114,6 @@ export function Login() {
                 className="rounded-lg border shadow focus:ring-2 focus:ring-primary text-muted-foreground"
               />
             </div>
-            <p className="text-sm text-destructive">{error}</p>
             <div className="flex justify-end">
               <a
                 href="#"

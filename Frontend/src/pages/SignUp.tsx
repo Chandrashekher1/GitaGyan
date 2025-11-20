@@ -13,12 +13,13 @@ import { ShineBorder } from "@/components/magicui/shine-border";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Backend_Url } from "@/utils/constant";
+import { toast } from "sonner";
+
 
 export function SignUp() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -41,8 +42,9 @@ export function SignUp() {
         if (json?.success) {
             localStorage.setItem("token", json?.token);
             navigate("/chat");
+            toast.success("Signup successfull!")
         } else {
-            setError("Sign up failed: " + json.message);
+            toast.error(json?.message)
         }
         setLoading(false);
 
@@ -51,6 +53,7 @@ export function SignUp() {
     const handleGoogle = async() => {
       setLoading(true);
       window.location.href = `${Backend_Url}/login/auth/google`;
+      toast.success("Welcome back!")
     }
 
   return (
@@ -103,7 +106,6 @@ export function SignUp() {
                 className="rounded-lg border shadow focus:ring-2 focus:ring-primary text-muted-foreground"
               />
             </div>
-            <p className="text-sm text-destructive">{error}</p>
             <Button className="w-full rounded-xl py-5 font-semibold shadow-md hover:shadow-lg transition-all" disabled={loading} type="submit">
               {loading ? "Loading..." : "Create Account"}
           </Button>

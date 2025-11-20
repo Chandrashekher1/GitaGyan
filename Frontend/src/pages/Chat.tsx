@@ -8,6 +8,8 @@ import { Backend_Url, Lotus_Image } from "@/utils/constant";
 import { Send, User, Sparkles, MicIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
 
 interface Message {
   id: string;
@@ -32,9 +34,6 @@ export function Chat() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  console.log(token);
-  
 
   useEffect(() => {
     scrollToBottom();
@@ -61,6 +60,8 @@ export function Chat() {
       const storedToken = localStorage.getItem('token');
       if (token) {
         localStorage.setItem('token', token);
+        toast.success("Welcome back!")
+
       }
 
       if(!token && !storedToken) {

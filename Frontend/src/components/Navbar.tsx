@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Language, useLanguage } from "@/context/Language";
+import { toast } from "sonner";
+
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ export function Navbar() {
   const handleLogOut = () => {
     localStorage.removeItem("token");
     navigate("/");
+    toast.success("Logout successfully!")
   };
 
   const toggleSound = () => {

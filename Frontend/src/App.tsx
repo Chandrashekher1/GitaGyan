@@ -1,5 +1,5 @@
-import './App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home'
 import { Chat } from './pages/Chat'
 import { Login } from './pages/Login'
@@ -10,7 +10,7 @@ import Verses from './pages/Verses'
 import { Header } from './components/Header'
 import Meditation from './pages/Meditations'
 import { LanguageProvider } from './context/Language'
-import { Toaster } from 'sonner'
+import { Toaster } from 'sonner';
 import Profile from './pages/Profile'
 import Yoga from './pages/Yoga'
 
@@ -32,8 +32,6 @@ function App() {
             <Route path='/verses' element = {<Verses/>}/>
             <Route path='/meditation' element = {<Meditation/>}/>
             <Route path='/yoga' element = {<Yoga/>}/>
-            
-
           </Routes>
           <Toaster duration={5000} position='top-center'/>
         </Router>

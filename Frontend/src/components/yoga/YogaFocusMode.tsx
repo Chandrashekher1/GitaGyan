@@ -12,7 +12,7 @@ import {
 import { Button } from "../ui/button";
 import { Asana } from "./data/asanasData";
 import { formatTime } from "./utils/timeUtils";
-import { YogaSessionState, YogaSessionHandlers } from "./hooks/useYogaSession";
+import { YogaSessionHandlers } from "./hooks/useYogaSession";
 import { AmbientSound } from "./YogaAmbientSoundSelector";
 
 interface YogaFocusModeProps {

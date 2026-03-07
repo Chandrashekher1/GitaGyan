@@ -26,7 +26,7 @@ const Meditation: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [sessionStarted, setSessionStarted] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [focusMode, setFocusMode] = useState(false);
 

@@ -9,7 +9,6 @@ import { YogaSessionModal } from "./YogaSessionModal";
 import { YogaFocusMode } from "./YogaFocusMode";
 import { useYogaSession } from "./hooks/useYogaSession";
 
-// Ambient sounds
 const ambientSounds: AmbientSound[] = [
   {
     id: "om-chanting",
@@ -42,7 +41,6 @@ const ambientSounds: AmbientSound[] = [
 ];
 
 const YogaTab: React.FC = () => {
-  // State management
   const [selectedLevel, setSelectedLevel] = useState<"beginner" | "intermediate" | "advanced" | null>(null);
   const [selectedAsana, setSelectedAsana] = useState<Asana | null>(null);
   const [showSessionModal, setShowSessionModal] = useState(false);
@@ -50,7 +48,6 @@ const YogaTab: React.FC = () => {
   const [completedSessions, setCompletedSessions] = useState<string[]>([]);
   const [selectedSound, setSelectedSound] = useState<AmbientSound | null>(null);
 
-  // Load completed sessions from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('gitagyan-yoga-completed');
     if (saved) {
@@ -58,19 +55,16 @@ const YogaTab: React.FC = () => {
     }
   }, []);
 
-  // Save completed sessions to localStorage
   useEffect(() => {
     if (completedSessions.length > 0) {
       localStorage.setItem('gitagyan-yoga-completed', JSON.stringify(completedSessions));
     }
   }, [completedSessions]);
 
-  // Handle session completion
   const handleSessionComplete = (asanaId: string) => {
     setCompletedSessions((prev) => {
       if (!prev.includes(asanaId)) {
         const updated = [...prev, asanaId];
-        // Save yoga session to history
         const asana = asanasData.find(a => a.id === asanaId);
         if (asana) {
           const yogaHistory = JSON.parse(localStorage.getItem('gitagyan-yoga-history') || '[]');
@@ -92,8 +86,7 @@ const YogaTab: React.FC = () => {
     });
   };
 
-  // Use yoga session hook
-  const { state: sessionState, handlers: sessionHandlers, audioRef } = useYogaSession({
+  const { state: sessionState, handlers: sessionHandlers } = useYogaSession({
     selectedAsana,
     selectedSound,
     focusMode,
@@ -101,10 +94,8 @@ const YogaTab: React.FC = () => {
     onSessionComplete: handleSessionComplete,
   });
 
-  // Use focus mode hook - activate when focus mode is enabled and session is active
   useFocusMode(focusMode && sessionState.sessionStarted);
 
-  // Filter asanas by level
   const filteredAsanas = selectedLevel ? asanasData.filter((asana) => asana.level === selectedLevel) : [];
 
   const handleStartSession = (asana: Asana) => {
@@ -122,7 +113,6 @@ const YogaTab: React.FC = () => {
 
   const currentStep = selectedAsana?.steps[sessionState.currentStepIndex];
 
-  // Focus Mode Overlay - show when focus mode is enabled and session is active
   if (focusMode && sessionState.sessionStarted && selectedAsana && showSessionModal) {
     return (
       <YogaFocusMode
@@ -154,13 +144,11 @@ const YogaTab: React.FC = () => {
           </p>
         </div>
 
-        {/* Level Selection */}
         <YogaLevelSelector
           selectedLevel={selectedLevel}
           onLevelSelect={setSelectedLevel}
         />
 
-        {/* Focus Mode Toggle */}
         <div className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] p-6 shadow-xl glass-effect mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -192,14 +180,12 @@ const YogaTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Ambient Sounds Selection */}
         <YogaAmbientSoundSelector
           selectedSound={selectedSound}
           onSelectSound={setSelectedSound}
           ambientSounds={ambientSounds}
         />
 
-        {/* Asana List */}
         <div className="mb-8">
           <YogaAsanaList
             asanas={filteredAsanas}
@@ -208,7 +194,6 @@ const YogaTab: React.FC = () => {
           />
         </div>
 
-        {/* Session Modal */}
         {showSessionModal && selectedAsana && (
           <YogaSessionModal
             asana={selectedAsana}

@@ -39,7 +39,6 @@ export interface YogaSessionHandlers {
 export const useYogaSession = ({
   selectedAsana,
   selectedSound,
-  focusMode,
   showSessionModal,
   onSessionComplete,
 }: UseYogaSessionProps): {
@@ -100,16 +99,13 @@ export const useYogaSession = ({
     };
   }, [isPlaying, stepTimeRemaining, sessionStarted, currentStepIndex, selectedAsana, onSessionComplete]);
 
-  // Ambient sound effect
   useEffect(() => {
     if (isPlaying && selectedSound?.file && sessionStarted) {
-      // Pause and reset current audio if switching sounds
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
       
-      // Create new audio instance for the selected sound
       audioRef.current = new Audio(selectedSound.file);
       audioRef.current.loop = true;
       audioRef.current.volume = 0.5;

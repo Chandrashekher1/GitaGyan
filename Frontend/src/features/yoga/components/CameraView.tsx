@@ -18,7 +18,6 @@ interface CameraViewProps {
   selectedPose: YogaPose;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   overlayCanvasRef: React.RefObject<HTMLCanvasElement | null>;
-  snapshotCanvasRef: React.RefObject<HTMLCanvasElement | null>;
   realTimeFeedback: string[];
   isStable: boolean;
   isAnalyzing: boolean;
@@ -37,7 +36,6 @@ const CameraView: React.FC<CameraViewProps> = ({
   selectedPose,
   videoRef,
   overlayCanvasRef,
-  snapshotCanvasRef,
   realTimeFeedback,
   isStable,
   isAnalyzing,

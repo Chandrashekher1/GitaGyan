@@ -101,7 +101,6 @@ const YogaCamera: React.FC = () => {
             selectedPose={selectedPose}
             videoRef={camera.videoRef}
             overlayCanvasRef={camera.overlayCanvasRef}
-            snapshotCanvasRef={camera.snapshotCanvasRef}
             realTimeFeedback={camera.realTimeFeedback}
             isStable={camera.isStable}
             isAnalyzing={state === 'analyzing'}

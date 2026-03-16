@@ -212,7 +212,11 @@ export function useYogaCamera(
       console.log("[useYogaCamera] Cleaning up Pose and Camera effect...");
       disposed = true;
       camera.stop();
-      pose.close();
+      try {
+        pose.close();
+      } catch (e) {
+        console.warn("[useYogaCamera] pose.close() handled:", e);
+      }
       if (mpCameraRef.current === camera) mpCameraRef.current = null;
       if (poseRef.current === pose) poseRef.current = null;
     };

@@ -6,6 +6,16 @@ export interface YogaPose {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   benefits: string[];
   imageUrl: string;
+  mentalHealthTags: string[];
+}
+
+export interface CompletionFeedback {
+  rating: number;
+  helpful: boolean;
+  targetedConcern: string;
+  moodAfter: string;
+  notes: string;
+  submittedAt?: string;
 }
 
 export interface PoseAnalysisResult {
@@ -33,8 +43,10 @@ export interface YogaSessionData {
   posesAttempted: {
     poseName: string;
     poseNameHindi: string;
+    mentalHealthTags: string[];
     analysisResult: PoseAnalysisResult;
     timestamp: string;
+    feedback?: CompletionFeedback;
   }[];
   overallScore: number;
   streakDay: number;
@@ -43,6 +55,7 @@ export interface YogaSessionData {
 export interface AnalyzeResponse {
   analysisResult: PoseAnalysisResult;
   sessionId: string | null;
+  poseAttemptId: string | null;
   overallScore: number;
   historySaved: boolean;
   persistenceError?: string;

@@ -1,101 +1,9 @@
 import express from 'express';
 import { analyzeYogaPose, PoseLandmark } from '../services/poseAnalysis.js';
 import YogaSession from '../models/yogaSession.js';
+import { YOGA_POSES, findYogaPoseByName } from '../utils/wellnessCatalog.js';
 
 const router = express.Router();
-
-const YOGA_POSES = [
-  {
-    id: 1,
-    name: 'Tadasana (Mountain Pose)',
-    nameHindi: 'ताड़ासन',
-    difficulty: 'beginner',
-    description: 'A foundational standing pose. It promotes balance, improves posture, and strengthens the thighs, knees, and ankles.',
-    benefits: ['Improves posture', 'Strengthens lower body', 'Increases awareness'],
-    imageUrl: '/poses/tadasana.png',
-  },
-  {
-    id: 2,
-    name: 'Vrikshasana (Tree Pose)',
-    nameHindi: 'वृक्षासन',
-    difficulty: 'beginner',
-    description: 'Improves balance and focus while strengthening the legs, ankles, and core.',
-    benefits: ['Improves balance', 'Strengthens legs', 'Enhances focus'],
-    imageUrl: '/poses/vrikshasana.png',
-  },
-  {
-    id: 3,
-    name: 'Adho Mukha Svanasana (Downward-Facing Dog)',
-    nameHindi: 'अधोमुखश्वानासन',
-    difficulty: 'beginner',
-    description: 'Stretches the back, hamstrings, and calves while strengthening the arms and shoulders.',
-    benefits: ['Stretches full body', 'Energizes', 'Relieves tension'],
-    imageUrl: '/poses/adho_mukha_svanasana.png',
-  },
-  {
-    id: 4,
-    name: 'Virabhadrasana II (Warrior II)',
-    nameHindi: 'वीरभद्रासन II',
-    difficulty: 'intermediate',
-    description: 'Builds stamina, stretches hips and groins, and strengthens legs and arms.',
-    benefits: ['Builds stamina', 'Stretches hips', 'Strengthens legs'],
-    imageUrl: '/poses/virabhadrasana_ii.png',
-  },
-  {
-    id: 5,
-    name: 'Bhujangasana (Cobra Pose)',
-    nameHindi: 'भुजंगासन',
-    difficulty: 'beginner',
-    description: 'Opens the chest, strengthens the spine, and soothes sciatica.',
-    benefits: ['Strengthens spine', 'Opens chest', 'Improves posture'],
-    imageUrl: '/poses/bhujangasana.png',
-  },
-  {
-    id: 6,
-    name: 'Balasana (Child\'s Pose)',
-    nameHindi: 'बालासन',
-    difficulty: 'beginner',
-    description: 'A resting pose that stretches the hips, thighs, and ankles while calming the brain and relieving stress.',
-    benefits: ['Calms the brain', 'Stretches hips', 'Relieves back pain'],
-    imageUrl: '/poses/balasana.png',
-  },
-  {
-    id: 7,
-    name: 'Trikonasana (Triangle Pose)',
-    nameHindi: 'त्रिकोणासन',
-    difficulty: 'intermediate',
-    description: 'Stretches the legs, muscles around the knee, ankle joints, hips, groin muscles, hamstrings, calves, shoulders, chest, and spine.',
-    benefits: ['Improves digestion', 'Reduces back pain', 'Stretches legs'],
-    imageUrl: '/poses/trikonasana.png',
-  },
-  {
-    id: 8,
-    name: 'Setu Bandhasana (Bridge Pose)',
-    nameHindi: 'सेतु बन्धासन',
-    difficulty: 'beginner',
-    description: 'Calms the brain and helps alleviate stress and mild depression, stretches the chest, neck, and spine.',
-    benefits: ['Calms the brain', 'Stretches chest', 'Stimulates abdominal organs'],
-    imageUrl: '/poses/setu_bandhasana.png',
-  },
-  {
-    id: 9,
-    name: 'Shavasana (Corpse Pose)',
-    nameHindi: 'शवासन',
-    difficulty: 'beginner',
-    description: 'A pose of total relaxation, making it one of the most challenging but most rewarding yoga poses.',
-    benefits: ['Deep relaxation', 'Reduces headache', 'Lowers blood pressure'],
-    imageUrl: '/poses/shavasana.png',
-  },
-  {
-    id: 10,
-    name: 'Sukhasana (Easy Seated Pose)',
-    nameHindi: 'सुखासन',
-    difficulty: 'beginner',
-    description: 'A comfortable seated posture for meditation that strengthens the back and stretches the knees and ankles.',
-    benefits: ['Improves posture', 'Strengthens back', 'Promotes inner calm'],
-    imageUrl: '/poses/sukhasana.png',
-  },
-];
 
 router.get('/poses', (_req: any, res: any) => {
   res.json(YOGA_POSES);
@@ -124,8 +32,9 @@ router.post('/analyze', async (req: any, res: any) => {
     }
 
     const analysisResult = analyzeYogaPose(landmarks, poseName);
-    const poseData = YOGA_POSES.find((p) => p.name === poseName);
+    const poseData = findYogaPoseByName(poseName);
     let sessionId: string | null = null;
+    let poseAttemptId: string | null = null;
     let overallScore = analysisResult.score;
     let historySaved = false;
     let persistenceError: string | undefined;
@@ -146,6 +55,7 @@ router.post('/analyze', async (req: any, res: any) => {
               poseName,
               poseNameHindi: poseData?.nameHindi || '',
               imageBase64: '',
+              mentalHealthTags: poseData?.mentalHealthTags || [],
               analysisResult,
             },
           },
@@ -163,6 +73,7 @@ router.post('/analyze', async (req: any, res: any) => {
       await session.save();
 
       sessionId = String(session._id);
+      poseAttemptId = String(session.posesAttempted[session.posesAttempted.length - 1]?._id);
       overallScore = session.overallScore;
       historySaved = true;
     } catch (saveError: any) {
@@ -173,6 +84,7 @@ router.post('/analyze', async (req: any, res: any) => {
     res.json({
       analysisResult,
       sessionId,
+      poseAttemptId,
       overallScore,
       historySaved,
       persistenceError,
@@ -180,6 +92,62 @@ router.post('/analyze', async (req: any, res: any) => {
   } catch (err) {
     console.error('yoga analyze error:', err);
     res.status(500).json({ error: 'Analysis failed. Please try again.' });
+  }
+});
+
+router.post('/feedback', async (req: any, res: any) => {
+  try {
+    const {
+      sessionId,
+      poseAttemptId,
+      rating,
+      helpful,
+      targetedConcern,
+      moodAfter,
+      notes,
+    } = req.body as {
+      sessionId?: string;
+      poseAttemptId?: string;
+      rating?: number;
+      helpful?: boolean;
+      targetedConcern?: string;
+      moodAfter?: string;
+      notes?: string;
+    };
+
+    if (!sessionId || !poseAttemptId || !rating || typeof helpful !== 'boolean') {
+      return res.status(400).json({
+        error: 'sessionId, poseAttemptId, rating, and helpful are required',
+      });
+    }
+
+    const session = await YogaSession.findOneAndUpdate(
+      { _id: sessionId, 'posesAttempted._id': poseAttemptId },
+      {
+        $set: {
+          'posesAttempted.$.feedback': {
+            rating,
+            helpful,
+            targetedConcern: targetedConcern || '',
+            moodAfter: moodAfter || '',
+            notes: notes || '',
+            submittedAt: new Date(),
+          },
+        },
+      },
+      { new: true }
+    );
+
+    if (!session) {
+      return res.status(404).json({ error: 'Yoga attempt not found' });
+    }
+
+    res.json({ success: true });
+  } catch (error: any) {
+    console.error('yoga feedback error:', error);
+    res
+      .status(500)
+      .json({ error: error?.message || 'Could not save yoga feedback' });
   }
 });
 

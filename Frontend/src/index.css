@@ -1,1 +1,264 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 1.25rem;
+  --background: #f7f0e1;
+  --foreground: #1f1b16;
+  --card: rgba(255, 251, 244, 0.78);
+  --card-foreground: #1f1b16;
+  --popover: #fffaf2;
+  --popover-foreground: #1f1b16;
+  --primary: #8f4b2c;
+  --primary-foreground: #fff9f2;
+  --secondary: #2d4e43;
+  --secondary-foreground: #f5efe3;
+  --muted: #e5d9c3;
+  --muted-foreground: #695847;
+  --accent: #d6ae58;
+  --accent-foreground: #33230d;
+  --destructive: #c85c47;
+  --destructive-foreground: #fff8f3;
+  --border: rgba(97, 70, 42, 0.18);
+  --input: rgba(255, 251, 244, 0.9);
+  --ring: rgba(143, 75, 44, 0.3);
+  --chart-1: #8f4b2c;
+  --chart-2: #2d4e43;
+  --chart-3: #d6ae58;
+  --chart-4: #7d8b5d;
+  --chart-5: #c85c47;
+  --sidebar: rgba(255, 250, 242, 0.92);
+  --sidebar-foreground: #1f1b16;
+  --sidebar-primary: #8f4b2c;
+  --sidebar-primary-foreground: #fff8f2;
+  --sidebar-accent: #efe2c6;
+  --sidebar-accent-foreground: #33230d;
+  --sidebar-border: rgba(97, 70, 42, 0.15);
+  --sidebar-ring: rgba(143, 75, 44, 0.3);
+  --font-sans: "Manrope", sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --gradient-sunrise: linear-gradient(135deg, #d39a4e 0%, #8f4b2c 100%);
+  --gradient-serenity: linear-gradient(135deg, #2d4e43 0%, #597460 100%);
+  --gradient-wisdom: linear-gradient(135deg, #d6ae58 0%, #c37f50 52%, #496757 100%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --animate-shine: shine 8s linear infinite;
+  --animate-marquee: marquee var(--duration) linear infinite;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    background-image: linear-gradient(180deg, #fbf7ef 0%, #f6efe1 48%, #f2e7d7 100%);
+    min-height: 100vh;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  ::selection {
+    background: rgba(143, 75, 44, 0.2);
+    color: var(--foreground);
+  }
+
+  .glass-effect {
+    background: rgba(255, 251, 244, 0.58);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(97, 70, 42, 0.16);
+  }
+
+  .sacred-text {
+    font-family: var(--font-serif);
+    background: var(--gradient-wisdom);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .wisdom-text {
+    color: var(--primary);
+    text-shadow: 0 0 16px rgba(214, 174, 88, 0.18);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) scale(1.03);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes panel-glow {
+  0%,
+  100% {
+    box-shadow: 0 18px 40px -28px rgba(44, 33, 18, 0.45);
+  }
+  50% {
+    box-shadow: 0 24px 56px -26px rgba(143, 75, 44, 0.28);
+  }
+}
+
+@keyframes lotus-bloom {
+  0%,
+  100% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+@keyframes wisdom-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(214, 174, 88, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(214, 174, 88, 0.45));
+  }
+}
+
+@keyframes peaceful-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+.animate-drift {
+  animation: drift 12s ease-in-out infinite;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.35s ease-in-out infinite;
+}
+
+.animate-panel-glow {
+  animation: panel-glow 10s ease-in-out infinite;
+}
+
+.animate-lotus {
+  animation: lotus-bloom 3.2s ease-in-out infinite;
+}
+
+.animate-wisdom {
+  animation: wisdom-glow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: peaceful-float 5s ease-in-out infinite;
+}
+
+.animate-shine {
+  background-size: 200% 200%;
+  animation: shine 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

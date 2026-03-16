@@ -1,0 +1,28 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="22" fill="url(#bg)"/>
+  <rect x="4" y="4" width="56" height="56" rx="18" fill="white" fill-opacity="0.36"/>
+  <circle cx="32" cy="18" r="10" fill="url(#glow)"/>
+  <path d="M32 19.5C27.8 23.2 26.2 28 27.4 35C31 33.5 32.8 28.9 32 19.5Z" fill="url(#petal)" stroke="#8F4B2C" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M29.4 24.2C23.9 25.4 20.4 29 18.8 34.9C24 35.5 28 32.5 29.4 24.2Z" fill="url(#petal)" stroke="#8F4B2C" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M34.6 24.2C40.1 25.4 43.6 29 45.2 34.9C40 35.5 36 32.5 34.6 24.2Z" fill="url(#petal)" stroke="#8F4B2C" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M27 34.8C21.2 34.1 16.6 36 13.6 41C19.2 42.3 23.7 40.7 27 34.8Z" fill="url(#petal)" fill-opacity="0.92" stroke="#8F4B2C" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M37 34.8C42.8 34.1 47.4 36 50.4 41C44.8 42.3 40.3 40.7 37 34.8Z" fill="url(#petal)" fill-opacity="0.92" stroke="#8F4B2C" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M18 45C22.6 43 27.3 42 32 42C36.7 42 41.4 43 46 45" stroke="#8F4B2C" stroke-width="2" stroke-linecap="round"/>
+  <path d="M22 49C25 47.5 28.3 46.8 32 46.8C35.7 46.8 39 47.5 42 49" stroke="#8F4B2C" stroke-width="2" stroke-linecap="round"/>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(32 8) rotate(90) scale(56)">
+      <stop stop-color="#FFFDF8"/>
+      <stop offset="0.52" stop-color="#FFF2DE"/>
+      <stop offset="1" stop-color="#E7D0AF"/>
+    </radialGradient>
+    <linearGradient id="petal" x1="14" y1="18" x2="50" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4C96A"/>
+      <stop offset="0.55" stop-color="#E98E3A"/>
+      <stop offset="1" stop-color="#9A4E2C"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(32 18) rotate(90) scale(10)">
+      <stop stop-color="#FFF0C9"/>
+      <stop offset="1" stop-color="#FFF0C9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

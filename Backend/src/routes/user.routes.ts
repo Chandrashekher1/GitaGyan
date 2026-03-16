@@ -56,7 +56,8 @@ router.post('/', async (req,res) => {
 
 router.post('/guest-login', (req, res) => {
     try {
-        const guestPayload = { role: "guest" };
+        const guestId = `guest_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        const guestPayload = { role: "guest", guestId };
 
         const token = jwt.sign(
             guestPayload,
@@ -69,9 +70,14 @@ router.post('/guest-login', (req, res) => {
             .json({
             success: true,
             role: "guest",
+            guestId,
             token,
             expiresIn: decoded?.exp ? decoded.exp - decoded.iat : 120, 
             exp: decoded?.exp,  
+            data: {
+                _id: guestId,
+                name: "Guest User"
+            }
         });
     } catch (err:any) {
         res.status(500).json({ success: false, message: "Guest login failed", error: err.message });

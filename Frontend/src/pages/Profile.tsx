@@ -1,7 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { User, MessageCircle, Calendar, Search, Trash2, Download, Star, Flower2, Clock, TrendingUp } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Calendar,
+  ChevronRight,
+  Clock,
+  Download,
+  Flower2,
+  LogOut,
+  MessageCircle,
+  Search,
+  Star,
+  Trash2,
+  TrendingUp,
+} from "lucide-react";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  AnimatePresence,
+  LayoutGroup,
+} from "motion/react";
 
-// ✅ Inline type definitions
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Backend_Url } from "@/utils/constant";
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
 interface Verse {
   sanskrit: string;
   english: string;
@@ -12,7 +42,7 @@ interface Verse {
 
 interface ChatMessage {
   id: string;
-  type: 'user' | 'bot';
+  type: "user" | "bot";
   content: string;
   category?: string;
   timestamp: Date;
@@ -38,508 +68,1175 @@ interface YogaSession {
   steps: number;
 }
 
-const Profile: React.FC = () => {
-  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
-  const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [yogaSessions, setYogaSessions] = useState<YogaSession[]>([]);
-  const [activeTab, setActiveTab] = useState<'chat' | 'yoga'>('chat');
+interface UserData {
+  name: string;
+  email: string;
+  joinDate: Date | null;
+  isGuest: boolean;
+}
 
-  // Mock user data
-  const userData = {
-    name: 'Spiritual Seeker',
-    email: 'seeker@gitagyan.com',
-    joinDate: new Date('2024-01-15'),
-    totalQuestions: 47,
-    favoriteChapter: 'Chapter 2 - Sankhya Yoga',
-    streak: 12
+/* ------------------------------------------------------------------ */
+/*  Animation helpers                                                  */
+/* ------------------------------------------------------------------ */
+
+function ScrollReveal({
+  children,
+  className,
+  delay = 0,
+  direction = "up",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  direction?: "up" | "down" | "left" | "right";
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+  const shouldReduce = useReducedMotion();
+
+  const offsets: Record<string, { x?: number; y?: number }> = {
+    up: { y: 40 },
+    down: { y: -40 },
+    left: { x: -50 },
+    right: { x: 50 },
   };
 
-  // Load yoga sessions from localStorage
+  return (
+    <motion.div
+      ref={ref}
+      initial={
+        shouldReduce
+          ? { opacity: 0 }
+          : { opacity: 0, ...offsets[direction] }
+      }
+      animate={
+        isInView
+          ? { opacity: 1, x: 0, y: 0 }
+          : shouldReduce
+            ? { opacity: 0 }
+            : { opacity: 0, ...offsets[direction] }
+      }
+      transition={{
+        duration: shouldReduce ? 0 : 0.6,
+        delay,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* Animated number counter */
+function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const [display, setDisplay] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
   useEffect(() => {
-    const savedYogaHistory = localStorage.getItem('gitagyan-yoga-history');
+    if (!isInView) return;
+    const duration = 1200;
+    const startTime = Date.now();
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(eased * value));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [isInView, value]);
+
+  return (
+    <span ref={ref}>
+      {display}
+      {suffix}
+    </span>
+  );
+}
+
+/* Relative time from date */
+function relativeTime(date: Date): string {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const days = Math.floor(diff / 86400000);
+  if (days < 1) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 30) return `${days} days ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} month${months > 1 ? "s" : ""} ago`;
+  const years = Math.floor(months / 12);
+  return `${years} year${years > 1 ? "s" : ""} ago`;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Level badge colors                                                 */
+/* ------------------------------------------------------------------ */
+
+const levelColors: Record<string, string> = {
+  beginner: "bg-secondary/12 text-secondary",
+  intermediate: "bg-primary/12 text-primary",
+  advanced: "bg-accent/18 text-accent-foreground",
+};
+
+/* ------------------------------------------------------------------ */
+/*  Main component                                                     */
+/* ------------------------------------------------------------------ */
+
+function Profile() {
+  const navigate = useNavigate();
+  const shouldReduce = useReducedMotion();
+
+  /* ---- User data from API ---- */
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userLoading, setUserLoading] = useState(true);
+
+  /* ---- Local data ---- */
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [yogaSessions, setYogaSessions] = useState<YogaSession[]>([]);
+  const [activeTab, setActiveTab] = useState<"chat" | "yoga">("chat");
+
+  /* ---- Fetch real user ---- */
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    const role = localStorage.getItem("role");
+    if (role === "guest") {
+      setUserData({
+        name: "Guest User",
+        email: "guest@gitagyan.com",
+        joinDate: null,
+        isGuest: true,
+      });
+      setUserLoading(false);
+      return;
+    }
+
+    (async () => {
+      try {
+        const res = await fetch(`${Backend_Url}/user/me`, {
+          headers: { Authorization: token },
+        });
+        const json = await res.json();
+        if (json?.success && json?.data) {
+          setUserData({
+            name: json.data.name,
+            email: json.data.email,
+            joinDate: json.data.createdAt ? new Date(json.data.createdAt) : null,
+            isGuest: false,
+          });
+        } else {
+          // Token invalid — redirect
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
+      } catch {
+        // Network error or server down — show what we can
+        setUserData({
+          name: "User",
+          email: "",
+          joinDate: null,
+          isGuest: false,
+        });
+      } finally {
+        setUserLoading(false);
+      }
+    })();
+  }, [navigate]);
+
+  /* ---- Load yoga sessions ---- */
+  useEffect(() => {
+    const savedYogaHistory = localStorage.getItem("gitagyan-yoga-history");
     if (savedYogaHistory) {
-      const sessions = JSON.parse(savedYogaHistory);
-      // Sort by most recent first
-      sessions.sort((a: YogaSession, b: YogaSession) => 
-        new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
+      const sessions = JSON.parse(savedYogaHistory) as YogaSession[];
+      sessions.sort(
+        (a, b) =>
+          new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
       );
       setYogaSessions(sessions);
-    } else {
-      // Sample yoga data for demonstration
-      const sampleYogaSessions: YogaSession[] = [
-        {
-          id: '1',
-          asanaId: 'mountain-pose',
-          asanaName: 'Mountain Pose',
-          sanskritName: 'Tadasana',
-          level: 'beginner',
-          completedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          duration: 5,
-          steps: 3,
-        },
-        {
-          id: '2',
-          asanaId: 'downward-dog',
-          asanaName: 'Downward Facing Dog',
-          sanskritName: 'Adho Mukha Svanasana',
-          level: 'intermediate',
-          completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-          duration: 8,
-          steps: 4,
-        },
-        {
-          id: '3',
-          asanaId: 'tree-pose',
-          asanaName: 'Tree Pose',
-          sanskritName: 'Vrikshasana',
-          level: 'intermediate',
-          completedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          duration: 4,
-          steps: 4,
-        },
-      ];
-      setYogaSessions(sampleYogaSessions);
     }
   }, []);
 
-  // Load chat sessions from localStorage
+  /* ---- Load chat sessions ---- */
   useEffect(() => {
-    const savedSessions = localStorage.getItem('gitagyan-chat-sessions');
+    const savedSessions = localStorage.getItem("gitagyan-chat-sessions");
     if (savedSessions) {
-      const sessions = JSON.parse(savedSessions).map((session: any) => ({
-        ...session,
-        createdAt: new Date(session.createdAt),
-        lastUpdated: new Date(session.lastUpdated),
-        messages: session.messages.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        }))
-      }));
+      const sessions = (JSON.parse(savedSessions) as any[]).map((s) => ({
+        ...s,
+        createdAt: new Date(s.createdAt),
+        lastUpdated: new Date(s.lastUpdated),
+        messages: s.messages.map((m: any) => ({
+          ...m,
+          timestamp: new Date(m.timestamp),
+        })),
+      })) as ChatSession[];
       setChatSessions(sessions);
-    } else {
-      // Demo data
-      const sampleSessions: ChatSession[] = [
-        {
-          id: '1',
-          title: 'Finding Life Purpose',
-          createdAt: new Date('2024-01-20'),
-          lastUpdated: new Date('2024-01-20'),
-          messages: [
-            {
-              id: '1',
-              type: 'user',
-              content: 'How do I find my life purpose according to the Gita?',
-              category: 'spiritual',
-              timestamp: new Date('2024-01-20T10:00:00')
-            },
-            {
-              id: '2',
-              type: 'bot',
-              content:
-                'According to the Bhagavad Gita, your life purpose is found through understanding your dharma - your righteous duty...',
-              timestamp: new Date('2024-01-20T10:01:00'),
-              verse: {
-                sanskrit: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।',
-                english: 'karmaṇy evādhikāras te mā phaleṣu kadācana',
-                meaning:
-                  'You have the right to perform action, but never to its fruits...',
-                chapter: 2,
-                verseNumber: 47
-              }
-            }
-          ]
-        }
-      ];
-      setChatSessions(sampleSessions);
-      localStorage.setItem('gitagyan-chat-sessions', JSON.stringify(sampleSessions));
+      setSelectedSessionId((cur) => cur ?? sessions[0]?.id ?? null);
     }
   }, []);
+
+  /* ---- Computed values ---- */
+  const totalQuestions = chatSessions.reduce(
+    (sum, s) => sum + s.messages.filter((m) => m.type === "user").length,
+    0
+  );
 
   const filteredSessions = chatSessions.filter(
-    (session) =>
-      session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      session.messages.some((msg) =>
-        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
+    (s) =>
+      s.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.messages.some((m) =>
+        m.content.toLowerCase().includes(searchTerm.toLowerCase())
       )
   );
 
+  const selectedSession =
+    chatSessions.find((s) => s.id === selectedSessionId) ??
+    filteredSessions[0] ??
+    null;
+
+  const totalYogaMinutes = yogaSessions.reduce((s, y) => s + y.duration, 0);
+  const yogaLevelCount = new Set(yogaSessions.map((y) => y.level)).size;
+
+  /* ---- Helpers ---- */
   const deleteSession = (id: string) => {
     const updated = chatSessions.filter((s) => s.id !== id);
     setChatSessions(updated);
-    localStorage.setItem('gitagyan-chat-sessions', JSON.stringify(updated));
-    if (selectedSession?.id === id) setSelectedSession(null);
+    localStorage.setItem("gitagyan-chat-sessions", JSON.stringify(updated));
+    if (selectedSessionId === id) setSelectedSessionId(updated[0]?.id ?? null);
   };
 
   const exportSession = (session: ChatSession) => {
     const content = `Chat Session: ${session.title}\nDate: ${session.createdAt.toLocaleDateString()}\n\n${session.messages
       .map(
-        (msg) =>
-          `${msg.type === 'user' ? 'You' : 'GitaGyan'}: ${msg.content}${
-            msg.verse
-              ? `\n\nVerse: ${msg.verse.sanskrit}\nTranslation: ${msg.verse.meaning}`
-              : ''
+        (m) =>
+          `${m.type === "user" ? "You" : "GitaGyan"}: ${m.content}${
+            m.verse
+              ? `\n\nVerse: ${m.verse.sanskrit}\nTranslation: ${m.verse.meaning}`
+              : ""
           }`
       )
-      .join('\n\n')}`;
-
-    const blob = new Blob([content], { type: 'text/plain' });
+      .join("\n\n")}`;
+    const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `${session.title.replace(/\s+/g, '_')}_chat.txt`;
+    a.download = `${session.title.replace(/\s+/g, "_")}_chat.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full mb-6 shadow-xl">
-            <User className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-5xl font-bold text-orange-800 mb-4">Your Profile</h1>
-          <p className="text-xl text-orange-600 mx-auto">
-            Track your spiritual journey and revisit past conversations
-          </p>
-        </div>
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Info */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-xl border border-orange-100 p-8 mb-8">
-              <div className="text-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User className="w-12 h-12 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800">{userData.name}</h2>
-                <p className="text-gray-600">{userData.email}</p>
+  /* ---- Avatar initials ---- */
+  const initials = userData?.name
+    ? userData.name
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?";
+
+  /* ---- Stagger variants ---- */
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+    },
+  };
+
+  const staggerItem = {
+    hidden: { opacity: 0, y: 18 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring" as const, stiffness: 300, damping: 24 },
+    },
+  };
+
+  /* ---------------------------------------------------------------- */
+  /*  Skeleton loading state                                          */
+  /* ---------------------------------------------------------------- */
+  if (userLoading) {
+    return (
+      <div className="px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+            {/* Hero skeleton */}
+            <div className="app-surface animate-pulse p-8 sm:p-10">
+              <div className="mb-4 h-5 w-28 rounded-full bg-muted/40" />
+              <div className="space-y-3">
+                <div className="h-10 w-4/5 rounded-xl bg-muted/30" />
+                <div className="h-10 w-3/5 rounded-xl bg-muted/30" />
               </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-5 h-5 text-orange-600" />
-                    <span className="text-gray-700">Joined</span>
-                  </div>
-                  <span className="font-semibold text-gray-800">
-                    {userData.joinDate.toLocaleDateString()}
-                  </span>
+              <div className="mt-6 h-5 w-full rounded-lg bg-muted/20" />
+            </div>
+            {/* Stat skeletons */}
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="app-surface flex animate-pulse flex-col justify-between p-6"
+                >
+                  <div className="h-10 w-14 rounded-lg bg-muted/30" />
+                  <div className="mt-3 h-4 w-24 rounded bg-muted/20" />
                 </div>
-
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <MessageCircle className="w-5 h-5 text-orange-600" />
-                    <span className="text-gray-700">Questions Asked</span>
-                  </div>
-                  <span className="font-semibold text-gray-800">{userData.totalQuestions}</span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Star className="w-5 h-5 text-orange-600" />
-                    <span className="text-gray-700">Daily Streak</span>
-                  </div>
-                  <span className="font-semibold text-gray-800">{userData.streak} days</span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Flower2 className="w-5 h-5 text-orange-600" />
-                    <span className="text-gray-700">Yoga Sessions</span>
-                  </div>
-                  <span className="font-semibold text-gray-800">{yogaSessions.length}</span>
-                </div>
-              </div>
-
-              <div className="mt-6 p-4 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl text-white">
-                <h3 className="font-semibold mb-2">Favorite Chapter</h3>
-                <p className="text-orange-100 text-sm">{userData.favoriteChapter}</p>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Activity History */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl border border-orange-100 p-8">
-              {/* Tabs */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex space-x-4 border-b border-gray-200">
-                  <button
-                    onClick={() => setActiveTab('chat')}
-                    className={`pb-3 px-2 font-semibold transition-colors ${
-                      activeTab === 'chat'
-                        ? 'text-orange-600 border-b-2 border-orange-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <MessageCircle className="w-5 h-5" />
-                      <span>Chat History</span>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('yoga')}
-                    className={`pb-3 px-2 font-semibold transition-colors ${
-                      activeTab === 'yoga'
-                        ? 'text-orange-600 border-b-2 border-orange-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <Flower2 className="w-5 h-5" />
-                      <span>Yoga Activity</span>
-                    </div>
-                  </button>
-                </div>
-                {activeTab === 'chat' && (
-                  <div className="relative">
-                    <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search conversations..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    />
-                  </div>
-                )}
+          <div className="mt-6 grid gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]">
+            {/* Sidebar skeleton */}
+            <div className="app-surface animate-pulse p-8">
+              <div className="mx-auto mb-4 h-24 w-24 rounded-[28px] bg-muted/30" />
+              <div className="mx-auto h-6 w-36 rounded-lg bg-muted/25" />
+              <div className="mx-auto mt-2 h-4 w-44 rounded bg-muted/15" />
+              <div className="mt-6 space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-12 rounded-[20px] bg-muted/20" />
+                ))}
               </div>
-
-              {/* Chat History Tab */}
-              {activeTab === 'chat' && (
-                <>
-                  {filteredSessions.length === 0 ? (
-                <div className="text-center py-12">
-                  <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                    No conversations found
-                  </h3>
-                  <p className="text-gray-500">
-                    Start a conversation to see your chat history here.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredSessions.map((session) => (
-                    <div
-                      key={session.id}
-                      className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 ${
-                        selectedSession?.id === session.id
-                          ? 'border-orange-500 bg-orange-50'
-                          : 'border-gray-200 hover:border-orange-300 hover:bg-orange-25'
-                      }`}
-                      onClick={() =>
-                        setSelectedSession(
-                          selectedSession?.id === session.id ? null : session
-                        )
-                      }
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-gray-800 mb-1">{session.title}</h3>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500">
-                            <div className="flex items-center space-x-1">
-                              <Calendar className="w-4 h-4" />
-                              <span>{session.createdAt.toLocaleDateString()}</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <MessageCircle className="w-4 h-4" />
-                              <span>{session.messages.length} messages</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              exportSession(session);
-                            }}
-                            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Export chat"
-                          >
-                            <Download className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteSession(session.id);
-                            }}
-                            className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete chat"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-
-                      {selectedSession?.id === session.id && (
-                        <div className="mt-4 pt-4 border-t border-orange-200 space-y-4 max-h-96 overflow-y-auto">
-                          {session.messages.map((msg) => (
-                            <div
-                              key={msg.id}
-                              className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                            >
-                              <div className={`max-w-3xl ${msg.type === 'user' ? 'ml-12' : 'mr-12'}`}>
-                                <div
-                                  className={`rounded-2xl px-4 py-3 ${
-                                    msg.type === 'user'
-                                      ? 'bg-blue-500 text-white'
-                                      : 'bg-gray-100 text-gray-800'
-                                  }`}
-                                >
-                                  <p className="text-sm">{msg.content}</p>
-                                  <p
-                                    className={`text-xs mt-2 ${
-                                      msg.type === 'user' ? 'text-blue-100' : 'text-gray-500'
-                                    }`}
-                                  >
-                                    {msg.timestamp.toLocaleTimeString()}
-                                  </p>
-                                </div>
-
-                                {msg.verse && (
-                                  <div className="mt-3 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200">
-                                    <div className="text-center mb-3">
-                                      <span className="inline-block bg-orange-100 text-orange-800 text-xs px-3 py-1 rounded-full font-semibold">
-                                        Chapter {msg.verse.chapter}, Verse {msg.verse.verseNumber}
-                                      </span>
-                                    </div>
-                                    <p className="text-orange-800 font-sanskrit text-center mb-2 text-sm">
-                                      {msg.verse.sanskrit}
-                                    </p>
-                                    <p className="text-gray-700 text-xs text-center italic">
-                                      "{msg.verse.meaning}"
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                  )}
-                </>
-              )}
-
-              {/* Yoga Activity Tab */}
-              {activeTab === 'yoga' && (
-                <>
-                  {yogaSessions.length === 0 ? (
-                    <div className="text-center py-12">
-                      <Flower2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                        No yoga sessions yet
-                      </h3>
-                      <p className="text-gray-500">
-                        Complete yoga sessions to see your activity here.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {/* Statistics */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-200">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm text-gray-600 mb-1">Total Sessions</p>
-                              <p className="text-2xl font-bold text-orange-800">{yogaSessions.length}</p>
-                            </div>
-                            <Flower2 className="w-8 h-8 text-orange-600" />
-                          </div>
-                        </div>
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm text-gray-600 mb-1">Total Time</p>
-                              <p className="text-2xl font-bold text-green-800">
-                                {yogaSessions.reduce((sum, s) => sum + s.duration, 0)} min
-                              </p>
-                            </div>
-                            <Clock className="w-8 h-8 text-green-600" />
-                          </div>
-                        </div>
-                        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-200">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm text-gray-600 mb-1">Levels Completed</p>
-                              <p className="text-2xl font-bold text-blue-800">
-                                {new Set(yogaSessions.map(s => s.level)).size}
-                              </p>
-                            </div>
-                            <TrendingUp className="w-8 h-8 text-blue-600" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Yoga Sessions List */}
-                      <div className="space-y-3">
-                        {yogaSessions.map((session) => {
-                          const levelColors = {
-                            beginner: 'bg-green-100 text-green-800 border-green-200',
-                            intermediate: 'bg-blue-100 text-blue-800 border-blue-200',
-                            advanced: 'bg-purple-100 text-purple-800 border-purple-200',
-                          };
-                          return (
-                            <div
-                              key={session.id}
-                              className="border rounded-xl p-4 hover:border-orange-300 hover:bg-orange-25 transition-all duration-200"
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center space-x-3 mb-2">
-                                    <h3 className="font-semibold text-gray-800 text-lg">
-                                      {session.asanaName}
-                                    </h3>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${levelColors[session.level]}`}>
-                                      {session.level}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm text-gray-600 italic mb-2">
-                                    {session.sanskritName}
-                                  </p>
-                                  <div className="flex items-center space-x-4 text-sm text-gray-500">
-                                    <div className="flex items-center space-x-1">
-                                      <Calendar className="w-4 h-4" />
-                                      <span>
-                                        {new Date(session.completedAt).toLocaleDateString()}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                      <Clock className="w-4 h-4" />
-                                      <span>{session.duration} minutes</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                      <TrendingUp className="w-4 h-4" />
-                                      <span>{session.steps} steps</span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="ml-4">
-                                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center">
-                                    <Flower2 className="w-6 h-6 text-white" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
+            </div>
+            {/* Content skeleton */}
+            <div className="app-surface animate-pulse p-6">
+              <div className="h-10 w-56 rounded-full bg-muted/25" />
+              <div className="mt-6 space-y-4">
+                {[1, 2].map((i) => (
+                  <div key={i} className="h-20 rounded-[24px] bg-muted/15" />
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
+    );
+  }
+
+  /* ---------------------------------------------------------------- */
+  /*  Main render                                                      */
+  /* ---------------------------------------------------------------- */
+  return (
+    <div className="px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-8">
+        {/* =========================================================
+            HERO + STATS
+        ========================================================= */}
+        <section className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+          <ScrollReveal>
+            <div
+              className="relative overflow-hidden rounded-[30px] p-8 sm:p-10"
+              style={{
+                background: "linear-gradient(145deg, #2d4e43 0%, #1a3a30 45%, #8f4b2c 100%)",
+                boxShadow: "0 24px 64px -20px rgba(44, 33, 18, 0.5), inset 0 1px 0 rgba(255,255,255,0.08)",
+              }}
+            >
+              {/* Decorative circles */}
+              <div
+                className="pointer-events-none absolute -right-12 -top-12 h-56 w-56 rounded-full opacity-[0.08]"
+                style={{ background: "radial-gradient(circle, #d6ae58 0%, transparent 70%)" }}
+              />
+              <div
+                className="pointer-events-none absolute -bottom-8 -left-8 h-40 w-40 rounded-full opacity-[0.06]"
+                style={{ background: "radial-gradient(circle, #d6ae58 0%, transparent 70%)" }}
+              />
+              {/* Dot grid decoration */}
+              <div className="pointer-events-none absolute right-6 top-6 grid grid-cols-4 gap-2 opacity-[0.12]">
+                {Array.from({ length: 16 }).map((_, i) => (
+                  <div key={i} className="h-1.5 w-1.5 rounded-full bg-white" />
+                ))}
+              </div>
+
+              <div className="relative z-10 flex flex-col gap-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="section-label mb-1" style={{ borderColor: "rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.1)", color: "#f5efe3" }}>
+                    <span className="eyebrow-dot" style={{ background: "#d6ae58" }} />
+                    Your profile
+                  </div>
+
+                  {/* Avatar in hero */}
+                  <motion.div
+                    className="hidden sm:block"
+                    animate={shouldReduce ? {} : { y: [0, -6, 0] }}
+                    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                  >
+                    <div
+                      className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg"
+                      style={{
+                        background: "linear-gradient(135deg, #d6ae58 0%, #c37f50 100%)",
+                        boxShadow: "0 8px 24px -8px rgba(214,174,88,0.4)",
+                      }}
+                    >
+                      <span className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>
+                        {initials}
+                      </span>
+                    </div>
+                  </motion.div>
+                </div>
+
+                <div>
+                  <h1
+                    className="display-font text-4xl font-semibold leading-[1.05] sm:text-5xl"
+                    style={{ color: "#f5efe3" }}
+                  >
+                    Namaste, <span style={{ color: "#d6ae58" }}>{userData?.name?.split(" ")[0] ?? "Seeker"}</span>.
+                  </h1>
+                  <p className="mt-4 max-w-lg text-[0.95rem] leading-7" style={{ color: "rgba(245,239,227,0.7)" }}>
+                    Your reflections, sessions, and progress — all in one peaceful space.
+                  </p>
+                </div>
+
+                {/* Inline mini-stats */}
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "Chats", val: chatSessions.length },
+                    { label: "Questions", val: totalQuestions },
+                    { label: "Yoga", val: yogaSessions.length },
+                  ].map((m) => (
+                    <div
+                      key={m.label}
+                      className="flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold"
+                      style={{ background: "rgba(255,255,255,0.1)", color: "#f5efe3", backdropFilter: "blur(8px)" }}
+                    >
+                      <span style={{ color: "#d6ae58" }}>{m.val}</span>
+                      {m.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Stat cards */}
+          <motion.div
+            className="grid gap-4 sm:grid-cols-3"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            {[
+              {
+                value: chatSessions.length,
+                label: "Saved chats",
+                desc: "Conversations preserved",
+                icon: MessageCircle,
+                gradient: "linear-gradient(135deg, #2d4e43, #3d6b5a)",
+                glow: "rgba(45,78,67,0.25)",
+              },
+              {
+                value: totalQuestions,
+                label: "Questions",
+                desc: "Reflections explored",
+                icon: Star,
+                gradient: "linear-gradient(135deg, #8f4b2c, #b5623a)",
+                glow: "rgba(143,75,44,0.25)",
+              },
+              {
+                value: yogaSessions.length,
+                label: "Yoga sessions",
+                desc: "Asanas practiced",
+                icon: Flower2,
+                gradient: "linear-gradient(135deg, #c37f50, #d6ae58)",
+                glow: "rgba(214,174,88,0.25)",
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.label}
+                  variants={staggerItem}
+                  whileHover={
+                    shouldReduce
+                      ? {}
+                      : {
+                          y: -6,
+                          boxShadow: `0 24px 52px -16px ${item.glow}`,
+                        }
+                  }
+                  className="app-surface group relative flex cursor-default flex-col overflow-hidden p-6 transition-shadow"
+                >
+                  {/* Gradient accent strip at top */}
+                  <div
+                    className="absolute left-0 right-0 top-0 h-1"
+                    style={{ background: item.gradient }}
+                  />
+
+                  {/* Icon badge */}
+                  <motion.div
+                    className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl text-white shadow-md"
+                    style={{
+                      background: item.gradient,
+                      boxShadow: `0 6px 16px -4px ${item.glow}`,
+                    }}
+                    whileHover={shouldReduce ? {} : { rotate: 8, scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </motion.div>
+
+                  <p className="display-font text-4xl font-semibold text-foreground">
+                    <AnimatedCounter value={item.value} />
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">
+                    {item.label}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {item.desc}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </section>
+
+        {/* =========================================================
+            SIDEBAR + CONTENT
+        ========================================================= */}
+        <section className="grid gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]">
+          {/* ---------- Profile sidebar ---------- */}
+          <ScrollReveal direction="left" delay={0.1}>
+            <aside className="space-y-6">
+              <Card className="app-surface border-none bg-card/82">
+                <CardContent className="p-8">
+                  {/* Avatar with gradient ring */}
+                  <div className="mb-6 text-center">
+                    <motion.div
+                      className="relative mx-auto h-24 w-24"
+                      whileHover={shouldReduce ? {} : { scale: 1.06 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      {/* Gradient ring */}
+                      <div
+                        className="absolute inset-0 rounded-[28px]"
+                        style={{
+                          background: "var(--gradient-wisdom)",
+                          padding: "3px",
+                          borderRadius: "28px",
+                        }}
+                      >
+                        <div className="flex h-full w-full items-center justify-center rounded-[25px] bg-background">
+                          <span className="display-font text-2xl font-bold text-primary">
+                            {initials}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    <h2 className="mt-4 text-2xl font-semibold capitalize text-foreground">
+                      {userData?.name ?? "User"}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      {userData?.email ?? ""}
+                    </p>
+                    {userData?.isGuest && (
+                      <Badge variant="outline" className="mt-2">
+                        Guest session
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Info rows */}
+                  <motion.div
+                    className="space-y-3"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    {[
+                      ...(userData?.joinDate
+                        ? [
+                            {
+                              icon: Calendar,
+                              label: "Joined",
+                              value: relativeTime(userData.joinDate),
+                            },
+                          ]
+                        : []),
+                      {
+                        icon: MessageCircle,
+                        label: "Questions asked",
+                        value: `${totalQuestions}`,
+                      },
+                      {
+                        icon: Flower2,
+                        label: "Yoga sessions",
+                        value: `${yogaSessions.length}`,
+                      },
+                      {
+                        icon: Clock,
+                        label: "Yoga time",
+                        value: `${totalYogaMinutes} min`,
+                      },
+                    ].map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <motion.div
+                          key={item.label}
+                          variants={staggerItem}
+                          whileHover={
+                            shouldReduce
+                              ? {}
+                              : { x: 3, backgroundColor: "rgba(255,255,255,0.75)" }
+                          }
+                          className="flex items-center justify-between rounded-[20px] border border-border/70 bg-white/55 px-4 py-3 transition-colors"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Icon className="h-4 w-4 text-primary" />
+                            <span className="text-sm text-muted-foreground">
+                              {item.label}
+                            </span>
+                          </div>
+                          <span className="text-sm font-semibold text-foreground">
+                            {item.value}
+                          </span>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+
+                  {/* Logout */}
+                  <motion.div className="mt-6" whileTap={shouldReduce ? {} : { scale: 0.97 }}>
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-full border-destructive/20 text-destructive hover:bg-destructive/8"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign out
+                    </Button>
+                  </motion.div>
+                </CardContent>
+              </Card>
+            </aside>
+          </ScrollReveal>
+
+          {/* ---------- Content panel ---------- */}
+          <ScrollReveal direction="right" delay={0.15}>
+            <Card className="app-surface border-none bg-card/82">
+              <CardHeader className="pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  {/* Tabs with animated indicator */}
+                  <LayoutGroup>
+                    <div className="relative flex flex-wrap gap-2">
+                      {(["chat", "yoga"] as const).map((tab) => (
+                        <button
+                          key={tab}
+                          type="button"
+                          onClick={() => setActiveTab(tab)}
+                          className="relative z-10 flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors"
+                          style={{
+                            color:
+                              activeTab === tab
+                                ? "var(--primary-foreground)"
+                                : "var(--foreground)",
+                          }}
+                        >
+                          {activeTab === tab && (
+                            <motion.div
+                              layoutId="profile-tab-pill"
+                              className="absolute inset-0 rounded-full bg-primary"
+                              style={{ zIndex: -1 }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 500,
+                                damping: 30,
+                              }}
+                            />
+                          )}
+                          {tab === "chat" ? (
+                            <MessageCircle className="h-4 w-4" />
+                          ) : (
+                            <Flower2 className="h-4 w-4" />
+                          )}
+                          {tab === "chat" ? "Chat history" : "Yoga activity"}
+                        </button>
+                      ))}
+                    </div>
+                  </LayoutGroup>
+
+                  {/* Search (chat tab only) */}
+                  <AnimatePresence>
+                    {activeTab === "chat" && (
+                      <motion.div
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: "auto" }}
+                        exit={{ opacity: 0, width: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="relative w-full max-w-sm overflow-hidden"
+                      >
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          placeholder="Search conversations..."
+                          className="h-11 rounded-full border-border/70 bg-white/65 pl-10"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-6">
+                <AnimatePresence mode="wait">
+                  {activeTab === "chat" ? (
+                    <motion.div
+                      key="chat-content"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {filteredSessions.length === 0 ? (
+                        <div className="rounded-[28px] border border-border/70 bg-white/55 p-10 text-center">
+                          <MessageCircle className="mx-auto h-10 w-10 text-muted-foreground" />
+                          <h3 className="mt-4 text-xl font-semibold text-foreground">
+                            No conversations found
+                          </h3>
+                          <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                            Start a new chat session or change the search term.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="grid gap-6 xl:grid-cols-[20rem_minmax(0,1fr)]">
+                          {/* Session list */}
+                          <motion.div
+                            className="space-y-3"
+                            variants={staggerContainer}
+                            initial="hidden"
+                            animate="visible"
+                          >
+                            {filteredSessions.map((session) => {
+                              const isSelected =
+                                selectedSessionId === session.id;
+                              return (
+                                <motion.button
+                                  key={session.id}
+                                  type="button"
+                                  variants={staggerItem}
+                                  whileHover={
+                                    shouldReduce
+                                      ? {}
+                                      : {
+                                          scale: 1.015,
+                                          boxShadow:
+                                            "0 8px 24px -12px rgba(44,33,18,0.25)",
+                                        }
+                                  }
+                                  whileTap={shouldReduce ? {} : { scale: 0.98 }}
+                                  onClick={() =>
+                                    setSelectedSessionId(session.id)
+                                  }
+                                  className={cn(
+                                    "w-full rounded-[24px] border p-4 text-left transition-all duration-200",
+                                    isSelected
+                                      ? "border-primary/30 bg-primary/8"
+                                      : "border-border/70 bg-white/60 hover:border-primary/25 hover:bg-white/82"
+                                  )}
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <p className="font-semibold text-foreground">
+                                        {session.title}
+                                      </p>
+                                      <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                                        <span>
+                                          {session.createdAt.toLocaleDateString()}
+                                        </span>
+                                        <span>
+                                          {session.messages.length} messages
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <motion.div
+                                      animate={
+                                        isSelected
+                                          ? { x: 2, color: "var(--primary)" }
+                                          : { x: 0 }
+                                      }
+                                      transition={{
+                                        type: "spring",
+                                        stiffness: 400,
+                                        damping: 20,
+                                      }}
+                                    >
+                                      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                    </motion.div>
+                                  </div>
+                                </motion.button>
+                              );
+                            })}
+                          </motion.div>
+
+                          {/* Selected session messages */}
+                          <div className="rounded-[28px] border border-border/70 bg-white/60 p-5">
+                            {selectedSession ? (
+                              <>
+                                <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border/60 pb-4">
+                                  <div>
+                                    <h3 className="text-2xl font-semibold text-foreground">
+                                      {selectedSession.title}
+                                    </h3>
+                                    <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                                      <span>
+                                        Started{" "}
+                                        {selectedSession.createdAt.toLocaleDateString()}
+                                      </span>
+                                      <span>
+                                        Updated{" "}
+                                        {selectedSession.lastUpdated.toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex gap-2">
+                                    <motion.div
+                                      whileTap={shouldReduce ? {} : { scale: 0.9 }}
+                                    >
+                                      <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="rounded-full"
+                                        onClick={() =>
+                                          exportSession(selectedSession)
+                                        }
+                                        aria-label="Export chat session"
+                                      >
+                                        <Download className="h-4 w-4" />
+                                      </Button>
+                                    </motion.div>
+                                    <motion.div
+                                      whileTap={shouldReduce ? {} : { scale: 0.9 }}
+                                    >
+                                      <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="rounded-full"
+                                        onClick={() =>
+                                          deleteSession(selectedSession.id)
+                                        }
+                                        aria-label="Delete chat session"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </motion.div>
+                                  </div>
+                                </div>
+
+                                <div className="mt-5 space-y-4">
+                                  {selectedSession.messages.map(
+                                    (message, idx) => (
+                                      <motion.div
+                                        key={message.id}
+                                        initial={
+                                          shouldReduce
+                                            ? {}
+                                            : { opacity: 0, y: 10 }
+                                        }
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{
+                                          delay: idx * 0.04,
+                                          duration: 0.3,
+                                        }}
+                                        className={`flex ${
+                                          message.type === "user"
+                                            ? "justify-end"
+                                            : "justify-start"
+                                        }`}
+                                      >
+                                        <div
+                                          className={`max-w-3xl ${
+                                            message.type === "user"
+                                              ? "ml-12"
+                                              : "mr-12"
+                                          }`}
+                                        >
+                                          <div
+                                            className={cn(
+                                              "rounded-[24px] border px-4 py-3",
+                                              message.type === "user"
+                                                ? "border-primary/25 bg-primary text-primary-foreground"
+                                                : "border-border/70 bg-background/80 text-foreground"
+                                            )}
+                                          >
+                                            <div className="mb-2 flex items-center justify-between gap-3">
+                                              <div className="flex items-center gap-2">
+                                                <span
+                                                  className={cn(
+                                                    "text-xs font-semibold uppercase tracking-[0.18em]",
+                                                    message.type === "user"
+                                                      ? "text-primary-foreground/75"
+                                                      : "text-muted-foreground"
+                                                  )}
+                                                >
+                                                  {message.type === "user"
+                                                    ? "You"
+                                                    : "Guide"}
+                                                </span>
+                                                <span
+                                                  className={cn(
+                                                    "text-xs",
+                                                    message.type === "user"
+                                                      ? "text-primary-foreground/65"
+                                                      : "text-muted-foreground"
+                                                  )}
+                                                >
+                                                  {message.timestamp.toLocaleTimeString()}
+                                                </span>
+                                              </div>
+                                              {message.category && (
+                                                <Badge variant="outline">
+                                                  {message.category}
+                                                </Badge>
+                                              )}
+                                            </div>
+                                            <p className="text-sm leading-7">
+                                              {message.content}
+                                            </p>
+                                          </div>
+
+                                          {message.verse && (
+                                            <motion.div
+                                              initial={
+                                                shouldReduce
+                                                  ? {}
+                                                  : { opacity: 0, scale: 0.96 }
+                                              }
+                                              animate={{
+                                                opacity: 1,
+                                                scale: 1,
+                                              }}
+                                              transition={{
+                                                delay: idx * 0.04 + 0.15,
+                                                duration: 0.35,
+                                              }}
+                                              className="mt-3 rounded-[22px] border border-border/70 bg-white/70 p-4"
+                                            >
+                                              <Badge variant="accent">
+                                                Chapter{" "}
+                                                {message.verse.chapter}, Verse{" "}
+                                                {message.verse.verseNumber}
+                                              </Badge>
+                                              {message.verse.sanskrit ? (
+                                                <p className="mt-3 text-sm leading-8 text-foreground">
+                                                  {message.verse.sanskrit}
+                                                </p>
+                                              ) : null}
+                                              <p className="mt-2 text-sm italic leading-7 text-muted-foreground">
+                                                {message.verse.meaning}
+                                              </p>
+                                            </motion.div>
+                                          )}
+                                        </div>
+                                      </motion.div>
+                                    )
+                                  )}
+                                </div>
+                              </>
+                            ) : (
+                              <div className="rounded-[24px] border border-border/70 bg-white/55 p-6 text-sm leading-7 text-muted-foreground">
+                                Pick a saved conversation to inspect the messages
+                                and any linked verse references.
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  ) : (
+                    /* ---- Yoga tab ---- */
+                    <motion.div
+                      key="yoga-content"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {yogaSessions.length === 0 ? (
+                        <div className="rounded-[28px] border border-border/70 bg-white/55 p-10 text-center">
+                          <Flower2 className="mx-auto h-10 w-10 text-muted-foreground" />
+                          <h3 className="mt-4 text-xl font-semibold text-foreground">
+                            No yoga sessions yet
+                          </h3>
+                          <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                            Complete yoga flows to see them summarized here.
+                          </p>
+                        </div>
+                      ) : (
+                        <>
+                          {/* Yoga stats */}
+                          <motion.div
+                            className="grid gap-4 md:grid-cols-3"
+                            variants={staggerContainer}
+                            initial="hidden"
+                            animate="visible"
+                          >
+                            {[
+                              {
+                                icon: Flower2,
+                                label: "Total sessions",
+                                value: yogaSessions.length,
+                                suffix: "",
+                              },
+                              {
+                                icon: Clock,
+                                label: "Total time",
+                                value: totalYogaMinutes,
+                                suffix: " min",
+                              },
+                              {
+                                icon: TrendingUp,
+                                label: "Levels completed",
+                                value: yogaLevelCount,
+                                suffix: "",
+                              },
+                            ].map((item) => {
+                              const Icon = item.icon;
+                              return (
+                                <motion.div
+                                  key={item.label}
+                                  variants={staggerItem}
+                                  whileHover={
+                                    shouldReduce
+                                      ? {}
+                                      : {
+                                          y: -3,
+                                          boxShadow:
+                                            "0 14px 36px -16px rgba(44,33,18,0.3)",
+                                        }
+                                  }
+                                  className="rounded-[24px] border border-border/70 bg-white/55 p-5 transition-shadow"
+                                >
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div>
+                                      <p className="text-sm text-muted-foreground">
+                                        {item.label}
+                                      </p>
+                                      <p className="mt-2 text-2xl font-semibold text-foreground">
+                                        <AnimatedCounter
+                                          value={item.value}
+                                          suffix={item.suffix}
+                                        />
+                                      </p>
+                                    </div>
+                                    <motion.div
+                                      animate={
+                                        shouldReduce
+                                          ? {}
+                                          : {
+                                              scale: [1, 1.08, 1],
+                                            }
+                                      }
+                                      transition={{
+                                        repeat: Infinity,
+                                        duration: 3,
+                                        ease: "easeInOut",
+                                      }}
+                                    >
+                                      <Icon className="h-7 w-7 text-primary" />
+                                    </motion.div>
+                                  </div>
+                                </motion.div>
+                              );
+                            })}
+                          </motion.div>
+
+                          {/* Yoga session cards */}
+                          <motion.div
+                            className="mt-6 grid gap-4"
+                            variants={staggerContainer}
+                            initial="hidden"
+                            animate="visible"
+                          >
+                            {yogaSessions.map((session) => (
+                              <motion.div
+                                key={session.id}
+                                variants={staggerItem}
+                                whileHover={
+                                  shouldReduce
+                                    ? {}
+                                    : {
+                                        scale: 1.01,
+                                        boxShadow:
+                                          "0 14px 40px -18px rgba(44,33,18,0.3)",
+                                      }
+                                }
+                                className="rounded-[26px] border border-border/70 bg-white/60 p-5 transition-shadow"
+                              >
+                                <div className="flex flex-wrap items-center justify-between gap-4">
+                                  <div>
+                                    <div className="flex flex-wrap items-center gap-3">
+                                      <h3 className="text-lg font-semibold text-foreground">
+                                        {session.asanaName}
+                                      </h3>
+                                      <motion.span
+                                        className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${levelColors[session.level]}`}
+                                        whileHover={
+                                          shouldReduce
+                                            ? {}
+                                            : { scale: 1.08 }
+                                        }
+                                      >
+                                        {session.level}
+                                      </motion.span>
+                                    </div>
+                                    <p className="mt-1 text-sm italic text-muted-foreground">
+                                      {session.sanskritName}
+                                    </p>
+                                    <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                                      <span>
+                                        {new Date(
+                                          session.completedAt
+                                        ).toLocaleDateString()}
+                                      </span>
+                                      <span>{session.duration} minutes</span>
+                                      <span>{session.steps} steps</span>
+                                    </div>
+                                  </div>
+
+                                  <motion.div
+                                    className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground"
+                                    whileHover={
+                                      shouldReduce
+                                        ? {}
+                                        : { rotate: 15, scale: 1.1 }
+                                    }
+                                    transition={{
+                                      type: "spring",
+                                      stiffness: 300,
+                                      damping: 15,
+                                    }}
+                                  >
+                                    <Flower2 className="h-5 w-5" />
+                                  </motion.div>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+          </ScrollReveal>
+        </section>
+      </div>
     </div>
   );
-};
+}
 
 export default Profile;

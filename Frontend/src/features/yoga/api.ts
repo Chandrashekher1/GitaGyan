@@ -5,6 +5,21 @@ import type {
   YogaSessionData,
 } from './types';
 
+function normalizeYogaPose(raw: Partial<YogaPose>): YogaPose {
+  return {
+    id: raw.id ?? 0,
+    name: raw.name ?? '',
+    nameHindi: raw.nameHindi ?? '',
+    description: raw.description ?? '',
+    difficulty: raw.difficulty ?? 'beginner',
+    benefits: Array.isArray(raw.benefits) ? raw.benefits.filter(Boolean) : [],
+    imageUrl: raw.imageUrl ?? '',
+    mentalHealthTags: Array.isArray(raw.mentalHealthTags)
+      ? raw.mentalHealthTags.filter(Boolean)
+      : [],
+  };
+}
+
 function unique(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))];
 }
@@ -70,13 +85,15 @@ async function fetchYoga<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function getYogaPoses(): Promise<YogaPose[]> {
-  return fetchYoga<YogaPose[]>('/poses', {
+  const poses = await fetchYoga<Partial<YogaPose>[]>('/poses', {
     cache: 'no-store',
     headers: {
       'Cache-Control': 'no-cache',
       'Pragma': 'no-cache',
     },
   });
+
+  return Array.isArray(poses) ? poses.map(normalizeYogaPose) : [];
 }
 
 export async function analyzePose(
@@ -87,6 +104,26 @@ export async function analyzePose(
   }
 ): Promise<AnalyzeResponse> {
   return fetchYoga<AnalyzeResponse>('/analyze', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function submitYogaFeedback(
+  payload: {
+    sessionId: string;
+    poseAttemptId: string;
+    rating: number;
+    helpful: boolean;
+    targetedConcern: string;
+    moodAfter: string;
+    notes: string;
+  }
+): Promise<{ success: boolean }> {
+  return fetchYoga<{ success: boolean }>('/feedback', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

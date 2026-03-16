@@ -1,20 +1,22 @@
-// import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/Language";
 import { useSpeechToText } from "@/Hooks/useSpeechToText";
 import { Backend_Url, Lotus_Image } from "@/utils/constant";
-import { Send, User, Sparkles, MicIcon, Volume2Icon, VolumeOffIcon} from "lucide-react";
+import { Send, User, Sparkles, MicIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
 
 interface Message {
   id: string;
   content: string;
   isUser: boolean;
-  language : string;
+  language: string;
   timestamp: Date;
 }
+
 export function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -23,8 +25,8 @@ export function Chat() {
   const [isOn, setIsOn] = useState(false)
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
-  // const token = localStorage.getItem("token") 
-  const {language} = useLanguage()
+  const token = localStorage.getItem("token")
+  const { language } = useLanguage()
   const { listening, transcript, startListening } = useSpeechToText();
 
   const scrollToBottom = () => {
@@ -39,7 +41,7 @@ export function Chat() {
     if (!listening) {
       if (transcript && transcript.trim() !== "") {
         setInputValue(transcript);
-         setTimeout(() => {
+        setTimeout(() => {
           handleSendMessage()
         }, 10000)
       } else {
@@ -51,20 +53,20 @@ export function Chat() {
   }, [transcript, listening]);
 
   useEffect(() => {
-      // const urlParams = new URLSearchParams(window.location.search);
-      // const token = urlParams.get('token');
-      // const storedToken = localStorage.getItem('token');
-      // if (token) {
-      //   localStorage.setItem('token', token);
-      // }
-      
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const storedToken = localStorage.getItem('token');
+    if (token) {
+      localStorage.setItem('token', token);
+      toast.success("Welcome back!")
 
-      if(!localStorage.getItem("uid")) {
-        navigate('/login');
-      }
+    }
 
-    }, []);
-    console.log(messages);
+    if (!token && !storedToken) {
+      navigate('/login');
+    }
+  }, []);
+
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
@@ -85,8 +87,9 @@ export function Chat() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `${token}`,
         },
-        body: JSON.stringify({ query: userMessage.content , language: language}),
+        body: JSON.stringify({ query: userMessage.content, language: language }),
       });
 
       const json = await response.json();
@@ -109,7 +112,7 @@ export function Chat() {
           id: (Date.now() + 1).toString(),
           content: "Experiencing technical difficulties. Please try again in a moment.",
           isUser: false,
-          language:language,
+          language: language,
           timestamp: new Date(),
         },
       ]);
@@ -117,25 +120,28 @@ export function Chat() {
       setIsTyping(false);
     }
   };
+
   const handleSpeechText = async (text: string) => {
-      try {
-        const response = await fetch(`${Backend_Url}/google-tts`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({text : text, language: language})
-        });
-        const data = await response.json();
-        if(data.success && data.audioContent) {
-          const audio = new Audio(`data:audio/mpeg;base64,${data.audioContent}`)
-          setAudio(audio)
-          audio.play();
-          setIsOn(!isOn)
-        }
-      } catch(error) {
-        console.error("Error in text to speech:", error);
+    try {
+      const response = await fetch(`${Backend_Url}/google-tts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({ text: text, language: language })
+      });
+      const data = await response.blob();
+
+      if (data) {
+        const audio = new Audio(URL.createObjectURL(data))
+        setAudio(audio)
+        audio.play();
+        setIsOn(!isOn)
       }
+    } catch (error) {
+      console.error("Error in text to speech:", error);
+    }
   }
 
   const handleOff = () => {
@@ -143,12 +149,27 @@ export function Chat() {
     setIsOn(!isOn)
   }
 
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
+
+  // const handleSuggestionClick = (suggestion: string) => {
+  //   setInputValue(suggestion);
+  // };
+
+  // const suggestions = [
+  //   "What is dharma in daily life?",
+  //   "How to find inner peace?",
+  //   "What is the purpose of life?",
+  //   "How to overcome fear and anxiety?",
+  //   "What does Krishna teach about duty?",
+  //   "How to practice detachment?"
+  // ];
+
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -196,8 +217,8 @@ export function Chat() {
                       {language === 'en' ? "Welcome to Sacred Dialogue 🙏" : "पवित्र संवाद में आपका स्वागत है 🙏"}
                     </h2>
                     <p className="text-muted-foreground text-sm md:text-lg  leading-relaxed">
-                      {language === 'en' ? "Discover timeless wisdom from the Bhagavad Gita. Ask any question about life, purpose, relationships, or spiritual growth, and receive guidance rooted in ancient teachings." : 
-                      "भगवद्गीता से शाश्वत ज्ञान की खोज करें। जीवन, उद्देश्य, संबंधों या आध्यात्मिक विकास से जुड़े किसी भी प्रश्न को पूछें और प्राचीन शिक्षाओं में निहित मार्गदर्शन प्राप्त करें।" }
+                      {language === 'en' ? "Discover timeless wisdom from the Bhagavad Gita. Ask any question about life, purpose, relationships, or spiritual growth, and receive guidance rooted in ancient teachings." :
+                        "भगवद्गीता से शाश्वत ज्ञान की खोज करें। जीवन, उद्देश्य, संबंधों या आध्यात्मिक विकास से जुड़े किसी भी प्रश्न को पूछें और प्राचीन शिक्षाओं में निहित मार्गदर्शन प्राप्त करें।"}
                     </p>
                   </div>
 
@@ -227,15 +248,14 @@ export function Chat() {
             {messages.map((msg, index) => (
               <div
                 key={msg.id}
-                className={`flex items-start gap-2 md:gap-4 ${
-                  msg.isUser ? "flex-row-reverse" : "flex-row"
-                } animate-in fade-in slide-in-from-bottom-4 duration-500`}
+                className={`flex items-start gap-2 md:gap-4 ${msg.isUser ? "flex-row-reverse" : "flex-row"
+                  } animate-in fade-in slide-in-from-bottom-4 duration-500`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex-shrink-0">
                   {msg.isUser ? (
                     <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center shadow-lg ring-3 ring-orange-200">
-                      <User  className="text-white" />
+                      <User className="text-white" />
                     </div>
                   ) : (
                     <div className="md:w-11 md:h-11 w-8 h-8 rounded-full bg-gradient-to-br from-orange-200 to-red-200 border-2 border-orange-300 flex items-center justify-center shadow-md">
@@ -250,11 +270,10 @@ export function Chat() {
 
                 <div className={`flex flex-col max-w-[80%] ${msg.isUser ? "items-end" : "items-start"}`}>
                   <div
-                    className={`md:rounded-2xl rounded-xl md:px-5 md:py-4 p-2 shadow-md relative leading-relaxed ${
-                      msg.isUser
-                        ? "bg-primary "
-                        : "bg-card hover:shadow-primary border border-border md:font-semibold md:text-muted-foreground text-md rounded-tl-md shadow-gray-100 hover:shadow-md transition-shadow duration-300"
-                    }`}
+                    className={`md:rounded-2xl rounded-xl md:px-5 md:py-4 p-2 shadow-md relative leading-relaxed ${msg.isUser
+                      ? "bg-primary "
+                      : "bg-card hover:shadow-primary border border-border md:font-semibold md:text-muted-foreground text-md rounded-tl-md shadow-gray-100 hover:shadow-md transition-shadow duration-300"
+                      }`}
                   >
                     <div
                       className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "prose prose-lg max-w-none"}`}
@@ -263,8 +282,9 @@ export function Chat() {
                     {/* <div className={`text-base  ${msg.isUser ? "font-medium text-primary-foreground" : "font-semibold text-muted-foreground text-md "}`}>
                       {msg.content}
                     </div> */}
-                    
+
                   </div>
+
                   <div className="flex justify-between w-full items-center">
                     <span className={`text-xs text-muted-foreground mt-2 px-3 ${msg.isUser ? "text-right" : "text-left"}`}>
                       {msg.timestamp.toLocaleTimeString([], {
@@ -273,15 +293,15 @@ export function Chat() {
                       })}
                     </span>
                     {!msg.isUser &&
-                    <Button type="button" variant="outline" size="icon" className="" 
+                      <Button type="button" variant="outline" size="icon" className=""
                       >
                         {!isOn ? <span onClick={() => handleSpeechText(msg.content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim())}>
-                          <Volume2Icon/>
+                          <Volume2Icon />
                         </span> : <span onClick={() => handleOff()}>
-                          <VolumeOffIcon/>
+                          <VolumeOffIcon />
                         </span>}
-                    </Button>}
-                    
+                      </Button>}
+                    {/* <Button type="button" variant="outline" size="icon"><HeartIcon/></Button> */}
                   </div>
                 </div>
               </div>
@@ -299,6 +319,7 @@ export function Chat() {
                 <div className="bg-white rounded-2xl rounded-tl-md px-5 py-4 shadow-md border border-orange-100">
                   <div className="flex items-center space-x-1">
                     {/* <TextShimmerWave className="text-orange-600 font-medium">
+                    
                     </TextShimmerWave> */}
                     <div className="flex space-x-1 ml-2">
                       <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
@@ -331,7 +352,7 @@ export function Chat() {
                 <Sparkles size={20} className={isTyping ? "animate-spin" : ""} />
               </div>
             </div>
-            <Button type="button" onClick={startListening} disabled={listening} className="md:h-12 h-8 md:w-12 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg group"><MicIcon/></Button>
+            <Button type="button" onClick={startListening} disabled={listening} className="md:h-12 h-8 md:w-12 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg group"><MicIcon /></Button>
             <Button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || isTyping}

@@ -17,27 +17,27 @@ import Yoga from './features/yoga/YogaPage'
 function App() {
 
   return (
-      <div>
-        <LanguageProvider>
-            <Router>
-          <Header/>
+    <div>
+      <LanguageProvider>
+        <Router>
+          <Header />
           <Routes>
-            <Route path='/' element = {<Home/>}/>
-            <Route path='/profile' element = {<Profile/>}/>
-            <Route path='/chat' element = {<Chat/>}/>
-            <Route path='/login' element = {<Login/>}/>
-            <Route path='/signup' element = {<SignUp/>}/>
-            <Route path='/about' element = {<About/>}/>
-            <Route path='/chapters' element = {<Chapters/>}/>
-            <Route path='/verses' element = {<Verses/>}/>
-            <Route path='/meditation' element = {<Meditation/>}/>
-            <Route path='/yoga' element = {<Yoga/>}/>
+            <Route path='/' element={<Home />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/chat' element={<Chat />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/chapters' element={<Chapters />} />
+            <Route path='/verses' element={<Verses />} />
+            <Route path='/meditation' element={<Meditation />} />
+            <Route path='/yoga' element={<Yoga />} />
           </Routes>
-          <Toaster duration={5000} position='top-center'/>
+          <Toaster duration={5000} position='top-center' />
         </Router>
-        
-        </LanguageProvider>
-      </div>
+
+      </LanguageProvider>
+    </div>
   )
 }
 

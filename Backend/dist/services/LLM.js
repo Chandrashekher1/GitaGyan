@@ -59,7 +59,7 @@ if language in hindi then write
 - Write the final answer in the selected language (${language}).  
 `;
     const response = await ai.models.generateContent({
-        model: "gemini-3-flash",
+        model: "gemini-2.5-flash",
         contents: [
             {
                 role: 'user',

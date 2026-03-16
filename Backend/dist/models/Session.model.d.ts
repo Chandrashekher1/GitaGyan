@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 export declare const Session: mongoose.Model<{
-    sessionId: string;
     userId: string;
+    sessionId: string;
     moodTimeline: mongoose.Types.DocumentArray<{
         date: NativeDate;
         emotion?: string | null;
@@ -19,8 +19,8 @@ export declare const Session: mongoose.Model<{
     createdAt: NativeDate;
     lastActive: NativeDate;
 }, {}, {}, {}, mongoose.Document<unknown, {}, {
-    sessionId: string;
     userId: string;
+    sessionId: string;
     moodTimeline: mongoose.Types.DocumentArray<{
         date: NativeDate;
         emotion?: string | null;
@@ -38,8 +38,8 @@ export declare const Session: mongoose.Model<{
     createdAt: NativeDate;
     lastActive: NativeDate;
 }, {}, mongoose.DefaultSchemaOptions> & {
-    sessionId: string;
     userId: string;
+    sessionId: string;
     moodTimeline: mongoose.Types.DocumentArray<{
         date: NativeDate;
         emotion?: string | null;
@@ -61,8 +61,8 @@ export declare const Session: mongoose.Model<{
 } & {
     __v: number;
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
-    sessionId: string;
     userId: string;
+    sessionId: string;
     moodTimeline: mongoose.Types.DocumentArray<{
         date: NativeDate;
         emotion?: string | null;
@@ -80,8 +80,8 @@ export declare const Session: mongoose.Model<{
     createdAt: NativeDate;
     lastActive: NativeDate;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    sessionId: string;
     userId: string;
+    sessionId: string;
     moodTimeline: mongoose.Types.DocumentArray<{
         date: NativeDate;
         emotion?: string | null;
@@ -99,8 +99,8 @@ export declare const Session: mongoose.Model<{
     createdAt: NativeDate;
     lastActive: NativeDate;
 }>, {}, mongoose.ResolveSchemaOptions<mongoose.DefaultSchemaOptions>> & mongoose.FlatRecord<{
-    sessionId: string;
     userId: string;
+    sessionId: string;
     moodTimeline: mongoose.Types.DocumentArray<{
         date: NativeDate;
         emotion?: string | null;

@@ -5,7 +5,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 export async function classifySafety(userMessage) {
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-3-flash",
+            model: "gemini-2.5-flash",
             contents: userMessage,
             config: {
                 systemInstruction: `You are a safety classifier for a mental wellness app.

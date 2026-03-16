@@ -87,7 +87,7 @@ router.post("/chat", auth, async (req, res) => {
         const finalRag = await tripleRAGQuery(message, emotionData.emotion, sessionId);
         const enrichedPrompt = buildEnrichedPrompt(message, emotionData, finalRag);
         const result = await ai.models.generateContent({
-            model: "gemini-3-flash",
+            model: "gemini-2.5-flash",
             contents: enrichedPrompt,
             config: {
                 systemInstruction: SYSTEM_PROMPT,

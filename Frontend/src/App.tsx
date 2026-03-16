@@ -12,7 +12,7 @@ import Meditation from './pages/Meditations'
 import { LanguageProvider } from './context/Language'
 import { Toaster } from 'sonner';
 import Profile from './pages/Profile'
-import Yoga from './pages/Yoga'
+import Yoga from './features/yoga/YogaPage'
 
 function App() {
 

@@ -12,6 +12,7 @@
     "load-gita": "node dist/startup/loadGita.js",
     "index": "node dist/index.js",
     "insert-chapters": "node dist/services/insertChapter.js",
+    "seed-mental-health": "npm run build && node dist/scripts/seedMentalHealth.js",
     "dev": "npm run build && npm run load-gita && npm run index"
   },
   "keywords": [],

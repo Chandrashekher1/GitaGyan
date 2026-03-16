@@ -1,15 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
-import * as dotenv from "dotenv"
-dotenv.config()
-
+import * as dotenv from "dotenv";
+dotenv.config();
 const apiKey = process.env.GOOGLE_API_KEY;
 if (!apiKey) {
-  throw new Error("Missing GOOGLE_API_KEY environment variable");
+    throw new Error("Missing GOOGLE_API_KEY environment variable");
 }
 const ai = new GoogleGenAI({ apiKey });
-
-export async function LLMQuery(query: string, context: string, language: string) {
-  const prompt = `
+export async function LLMQuery(query, context, language) {
+    const prompt = `
 You are Lord Krishna, the eternal teacher and guide, explaining the wisdom of the Bhagavad Gita.  
 
 The user has asked: "${query}"  
@@ -59,17 +57,16 @@ if language in hindi then write
 - Use examples or analogies only inside <li> if needed.  
 - Maintain a respectful and humble tone throughout.  
 - Write the final answer in the selected language (${language}).  
-`
-
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash",
-    contents: [
-      {
-        role: 'user',
-        parts: [{ text: prompt }]
-      }
-    ]
-  });
-
-  return response.text
+`;
+    const response = await ai.models.generateContent({
+        model: "gemini-3-flash",
+        contents: [
+            {
+                role: 'user',
+                parts: [{ text: prompt }]
+            }
+        ]
+    });
+    return response.text;
 }
+//# sourceMappingURL=LLM.js.map

@@ -1,137 +1,228 @@
-import { useState } from 'react';
-import { BookOpen, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { ArrowRight, BookOpen, ChevronRight, LibraryBig } from "lucide-react";
 
-const Verses = () => {
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+interface VerseEntry {
+  chapter: number;
+  verse: number;
+  sanskrit: string;
+  transliteration: string;
+  meaning: string;
+}
+
+const featuredVerses: VerseEntry[] = [
+  {
+    chapter: 2,
+    verse: 47,
+    sanskrit: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन। मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
+    transliteration: "karmaṇy evādhikāras te mā phaleṣu kadācana, mā karma-phala-hetur bhūr mā te saṅgo 'stv akarmaṇi",
+    meaning: "You have the right to perform action, but never to its fruits. Do not be motivated by the results of action, nor be attached to inaction.",
+  },
+  {
+    chapter: 4,
+    verse: 7,
+    sanskrit: "यदा यदा हि धर्मस्य ग्लानिर्भवति भारत। अभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्॥",
+    transliteration: "yadā yadā hi dharmasya glānir bhavati bhārata, abhyutthānam adharmasya tadātmānaṁ sṛjāmy aham",
+    meaning: "Whenever there is a decline in righteousness and an increase in unrighteousness, I manifest myself.",
+  },
+  {
+    chapter: 9,
+    verse: 22,
+    sanskrit: "अनन्याश्चिन्तयन्तो मां ये जनाः पर्युपासते। तेषां नित्याभियुक्तानां योगक्षेमं वहाम्यहम्॥",
+    transliteration: "ananyāś cintayanto māṁ ye janāḥ paryupāsate, teṣāṁ nityābhiyuktānāṁ yoga-kṣemaṁ vahāmy aham",
+    meaning: "For those who hold steady devotion, I protect what they have and provide what they need.",
+  },
+  {
+    chapter: 15,
+    verse: 7,
+    sanskrit: "ममैवांशो जीवलोके जीवभूतः सनातनः। मनःषष्ठानीन्द्रियाणि प्रकृतिस्थानि कर्षति॥",
+    transliteration: "mamaivāṁśo jīva-loke jīva-bhūtaḥ sanātanaḥ, manaḥ-ṣaṣṭhānīndriyāṇi prakṛti-sthāni karṣati",
+    meaning: "The living being in this world is an eternal fragment of the divine, struggling through mind and senses.",
+  },
+  {
+    chapter: 7,
+    verse: 19,
+    sanskrit: "बहूनां जन्मनामन्ते ज्ञानवान्मां प्रपद्यते। वासुदेवः सर्वमिति स महात्मा सुदुर्लभः॥",
+    transliteration: "bahūnāṁ janmanām ante jñānavān māṁ prapadyate, vāsudevaḥ sarvam iti sa mahātmā sudurlabhaḥ",
+    meaning: "After many journeys, the wise recognize the divine as the source of everything.",
+  },
+  {
+    chapter: 18,
+    verse: 66,
+    sanskrit: "सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज। अहं त्वां सर्वपापेभ्यो मोक्षयिष्यामि मा शुचः॥",
+    transliteration: "sarva-dharmān parityajya mām ekaṁ śaraṇaṁ vraja, ahaṁ tvāṁ sarva-pāpebhyo mokṣayiṣyāmi mā śucaḥ",
+    meaning: "Let go of your fear and return to surrender; liberation follows trust, not panic.",
+  },
+];
+
+function Verses() {
+  const { chapterNumber } = useParams();
   const [selectedVerse, setSelectedVerse] = useState<string | null>(null);
 
-  const featuredVerses = [
-    {
-      chapter: 2,
-      verse: 47,
-      sanskrit: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन। मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
-      english: "karmaṇy evādhikāras te mā phaleṣu kadācana, mā karma-phala-hetur bhūr mā te saṅgo 'stv akarmaṇi",
-      meaning: "You have the right to perform action, but never to its fruits. Do not be motivated by the results of action, nor be attached to inaction."
-    },
-    {
-      chapter: 4,
-      verse: 7,
-      sanskrit: "यदा यदा हि धर्मस्य ग्लानिर्भवति भारत। अभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्॥",
-      english: "yadā yadā hi dharmasya glānir bhavati bhārata, abhyutthānam adharmasya tadātmānaṁ sṛjāmy aham",
-      meaning: "Whenever there is a decline in righteousness and an increase in unrighteousness, O Arjuna, at that time I manifest myself on earth."
-    },
-    {
-      chapter: 9,
-      verse: 22,
-      sanskrit: "अनन्याश्चिन्तयन्तो मां ये जनाः पर्युपासते। तेषां नित्याभियुक्तानां योगक्षेमं वहाम्यहम्॥",
-      english: "ananyāś cintayanto māṁ ye janāḥ paryupāsate, teṣāṁ nityābhiyuktānāṁ yoga-kṣemaṁ vahāmy aham",
-      meaning: "For those who worship Me with exclusive devotion, meditating on My transcendental form, I provide what they lack and preserve what they have."
-    },
-    {
-      chapter: 15,
-      verse: 7,
-      sanskrit: "ममैवांशो जीवलोके जीवभूतः सनातनः। मनःषष्ठानीन्द्रियाणि प्रकृतिस्थानि कर्षति॥",
-      english: "mamaivāṁśo jīva-loke jīva-bhūtaḥ sanātanaḥ, manaḥ-ṣaṣṭhānīndriyāṇi prakṛti-sthāni karṣati",
-      meaning: "The living entities in this material world are My eternal fragmental parts. Due to conditioned life, they are struggling very hard with the six senses, which include the mind."
-    },
-    {
-      chapter: 7,
-      verse: 19,
-      sanskrit: "बहूनां जन्मनामन्ते ज्ञानवान्मां प्रपद्यते। वासुदेवः सर्वमिति स महात्मा सुदुर्लभः॥",
-      english: "bahūnāṁ janmanām ante jñānavān māṁ prapadyate, vāsudevaḥ sarvam iti sa mahātmā sudurlabhaḥ",
-      meaning: "After many births and deaths, he who is actually in knowledge surrenders unto Me, knowing Me to be the cause of all causes and all that is. Such a great soul is very rare."
-    },
-    {
-      chapter: 18,
-      verse: 66,
-      sanskrit: "सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज। अहं त्वां सर्वपापेभ्यो मोक्षयिष्यामि मा शुचः॥",
-      english: "sarva-dharmān parityajya mām ekaṁ śaraṇaṁ vraja, ahaṁ tvāṁ sarva-pāpebhyo mokṣayiṣyāmi mā śucaḥ",
-      meaning: "Abandon all varieties of religion and just surrender unto Me. I shall deliver you from all sinful reactions. Do not fear."
-    }
-  ];
+  const requestedChapter = chapterNumber ? Number(chapterNumber) : null;
+  const visibleVerses = requestedChapter
+    ? featuredVerses.filter((verse) => verse.chapter === requestedChapter)
+    : featuredVerses;
+  const hasChapterMatch = !requestedChapter || visibleVerses.length > 0;
+
+  useEffect(() => {
+    const firstVisible = visibleVerses[0];
+    setSelectedVerse(firstVisible ? `${firstVisible.chapter}-${firstVisible.verse}` : null);
+  }, [chapterNumber]);
+
+  const versesToRender = hasChapterMatch ? visibleVerses : featuredVerses;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full mb-6 shadow-lg">
-            <BookOpen className="w-8 h-8 text-white" />
+    <div className="px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-8">
+        <section className="grid gap-6 lg:grid-cols-[1.06fr_0.94fr]">
+          <div className="app-surface p-8 sm:p-10">
+            <div className="section-label mb-5">
+              <span className="eyebrow-dot" />
+              Verse gallery
+            </div>
+            <h1 className="display-font text-5xl font-semibold leading-[0.95] text-foreground sm:text-6xl">
+              Verse highlights for reflection, focus, and difficult days.
+            </h1>
+            <p className="mt-6 max-w-3xl text-base leading-8 text-muted-foreground">
+              These featured verses are laid out for reading, re-reading, and grounding.
+              When you arrive from a chapter page, this view narrows to that chapter automatically.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Badge variant="accent">{requestedChapter ? `Chapter ${requestedChapter}` : "All featured chapters"}</Badge>
+              <Badge variant="outline">{versesToRender.length} verse cards</Badge>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Button asChild className="rounded-full">
+                <Link to="/chapters">
+                  Browse chapters
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full border-border/70 bg-white/70">
+                <Link to="/chat">Take this into chat</Link>
+              </Button>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold text-orange-800 mb-4">Sacred Verses</h1>
-          <p className="text-lg text-orange-600">
-            Discover the timeless wisdom through the most profound verses of the Bhagavad Gita
-          </p>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {featuredVerses.map((verse) => {
-            const key = `${verse.chapter}-${verse.verse}`;
-            const isSelected = selectedVerse === key;
-
-            return (
-              <div
-                key={key}
-                className={`bg-white rounded-2xl shadow-lg border border-orange-100 p-6 transition-all duration-300 hover:shadow-xl cursor-pointer ${
-                  isSelected ? 'ring-2 ring-orange-500 shadow-xl' : ''
-                }`}
-                onClick={() => setSelectedVerse(isSelected ? null : key)}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-orange-800">
-                      Chapter {verse.chapter}, Verse {verse.verse}
-                    </h3>
-                    <p className="text-sm text-orange-600 italic">Featured Verse</p>
-                  </div>
-                  <ChevronRight
-                    className={`w-5 h-5 text-orange-500 transition-transform duration-200 ${
-                      isSelected ? 'rotate-90' : ''
-                    }`}
-                  />
+          <Card className="app-surface border-none bg-card/82">
+            <CardContent className="p-8">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="rounded-[20px] border border-primary/15 bg-primary/8 p-3 text-primary">
+                  <LibraryBig className="h-4 w-4" />
                 </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Reading mode</p>
+                  <p className="text-sm text-muted-foreground">Selected verse opens in full detail below.</p>
+                </div>
+              </div>
 
-                {isSelected && (
-                  <div className="mt-6 pt-6 border-t border-orange-100 space-y-6">
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Sanskrit</h4>
-                      <p className="text-xl font-sanskrit text-orange-800 leading-relaxed">
-                        {verse.sanskrit}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Transliteration</h4>
-                      <p className="text-lg text-gray-700 italic leading-relaxed">
-                        {verse.english}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Translation</h4>
-                      <p className="text-lg text-gray-800 leading-relaxed">
-                        "{verse.meaning}"
-                      </p>
-                    </div>
-                  </div>
+              <div className="rounded-[28px] border border-border/70 bg-white/60 p-6">
+                {requestedChapter && !hasChapterMatch ? (
+                  <>
+                    <Badge variant="outline">No featured match yet</Badge>
+                    <p className="mt-4 text-sm leading-7 text-foreground">
+                      Chapter {requestedChapter} isn&apos;t in the featured subset yet, so the full highlight collection is shown below.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <Badge variant="outline">{requestedChapter ? `Focused on chapter ${requestedChapter}` : "Curated across chapters"}</Badge>
+                    <p className="mt-4 text-sm leading-7 text-foreground">
+                      Open a verse card to view the Sanskrit, transliteration, and a clean translation block designed for slow reading.
+                    </p>
+                  </>
                 )}
               </div>
-            );
-          })}
-        </div>
+            </CardContent>
+          </Card>
+        </section>
 
-        <div className="mt-16 bg-gradient-to-r from-orange-500 to-amber-600 rounded-2xl p-8 text-white">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Explore All 700 Verses</h2>
-            <p className="text-xl text-orange-100 mb-6">
-              This is just a glimpse of the profound wisdom contained in the Bhagavad Gita
-            </p>
-            <button className="bg-white text-orange-600 px-8 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-colors duration-200 shadow-lg">
-              Coming Soon: Complete Verse Library
-            </button>
+        <section className="app-surface p-6 sm:p-8">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured verses</p>
+              <h2 className="mt-2 text-2xl font-semibold text-foreground">
+                {requestedChapter && hasChapterMatch ? `Chapter ${requestedChapter} highlights` : "Selected verses across the Gita"}
+              </h2>
+            </div>
+            <Badge variant="outline">Tap a card to expand</Badge>
           </div>
-        </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            {versesToRender.map((verse) => {
+              const key = `${verse.chapter}-${verse.verse}`;
+              const isSelected = selectedVerse === key;
+
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setSelectedVerse(isSelected ? null : key)}
+                  className={`rounded-[28px] border p-6 text-left transition-all duration-200 ${
+                    isSelected
+                      ? "border-primary/30 bg-primary/8 shadow-sm"
+                      : "border-border/70 bg-white/60 hover:border-primary/25 hover:bg-white/82"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="text-lg font-semibold text-foreground">
+                          Chapter {verse.chapter}, Verse {verse.verse}
+                        </h3>
+                        <Badge variant="accent">Featured</Badge>
+                      </div>
+                      <p className="mt-2 text-sm leading-7 text-muted-foreground">{verse.meaning}</p>
+                    </div>
+                    <ChevronRight className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${isSelected ? "rotate-90 text-primary" : ""}`} />
+                  </div>
+
+                  {isSelected && (
+                    <div className="mt-6 space-y-5 border-t border-border/60 pt-6">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Sanskrit</p>
+                        <p className="mt-3 text-xl leading-9 text-foreground">{verse.sanskrit}</p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Transliteration</p>
+                        <p className="mt-3 text-sm italic leading-8 text-muted-foreground">{verse.transliteration}</p>
+                      </div>
+
+                      <div className="rounded-[24px] border border-border/70 bg-white/65 p-5">
+                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Reflection-ready translation</p>
+                        <p className="mt-3 text-sm leading-8 text-foreground">{verse.meaning}</p>
+                      </div>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="app-surface p-8 text-center">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-4 inline-flex rounded-full border border-primary/15 bg-primary/8 p-3 text-primary">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            <h2 className="display-font text-4xl font-semibold text-foreground">Complete verse library is the next step.</h2>
+            <p className="mt-4 text-sm leading-8 text-muted-foreground">
+              This page now honors chapter routing and presents the featured verse set in a calmer layout.
+              If you want, the next pass can wire a full chapter-by-chapter verse API here.
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );
-};
+}
 
 export default Verses;

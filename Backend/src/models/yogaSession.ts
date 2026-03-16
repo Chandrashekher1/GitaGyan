@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
+import { completionFeedbackSchema } from './wellness.schemas.js';
 
 const poseResultSchema = new mongoose.Schema({
   poseName: { type: String, required: true },
   poseNameHindi: { type: String, default: '' },
   imageBase64: { type: String, default: '' },
+  mentalHealthTags: { type: [String], default: [] },
   analysisResult: {
     score: { type: Number, min: 0, max: 100 },
     feedback: String,
@@ -12,6 +14,7 @@ const poseResultSchema = new mongoose.Schema({
     nextPose: String,
     encouragement: String,
   },
+  feedback: { type: completionFeedbackSchema, default: undefined },
   timestamp: { type: Date, default: Date.now },
 });
 

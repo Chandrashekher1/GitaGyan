@@ -1,0 +1,2 @@
+export declare function Collection(): Promise<import("@datastax/astra-db-ts").Collection<import("@datastax/astra-db-ts").SomeDoc, import("@datastax/astra-db-ts").FoundDoc<import("@datastax/astra-db-ts").SomeDoc>>>;
+//# sourceMappingURL=collection.d.ts.map

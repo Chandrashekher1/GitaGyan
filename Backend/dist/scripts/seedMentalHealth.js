@@ -61,8 +61,8 @@ async function seed() {
         });
         process.stdout.write(".");
     }
-    console.log(`\n✅ Seeded ${mentalHealthDocs.length} mental health documents.`);
-    console.log(`✅ Created ${CHAT_HISTORY_COLLECTION} collection (empty, ready for chat turns).`);
+    console.log(`\n Seeded ${mentalHealthDocs.length} mental health documents.`);
+    console.log(`Created ${CHAT_HISTORY_COLLECTION} collection (empty, ready for chat turns).`);
     process.exit(0);
 }
 seed().catch((err) => {

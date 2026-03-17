@@ -87,10 +87,6 @@ async function fetchYoga<T>(path: string, init?: RequestInit): Promise<T> {
 export async function getYogaPoses(): Promise<YogaPose[]> {
   const poses = await fetchYoga<Partial<YogaPose>[]>('/poses', {
     cache: 'no-store',
-    headers: {
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache',
-    },
   });
 
   return Array.isArray(poses) ? poses.map(normalizeYogaPose) : [];

@@ -14,19 +14,20 @@ app.use(cors({
         const allowedOrigins = [
             "http://localhost:5173",
             "https://gitagyan-frontend.vercel.app",
-            "https://gitagyan-frontend-4hcpxxnvb-tanishq-sethis-projects.vercel.app"
+            "https://gitagyan-frontend-4hcpxxnvb-tanishq-sethis-projects.vercel.app",
+            "https://gitagyan-hackathon-1.onrender.com"
         ];
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         
-        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".vercel.app")) {
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".vercel.app") || origin.endsWith(".onrender.com")) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
         }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma", "X-Requested-With"],
     exposedHeaders: ["Authorization"],
     credentials: true
 }))

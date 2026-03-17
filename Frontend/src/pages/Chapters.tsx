@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 import { BookOpenText, ChevronRight, LoaderCircle, Sparkles, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,22 @@ function Chapters() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
+  const easeOutCurve = [0.22, 1, 0.36, 1] as const;
+  const fadeUpItem = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.38, ease: easeOutCurve },
+    },
+  };
+  const stagger = {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: 0.05, delayChildren: 0.04 },
+    },
+  };
 
   useEffect(() => {
     const fetchChapters = async () => {
@@ -147,12 +164,20 @@ function Chapters() {
               {errorMessage}
             </div>
           ) : (
-            <div className="grid gap-4">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.08 }}
+              className="grid gap-4"
+            >
               {chapters.map((chapter) => {
                 const isSelected = selectedChapter === chapter.chapter_number;
                 return (
-                  <div
+                  <motion.div
                     key={chapter.chapter_number}
+                    variants={fadeUpItem}
+                    whileHover={{ y: -2, transition: { duration: 0.2 } }}
                     role="button"
                     tabIndex={0}
                     onClick={() => setSelectedChapter(isSelected ? null : chapter.chapter_number)}
@@ -216,10 +241,10 @@ function Chapters() {
                         </Button>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           )}
         </section>
       </div>

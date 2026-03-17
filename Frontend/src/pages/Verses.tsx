@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { motion } from "motion/react";
 import { ArrowRight, BookOpen, ChevronRight, LibraryBig } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -155,14 +156,28 @@ function Verses() {
             <Badge variant="outline">Tap a card to expand</Badge>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.08 }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+            }}
+            className="grid gap-4 lg:grid-cols-2"
+          >
             {versesToRender.map((verse) => {
               const key = `${verse.chapter}-${verse.verse}`;
               const isSelected = selectedVerse === key;
 
               return (
-                <button
+                <motion.button
                   key={key}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
+                  }}
+                  whileHover={{ y: -2, transition: { duration: 0.2 } }}
                   type="button"
                   onClick={() => setSelectedVerse(isSelected ? null : key)}
                   className={`rounded-[28px] border p-6 text-left transition-all duration-200 ${
@@ -202,10 +217,10 @@ function Verses() {
                       </div>
                     </div>
                   )}
-                </button>
+                </motion.button>
               );
             })}
-          </div>
+          </motion.div>
         </section>
 
         <section className="app-surface p-8 text-center">

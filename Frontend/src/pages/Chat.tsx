@@ -699,16 +699,16 @@ export function Chat() {
 
   /* ── render ── */
   return (
-    <div className="px-4 pb-10 pt-6 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[17rem_minmax(0,1fr)_20rem]">
+    <div className="px-4 pb-6 pt-6 sm:px-6 lg:h-[calc(100vh-4rem)] lg:overflow-hidden lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-6 lg:h-full lg:grid-cols-[17rem_minmax(0,1fr)_20rem]">
         {/* ── left sidebar ── */}
         <motion.aside
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: easeOutCurve }}
-          className="order-2 space-y-6 lg:order-1"
+          className="chat-scroll order-2 flex flex-col gap-6 overflow-y-auto lg:order-1 lg:pr-2"
         >
-          <Card className="app-surface border-none bg-card/82">
+          <Card className="app-surface shrink-0 border-none bg-card/82">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -743,7 +743,7 @@ export function Chat() {
             </CardContent>
           </Card>
 
-          <Card className="app-surface border-none bg-card/82">
+          <Card className="app-surface shrink-0 border-none bg-card/82">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Prompt ideas</CardTitle>
             </CardHeader>
@@ -769,10 +769,10 @@ export function Chat() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: easeOutCurve }}
-          className="order-1 lg:order-2"
+          className="order-1 flex min-h-0 flex-col lg:order-2"
         >
-          <Card className="app-surface flex min-h-[74vh] flex-col border-none bg-card/85">
-            <CardHeader className="border-b border-border/60 pb-3">
+          <Card className="app-surface flex min-h-[75vh] flex-1 flex-col border-none bg-card/85 lg:min-h-0">
+            <CardHeader className="shrink-0 border-b border-border/60 pb-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <BrandMark className="h-12 w-12 rounded-[1.2rem]" iconClassName="h-7 w-7" />
@@ -890,7 +890,10 @@ export function Chat() {
                                 )}
                               </div>
 
-                              <p className="whitespace-pre-wrap text-sm leading-6">{message.content}</p>
+                              <div 
+                                className="whitespace-pre-wrap text-sm leading-6 [&>ul]:list-disc [&>ul]:pl-5 [&>h1]:mt-4 [&>h1:first-child]:mt-0"
+                                dangerouslySetInnerHTML={{ __html: message.content }} 
+                              />
 
                               {!isUser && message.response && (
                                 <motion.div
@@ -1056,9 +1059,9 @@ export function Chat() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: 0.06, ease: easeOutCurve }}
-          className="order-3 space-y-6"
+          className="chat-scroll order-3 flex flex-col gap-6 overflow-y-auto lg:pr-2"
         >
-          <Card className="app-surface border-none bg-card/82">
+          <Card className="app-surface shrink-0 border-none bg-card/82">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
@@ -1111,7 +1114,7 @@ export function Chat() {
             </CardContent>
           </Card>
 
-          <Card className="app-surface border-none bg-card/82">
+          <Card className="app-surface shrink-0 border-none bg-card/82">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">

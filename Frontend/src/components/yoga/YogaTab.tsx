@@ -62,25 +62,27 @@ const YogaTab: React.FC = () => {
   }, [completedSessions]);
 
   const handleSessionComplete = (asanaId: string) => {
+    // 1. Always record in history
+    const asana = asanasData.find((a) => a.id === asanaId);
+    if (asana) {
+      const yogaHistory = JSON.parse(localStorage.getItem('gitagyan-yoga-history') || '[]');
+      yogaHistory.push({
+        id: Date.now().toString(),
+        asanaId: asana.id,
+        asanaName: asana.name,
+        sanskritName: asana.sanskritName,
+        level: asana.level,
+        completedAt: new Date().toISOString(),
+        duration: asana.totalDuration,
+        steps: asana.steps.length,
+      });
+      localStorage.setItem('gitagyan-yoga-history', JSON.stringify(yogaHistory));
+    }
+
+    // 2. Add to unique completed list for UI
     setCompletedSessions((prev) => {
       if (!prev.includes(asanaId)) {
-        const updated = [...prev, asanaId];
-        const asana = asanasData.find(a => a.id === asanaId);
-        if (asana) {
-          const yogaHistory = JSON.parse(localStorage.getItem('gitagyan-yoga-history') || '[]');
-          yogaHistory.push({
-            id: Date.now().toString(),
-            asanaId: asana.id,
-            asanaName: asana.name,
-            sanskritName: asana.sanskritName,
-            level: asana.level,
-            completedAt: new Date().toISOString(),
-            duration: asana.totalDuration,
-            steps: asana.steps.length,
-          });
-          localStorage.setItem('gitagyan-yoga-history', JSON.stringify(yogaHistory));
-        }
-        return updated;
+        return [...prev, asanaId];
       }
       return prev;
     });

@@ -23,13 +23,13 @@ const CHAT_HISTORY_COLLECTION = "chat_history";
 
 interface AssistantResponse {
   ui_component:
-    | "breathing"
-    | "grounding"
-    | "journal"
-    | "insight"
-    | "stories"
-    | "gratitude"
-    | "crisis";
+  | "breathing"
+  | "grounding"
+  | "journal"
+  | "insight"
+  | "stories"
+  | "gratitude"
+  | "crisis";
   component_params: Record<string, unknown>;
   insight_text: string;
   follow_up_suggestion: "breathing" | "grounding" | "journal" | null;
@@ -38,21 +38,47 @@ interface AssistantResponse {
   helplines?: string[];
 }
 
-const SYSTEM_PROMPT = `You are a compassionate mental wellness companion for Indian youth aged 16-25.
+const SYSTEM_PROMPT = `You are Lord Krishna, the eternal teacher and guide, explaining the wisdom of the Bhagavad Gita to a user who may be experiencing mental or emotional challenges.
 You have access to ancient wisdom, mental health resources, and tracked wellness activities the user has already completed.
-Never mention the Bhagavad Gita by name unless the user explicitly asks about it.
-Never say "I am an AI" or "As an AI".
-Speak like a warm, knowledgeable friend — not a therapist, not a religious teacher.
+
 When the user's tracked yoga or meditation history is relevant, refer to it naturally and prefer actions that helped them before.
+
+IMPORTANT RESPONSE RULES:
+- Answer ONLY using the provided conversational context and retrieved wisdom.
+- If the context does not contain relevant information, politely reply with: <p>Context not found.</p>
+- Keep the response concise, clear, and meaningful.
+- Write the final text in the language the user is speaking in.
+- Maintain a respectful, compassionate, and humble tone throughout.
+
 Respond ONLY in this exact JSON format with no markdown, no backticks, no extra text:
 {
   "ui_component": "breathing" | "grounding" | "journal" | "insight" | "stories" | "gratitude",
   "component_params": {},
-  "insight_text": "1-2 sentence wisdom-grounded insight in simple modern language",
+  "insight_text": "[HTML content here according to the structure below]",
   "follow_up_suggestion": "breathing" | "grounding" | "journal" | null,
   "gita_reference": "chapter.verse" | null,
   "recommended_practices": ["0-3 short, specific practices personalized to the user's mood and past helpful actions"]
 }
+
+The \`insight_text\` MUST be formatted using HTML tags following this exact structure:
+
+<h1 className="font-bold text-xl my-2">🌿 From the Bhagavad Gita</h1> 
+(if the user is speaking in Hindi, write: <h1 className="font-bold text-xl my-2">🌿 भगवद् गीता के अनुसार</h1>)
+
+<ul>
+  <li>Point 1 (in simple, easy-to-understand language. Numbered 1, 2, 3...)</li>
+  <li>Point 2 (use examples/analogies inside if needed)</li>
+  <li>Point 3</li>
+</ul>
+
+<h1 className="font-bold text-xl my-2">🌿 Practical Guidance</h1>
+(if the user is speaking in Hindi, write: <h1 className="font-bold text-xl my-2">🌿 व्यावहारिक मार्गदर्शन</h1>)
+
+<ul>
+  <li>Step 1 (numbered list)</li>
+  <li>Step 2</li>
+</ul>
+
 Choose ui_component based on the user's primary need:
 - anxiety/panic → breathing
 - overwhelmed/exam stress → grounding
@@ -231,28 +257,28 @@ function buildEnrichedPrompt(
     ...ragData.recentHistory.slice(-4).map((item) => `[${item.role}]: ${item.content}`),
     ...(ragData.semanticHistory.length
       ? [
-          `\n[Relevant past conversations]:\n${ragData.semanticHistory
-            .map((item) => `- ${item.content}`)
-            .join("\n")}`,
-        ]
+        `\n[Relevant past conversations]:\n${ragData.semanticHistory
+          .map((item) => `- ${item.content}`)
+          .join("\n")}`,
+      ]
       : []),
   ].join("\n");
 
   const wellnessContext = [
     wellnessData.recentActions.length
       ? `Recent tracked actions:\n${wellnessData.recentActions
-          .map((item) => `- ${item}`)
-          .join("\n")}`
+        .map((item) => `- ${item}`)
+        .join("\n")}`
       : "",
     wellnessData.helpfulPatterns.length
       ? `What has worked before:\n${wellnessData.helpfulPatterns
-          .map((item) => `- ${item}`)
-          .join("\n")}`
+        .map((item) => `- ${item}`)
+        .join("\n")}`
       : "",
     wellnessData.recommendedPractices.length
       ? `Most relevant practices right now:\n${wellnessData.recommendedPractices
-          .map((item) => `- ${item}`)
-          .join("\n")}`
+        .map((item) => `- ${item}`)
+        .join("\n")}`
       : "",
   ]
     .filter(Boolean)
@@ -270,9 +296,9 @@ ${ragData.gitaContext.slice(0, 3).map((item, index) => `[Gita ${index + 1}]: ${i
 
 Relevant mental health resources:
 ${ragData.mentalHealthContext
-  .slice(0, 3)
-  .map((item, index) => `[Resource ${index + 1}]: ${item}`)
-  .join("\n")}
+      .slice(0, 3)
+      .map((item, index) => `[Resource ${index + 1}]: ${item}`)
+      .join("\n")}
 
 Use the user's history only when it genuinely helps. If a tracked practice fits the current emotion and has helped before, prioritize that in recommended_practices.`;
 }

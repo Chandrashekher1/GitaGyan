@@ -352,14 +352,14 @@ const Meditation: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen px-4 pb-24 pt-8 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="relative min-h-screen px-4 pb-24 pt-8 sm:px-6 lg:px-8">
       {/* Background Orbs (Consistent with Home) */}
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 overflow-hidden">
         <div className="absolute right-[-8rem] top-[-2rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(214,174,88,0.12),rgba(214,174,88,0)_70%)] blur-3xl" />
         <div className="absolute left-[-10rem] top-[18rem] h-[22rem] w-[22rem] rounded-full border border-primary/5" />
       </div>
 
-      <div className="mx-auto max-w-5xl flex flex-col gap-12">
+      <div className="mx-auto max-w-7xl flex flex-col gap-10">
         {/* Header Section */}
         <motion.div
           initial="hidden"
@@ -371,11 +371,11 @@ const Meditation: React.FC = () => {
             <span className="eyebrow-dot" />
             Find your inner silence
           </div>
-          <h1 className="display-font text-5xl font-semibold text-foreground sm:text-6xl tracking-tight">
+          <h1 className="display-font text-5xl font-semibold text-foreground sm:text-7xl tracking-tighter">
             Sacred Meditation
           </h1>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            A minimalist space designed to help you transition from mental noise to grounded presence through ancient vibrations.
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground font-medium opacity-80 italic">
+            "A minimalist space designed to help you transition from mental noise to grounded presence."
           </p>
         </motion.div>
 
@@ -387,11 +387,11 @@ const Meditation: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.4, ease: easeOutCurve }}
-              className="grid gap-8 lg:grid-cols-[1fr_0.4fr]"
+              className="grid gap-10 lg:grid-cols-[1.3fr_0.7fr]"
             >
               {/* Main Meditation Block */}
-              <div className="relative overflow-hidden rounded-[2.4rem] border border-border/70 bg-[linear-gradient(145deg,#fffcf9_0%,#f9f3e9_100%)] p-8 shadow-xl sm:p-12">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4),transparent_100%)]" />
+              <div className="relative flex min-h-[65vh] flex-col justify-center overflow-hidden rounded-[3rem] border border-border/40 bg-[linear-gradient(160deg,#fffcf9_0%,#fdfbf7_45%,#f9f3e9_100%)] p-8 shadow-[0_32px_80px_-20px_rgba(44,33,18,0.08)] sm:p-14">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(214,174,88,0.03),transparent_70%)]" />
 
                 <div className="relative flex flex-col items-center text-center space-y-12">
                   {/* Timer Visual */}
@@ -432,11 +432,11 @@ const Meditation: React.FC = () => {
                     </svg>
 
                     <div className="z-10 flex flex-col items-center">
-                      <span className="display-font text-7xl font-semibold text-foreground">
+                      <span className="display-font text-8xl font-medium tracking-tight text-foreground/90">
                         {formatTime(timeRemaining)}
                       </span>
-                      <span className="mt-2 text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                        {sessionStarted ? (isPlaying ? "Breathing" : "Paused") : "Ready"}
+                      <span className="mt-4 text-xs font-bold uppercase tracking-[0.3em] text-primary/60">
+                        {sessionStarted ? (isPlaying ? "Breathing Out" : "Paused") : "Ready to Begin"}
                       </span>
                     </div>
                   </div>
@@ -502,7 +502,7 @@ const Meditation: React.FC = () => {
               </div>
 
               {/* Sidebar: Setup */}
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-8">
                 {/* Duration Picker */}
                 <Card className="rounded-[2rem] border-border/70 bg-white/60 p-6 backdrop-blur-sm">
                   <div className="flex items-center gap-3 mb-6">
@@ -531,14 +531,14 @@ const Meditation: React.FC = () => {
                 </Card>
 
                 {/* Sound Library */}
-                <Card className="flex-1 rounded-[2rem] border-border/70 bg-white/60 p-6 backdrop-blur-sm overflow-hidden flex flex-col">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-xl bg-secondary/8 text-secondary">
+                <Card className="rounded-[2.5rem] border-border/40 bg-white/70 p-8 backdrop-blur-md shadow-sm">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="p-2.5 rounded-2xl bg-[#c37f50]/8 text-[#c37f50]">
                       <Volume2 className="w-5 h-5" />
                     </div>
-                    <span className="font-semibold text-foreground">Ambient Sound</span>
+                    <span className="font-bold text-lg text-foreground/80">Ambient Sound</span>
                   </div>
-                  <div className="space-y-3 overflow-y-auto pr-1">
+                  <div className="space-y-4 pr-1">
                     {meditationSounds.map((sound) => (
                       <button
                         key={sound.id}
@@ -582,6 +582,48 @@ const Meditation: React.FC = () => {
                     ))}
                   </div>
                 </Card>
+
+                {/* Tips Section Moved Inside Sidebar For Scrolling */}
+                <motion.div
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={staggerContainer}
+                  className="grid gap-4"
+                >
+                  {[
+                    {
+                      title: "Posture",
+                      desc: "Keep your spine upright but relaxed, like a mountain.",
+                      icon: <ArrowRight className="w-4 h-4" />,
+                      bg: "bg-[#f5ecde]",
+                    },
+                    {
+                      title: "Breath",
+                      desc: "Follow the natural rhythm of your breath without trying to control it.",
+                      icon: <Wind className="w-4 h-4" />,
+                      bg: "bg-[#edf3ee]",
+                    },
+                  ].map((tip) => (
+                    <motion.div
+                      key={tip.title}
+                      variants={fadeUp}
+                      className={cn(
+                        "p-6 rounded-[2.2rem] border border-border/40 bg-white/40 flex gap-5 items-start shadow-sm transition-all hover:bg-white/65 hover:scale-[1.01]"
+                      )}
+                    >
+                      <div className="shrink-0 mt-0.5 rounded-2xl border border-primary/15 bg-primary/10 p-3.5 text-primary">
+                        {tip.icon}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-foreground/90 text-[15px]">{tip.title}</h3>
+                        <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground font-medium opacity-85">
+                          {tip.desc}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
               </div>
             </motion.div>
           ) : (
@@ -593,10 +635,10 @@ const Meditation: React.FC = () => {
               transition={{ duration: 0.6, ease: easeOutCurve }}
               className="mx-auto max-w-3xl w-full"
             >
-              <div className="rounded-[2.4rem] border border-border/70 bg-white p-8 shadow-2xl sm:p-12">
-                <div className="flex flex-col items-center text-center space-y-6 mb-12">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Heart className="w-10 h-10 text-primary" />
+              <div className="rounded-[3rem] border border-border/40 bg-[linear-gradient(165deg,#fff_0%,#faf9f6_100%)] p-10 shadow-[0_40px_100px_-30px_rgba(44,33,18,0.12)] sm:p-14">
+                <div className="flex flex-col items-center text-center space-y-8 mb-14">
+                  <div className="w-24 h-24 rounded-full bg-primary/8 flex items-center justify-center shadow-inner">
+                    <Heart className="w-11 h-11 text-primary animate-pulse" />
                   </div>
                   <div>
                     <h2 className="display-font text-4xl font-semibold text-foreground">
@@ -730,53 +772,6 @@ const Meditation: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Tips Section (Bento style) */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={staggerContainer}
-          className="grid gap-6 md:grid-cols-3"
-        >
-          {[
-            {
-              title: "Posture",
-              desc: "Keep your spine upright but relaxed, like a mountain.",
-              icon: <ArrowRight className="w-5 h-5" />,
-              bg: "bg-[#f5ecde]",
-            },
-            {
-              title: "Breath",
-              desc: "Follow the natural rhythm of your breath without trying to control it.",
-              icon: <Wind className="w-5 h-5" />,
-              bg: "bg-[#edf3ee]",
-            },
-            {
-              title: "Attention",
-              desc: "Gently return to the sound whenever your mind wanders away.",
-              icon: <Sparkles className="w-5 h-5" />,
-              bg: "bg-[#fff7ef]",
-            },
-          ].map((tip, idx) => (
-            <motion.div
-              key={tip.title}
-              variants={fadeUp}
-              className={cn(
-                "p-6 rounded-[2rem] border border-border/70 shadow-sm transition-all hover:-translate-y-1",
-                tip.bg
-              )}
-            >
-              <div className="mb-4 inline-flex rounded-2xl border border-primary/15 bg-primary/8 p-3 text-primary">
-                {tip.icon}
-              </div>
-              <h3 className="text-xl font-semibold text-foreground">{tip.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {tip.desc}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
     </div>
   );

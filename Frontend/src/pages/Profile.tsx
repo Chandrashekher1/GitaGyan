@@ -27,10 +27,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Backend_Url } from "@/utils/constant";
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
+import { asanasData } from "@/components/yoga/data/asanasData";
 
 interface Verse {
   sanskrit: string;
@@ -251,17 +248,54 @@ function Profile() {
     })();
   }, [navigate]);
 
-  /* ---- Load yoga sessions ---- */
+  /* ---- Fetch yoga sessions from API ---- */
   useEffect(() => {
-    const savedYogaHistory = localStorage.getItem("gitagyan-yoga-history");
-    if (savedYogaHistory) {
-      const sessions = JSON.parse(savedYogaHistory) as YogaSession[];
-      sessions.sort(
-        (a, b) =>
-          new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
-      );
-      setYogaSessions(sessions);
-    }
+    const fetchYogaHistory = async () => {
+      const uid = localStorage.getItem("uid");
+      if (!uid) return;
+
+      try {
+        const res = await fetch(`${Backend_Url}/yoga/history/${uid}`);
+        const data = await res.json();
+
+        if (data.historyAvailable && data.sessions) {
+          const flatYogaSessions: YogaSession[] = [];
+
+          // Map the backend sessions (which are grouped by day) into a flat list of individual pose attempts
+          for (const session of data.sessions) {
+            if (session.posesAttempted && Array.isArray(session.posesAttempted)) {
+              for (const attempt of session.posesAttempted) {
+                // Look up static data from the catalog using the pose name
+                const catalogPose = asanasData.find(
+                  (a) => a.name === attempt.poseName
+                );
+
+                flatYogaSessions.push({
+                  id: attempt._id || Date.now().toString(),
+                  asanaId: catalogPose?.id || attempt.poseName,
+                  asanaName: attempt.poseName,
+                  sanskritName: catalogPose?.sanskritName || attempt.poseNameHindi || "",
+                  level: catalogPose?.level || "beginner",
+                  completedAt: attempt.timestamp || session.sessionDate,
+                  duration: catalogPose?.totalDuration || 5, // Default 5 mins if not found
+                  steps: catalogPose?.steps?.length || 0,
+                });
+              }
+            }
+          }
+
+          flatYogaSessions.sort(
+            (a, b) =>
+              new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
+          );
+          setYogaSessions(flatYogaSessions);
+        }
+      } catch (err) {
+        console.error("Failed to fetch yoga history:", err);
+      }
+    };
+
+    fetchYogaHistory();
   }, []);
 
   /* ---- Load chat sessions ---- */
@@ -562,10 +596,11 @@ function Profile() {
                       ? {}
                       : {
                           y: -6,
-                          boxShadow: `0 24px 52px -16px ${item.glow}`,
+                          scale: 1.02,
+                          boxShadow: `0 32px 64px -20px ${item.glow}`,
                         }
                   }
-                  className="app-surface group relative flex cursor-default flex-col overflow-hidden p-6 transition-shadow"
+                  className="app-surface group relative flex cursor-default flex-col overflow-hidden p-7 transition-all duration-300"
                 >
                   {/* Gradient accent strip at top */}
                   <div
@@ -607,7 +642,7 @@ function Profile() {
         <section className="grid gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]">
           {/* ---------- Profile sidebar ---------- */}
           <ScrollReveal direction="left" delay={0.1}>
-            <aside className="space-y-6">
+            <aside className="space-y-6 pb-4">
               <Card className="app-surface border-none bg-card/82">
                 <CardContent className="p-8">
                   {/* Avatar with gradient ring */}
@@ -810,10 +845,10 @@ function Profile() {
                           </p>
                         </div>
                       ) : (
-                        <div className="grid gap-6 xl:grid-cols-[20rem_minmax(0,1fr)]">
+                        <div className="grid gap-6 xl:grid-cols-[18rem_minmax(0,1fr)]">
                           {/* Session list */}
                           <motion.div
-                            className="space-y-3"
+                            className="space-y-3 lg:max-h-[800px] lg:overflow-y-auto chat-scroll pr-2"
                             variants={staggerContainer}
                             initial="hidden"
                             animate="visible"
@@ -881,7 +916,7 @@ function Profile() {
                           </motion.div>
 
                           {/* Selected session messages */}
-                          <div className="rounded-[28px] border border-border/70 bg-white/60 p-5">
+                          <div className="rounded-[28px] border border-border/70 bg-white/60 p-5 flex flex-col">
                             {selectedSession ? (
                               <>
                                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border/60 pb-4">
@@ -935,7 +970,7 @@ function Profile() {
                                   </div>
                                 </div>
 
-                                <div className="mt-5 space-y-4">
+                                <div className="mt-5 space-y-4 max-h-[600px] overflow-y-auto chat-scroll pr-4">
                                   {selectedSession.messages.map(
                                     (message, idx) => (
                                       <motion.div
@@ -1002,9 +1037,10 @@ function Profile() {
                                                 </Badge>
                                               )}
                                             </div>
-                                            <p className="text-sm leading-7">
-                                              {message.content}
-                                            </p>
+                                            <div 
+                                              className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm leading-7 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>h1]:mt-4 [&>h1:first-child]:mt-0 [&>h2]:mt-3 [&>h3]:mt-2 [&>p]:mb-2 [&>p:last-child]:mb-0"
+                                              dangerouslySetInnerHTML={{ __html: message.content }}
+                                            />
                                           </div>
 
                                           {message.verse && (

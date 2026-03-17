@@ -163,6 +163,5 @@ export async function saveChatTurn({
     });
   } catch (err) {
     console.error("saveChatTurn error:", err);
-    // Non-fatal — don't crash the request if history save fails
   }
 }

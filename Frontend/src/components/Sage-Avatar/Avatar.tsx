@@ -4,6 +4,7 @@ import { button, useControls } from "leva";
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { useAvatarChat } from "./useAvatarChat";
+import { stripHtml } from "@/lib/utils";
 
 /* ── CDN paths ── */
 const AVATAR_MODEL_URL =
@@ -181,7 +182,7 @@ export function Avatar(props: Record<string, any>) {
     setFacialExpression(message.facialExpression || "default");
 
     // Speak using browser TTS
-    speakText(message.text);
+    speakText(stripHtml(message.text));
   }, [message, speakText]);
 
   /* ── Cleanup speech on unmount ── */

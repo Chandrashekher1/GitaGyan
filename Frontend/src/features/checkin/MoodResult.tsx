@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,7 @@ import {
   BookOpen,
   PhoneCall,
   LayoutDashboard,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -24,9 +24,9 @@ export const MoodResult: React.FC = () => {
 
   if (!result) {
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0a0a] text-white">
-        <p>No results found. Please complete a check-in.</p>
-        <Button onClick={() => navigate("/")} className="mt-4">Go Home</Button>
+      <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4">
+        <p className="text-muted-foreground text-lg">No results found. Please complete a check-in.</p>
+        <Button onClick={() => navigate("/")} className="mt-4 rounded-full">Go Home</Button>
       </div>
     );
   }
@@ -35,9 +35,30 @@ export const MoodResult: React.FC = () => {
 
   const getSeverityStyles = () => {
     switch (severityLevel) {
-      case "Severe": return { color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20", icon: <ShieldAlert className="w-8 h-8" /> };
-      case "Moderate": return { color: "text-amber-600", bg: "bg-amber-500/10", border: "border-amber-500/20", icon: <AlertCircle className="w-8 h-8" /> };
-      default: return { color: "text-emerald-600", bg: "bg-emerald-500/10", border: "border-emerald-500/20", icon: <CheckCircle2 className="w-8 h-8" /> };
+      case "Severe":
+        return {
+          color: "text-destructive",
+          bg: "bg-destructive/8",
+          border: "border-destructive/20",
+          iconBg: "bg-destructive/12",
+          icon: <ShieldAlert className="w-8 h-8" />,
+        };
+      case "Moderate":
+        return {
+          color: "text-amber-700",
+          bg: "bg-amber-500/8",
+          border: "border-amber-500/20",
+          iconBg: "bg-amber-500/12",
+          icon: <AlertCircle className="w-8 h-8" />,
+        };
+      default:
+        return {
+          color: "text-secondary",
+          bg: "bg-secondary/8",
+          border: "border-secondary/20",
+          iconBg: "bg-secondary/12",
+          icon: <CheckCircle2 className="w-8 h-8" />,
+        };
     }
   };
 
@@ -63,29 +84,38 @@ export const MoodResult: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0a09] text-white px-6 py-12 flex flex-col items-center">
+    <div className="relative min-h-[calc(100vh-5rem)] px-4 sm:px-6 py-12 flex flex-col items-center">
+      {/* Background orbs */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 overflow-hidden">
+        <div className="absolute right-[-8rem] top-[-2rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(214,174,88,0.14),rgba(214,174,88,0)_70%)] blur-3xl" />
+        <div className="absolute left-[-10rem] top-[20rem] h-[22rem] w-[22rem] rounded-full border border-primary/5" />
+      </div>
+
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-2xl space-y-10"
       >
         <div className="text-center space-y-4">
-          <Badge variant="outline" className="border-white/10 bg-white/5 text-white/60">
+          <Badge variant="outline" className="border-border/70 bg-white/55 text-muted-foreground">
             Analysis Complete
           </Badge>
-          <h1 className="display-font text-5xl font-semibold tracking-tight sacred-text">Your Mood Report</h1>
+          <h1 className="display-font text-5xl font-semibold tracking-tight text-foreground">
+            Your Mood Report
+          </h1>
         </div>
 
         {/* Severity Card */}
-        <div className={cn("relative overflow-hidden rounded-[2.5rem] border p-8 sm:p-10 backdrop-blur-sm", styles.bg, styles.border)}>
+        <div className={cn("relative overflow-hidden rounded-[2.4rem] border p-8 sm:p-10", styles.bg, styles.border)}>
           <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
-            <div className={cn("p-4 rounded-2xl bg-black/20 backdrop-blur-md", styles.color)}>
+            <div className={cn("p-4 rounded-2xl", styles.iconBg, styles.color)}>
               {styles.icon}
             </div>
             <div>
               <h2 className={cn("text-3xl font-bold", styles.color)}>{severityLevel} Intensity</h2>
-              <p className="mt-3 text-lg leading-relaxed text-white/70">
-                Your mood score is <span className="font-bold text-white">{severityScore}</span>.
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                Your mood score is <span className="font-bold text-foreground">{severityScore}</span>.
                 {severityLevel === "Severe" && " It seems like you're carrying a lot right now. Let's take a small step toward relief."}
                 {severityLevel === "Moderate" && " You're navigating some challenges. A quick reset might help clear the air."}
                 {severityLevel === "Mild" && " You seem to be in a grounded state. This is a great time for sustained focus."}
@@ -96,7 +126,7 @@ export const MoodResult: React.FC = () => {
 
         {/* Suggestions */}
         <div className="space-y-6">
-          <h3 className="text-xl font-bold flex items-center gap-2">
+          <h3 className="text-xl font-bold flex items-center gap-2 text-foreground">
             <Sparkles className="w-5 h-5 text-primary" />
             Recommended Path
           </h3>
@@ -106,26 +136,26 @@ export const MoodResult: React.FC = () => {
                 key={i}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.1 }}
+                transition={{ delay: 0.2 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               >
                 {s.link ? (
                   <Link
                     to={s.link}
                     state={(s as any).state}
-                    className="group flex items-center gap-5 p-6 rounded-[2rem] border border-white/5 bg-white/[0.03] hover:bg-white/[0.06] transition-all"
+                    className="group flex items-center gap-5 p-6 rounded-[2rem] border border-border/70 bg-white/55 hover:bg-white/80 hover:shadow-[0_18px_40px_-20px_rgba(55,39,18,0.2)] transition-all"
                   >
                     <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:scale-110 transition-transform">
                       {s.icon}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold">{s.title}</h4>
-                      <p className="text-sm text-white/40">{s.desc}</p>
+                      <h4 className="font-bold text-foreground">{s.title}</h4>
+                      <p className="text-sm text-muted-foreground">{s.desc}</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/10 group-hover:text-primary transition-colors" />
+                    <ArrowRight className="w-5 h-5 text-border group-hover:text-primary transition-colors" />
                   </Link>
                 ) : (
                   <div className="flex items-center gap-5 p-6 rounded-[2rem] border border-primary/20 bg-primary/5">
-                    <div className="p-3 rounded-xl bg-primary text-secondary-foreground">
+                    <div className="p-3 rounded-xl bg-primary text-primary-foreground">
                       {s.icon}
                     </div>
                     <div className="flex-1">
@@ -143,7 +173,7 @@ export const MoodResult: React.FC = () => {
         </div>
 
         <div className="pt-8 flex justify-center">
-          <Button asChild variant="ghost" className="rounded-full text-white/30 hover:text-white hover:bg-white/5">
+          <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/20">
             <Link to="/profile">
               <LayoutDashboard className="mr-2 h-4 w-4" />
               View Mood History

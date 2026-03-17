@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 import { ArrowRight, BookOpenText, Sparkles, Waves } from "lucide-react";
 import { toast } from "sonner";
 
@@ -53,6 +54,11 @@ export function SignUp() {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.02fr_0.98fr]">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
         <Card className="app-surface border-none bg-card/85 p-0">
           <CardHeader className="space-y-3 px-6 pt-8 sm:px-8">
             <Badge className="w-fit">Create Account</Badge>
@@ -129,8 +135,14 @@ export function SignUp() {
             </p>
           </CardFooter>
         </Card>
+        </motion.div>
 
-        <section className="app-surface flex flex-col justify-between p-8 sm:p-10">
+        <motion.section
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+          className="app-surface flex flex-col justify-between p-8 sm:p-10"
+        >
           <div>
             <div className="section-label mb-5">
               <span className="eyebrow-dot" />
@@ -162,7 +174,7 @@ export function SignUp() {
               );
             })}
           </div>
-        </section>
+        </motion.section>
       </div>
     </div>
   );

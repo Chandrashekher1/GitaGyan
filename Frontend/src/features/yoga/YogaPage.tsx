@@ -16,7 +16,13 @@ const YogaPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-background to-background">
+    <div className="relative min-h-screen bg-background">
+      {/* Background orbs */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 overflow-hidden">
+        <div className="absolute right-[-8rem] top-[-2rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(214,174,88,0.12),rgba(214,174,88,0)_70%)] blur-3xl" />
+        <div className="absolute left-[-10rem] top-[18rem] h-[22rem] w-[22rem] rounded-full border border-primary/5" />
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
         <motion.div
@@ -26,11 +32,15 @@ const YogaPage: React.FC = () => {
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4"
         >
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-orange-400">
+            <div className="section-label mb-4">
+              <span className="eyebrow-dot" />
+              AI-powered posture analysis
+            </div>
+            <h1 className="display-font text-4xl sm:text-5xl font-semibold text-foreground">
               Yoga & Posture AI
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground mt-1.5 font-medium">
-              Perfect your form with real-time AI guidance
+            <p className="text-base text-muted-foreground mt-2 max-w-lg">
+              Perfect your form with real-time AI guidance and step-by-step feedback.
             </p>
           </div>
           {streak > 0 && (
@@ -38,13 +48,13 @@ const YogaPage: React.FC = () => {
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 18, delay: 0.3 }}
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 px-4 py-2 shadow-sm"
+              className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/8 px-4 py-2 shadow-sm"
             >
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent" />
               </span>
-              <span className="text-sm font-bold text-amber-700 dark:text-amber-400">
+              <span className="text-sm font-bold text-accent-foreground">
                 {streak} Day Streak!
               </span>
             </motion.div>

@@ -60,6 +60,7 @@ export function Navbar() {
   const primaryLinks = [
     { href: "/chapters", label: "Chapters" },
     { href: "/meditation", label: "Meditation" },
+    { href: "/check-in", label: "Check-in" },
   ];
 
   const exploreLinks = [
@@ -89,6 +90,7 @@ export function Navbar() {
     { href: "/chapters", label: "Chapters", icon: Book, description: "Navigate the Gita chapter by chapter." },
     { href: "/verses", label: "Verses", icon: BookMarked, description: "Jump directly into specific verses." },
     { href: "/meditation", label: "Meditation", icon: HeartIcon, description: "Breathing and grounding practices." },
+    { href: "/check-in", label: "Check-in", icon: Sparkles, description: "Mood check-in and grounding." },
     { href: "/yoga", label: "Yoga", icon: Flower2, description: "Body-based guidance and movement." },
     { href: "/about", label: "About", icon: Info, description: "Product and system overview." },
   ];
@@ -106,14 +108,23 @@ export function Navbar() {
             to={item.href}
             className={({ isActive }) =>
               cn(
-                "inline-flex h-10 items-center rounded-full px-4 text-sm font-medium transition-all duration-200",
-                isActive
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-white hover:text-foreground"
+                "relative inline-flex h-10 items-center rounded-full px-4 text-sm font-medium transition-colors duration-200",
+                isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               )
             }
           >
-            {item.label}
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <motion.div
+                    layoutId="navbar-active-bg"
+                    className="absolute inset-0 rounded-full bg-primary shadow-sm"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <span className="relative z-10">{item.label}</span>
+              </>
+            )}
           </NavLink>
         ))}
 

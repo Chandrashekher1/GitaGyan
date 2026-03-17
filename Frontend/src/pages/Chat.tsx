@@ -13,6 +13,7 @@ import {
   Volume2Icon,
   VolumeOffIcon,
   Waves,
+  Wand2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/context/Language";
 import { cn } from "@/lib/utils";
 import { Backend_Url } from "@/utils/constant";
+import { AvatarCanvas } from "@/components/AvatarCanvas";
 
 /* ── animation variants (matching Home.tsx) ── */
 const easeOutCurve = [0.22, 1, 0.36, 1] as const;
@@ -99,6 +101,21 @@ interface ThinkingStep {
   id: string;
   label: string;
   timestamp: string;
+}
+
+interface AvatarMessage {
+  id: string;
+  text: string;
+  audio: string | null;
+  lipsync: {
+    mouthCues: Array<{
+      start: number;
+      end: number;
+      value: string;
+    }>;
+  } | null;
+  facialExpression: string;
+  animation: string;
 }
 
 interface SessionMeta {
@@ -298,6 +315,8 @@ export function Chat() {
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+  const [avatarMode, setAvatarMode] = useState(false);
+  const [avatarMessage, setAvatarMessage] = useState<AvatarMessage | null>(null);
   const messagesViewportRef = useRef<HTMLDivElement>(null);
   const streamAbortRef = useRef<AbortController | null>(null);
 
@@ -641,6 +660,29 @@ export function Chat() {
       };
 
       setMessages((previous) => [...previous, assistantMessage]);
+      if (avatarMode) {
+        try {
+          const avatarResponse = await fetch(`${Backend_Url.replace(/\/api.*$/, "")}/api/avatar/analyze`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: authToken,
+            },
+            body: JSON.stringify({
+              text: assistantMessage.content,
+            }),
+          });
+
+          if (avatarResponse.ok) {
+            const json = await avatarResponse.json();
+            if (json?.id) {
+              setAvatarMessage(json);
+            }
+          }
+        } catch (error) {
+          console.error("avatar analyze error:", error);
+        }
+      }
       setSessionMeta((previous) => ({
         messageCount: (previous?.messageCount ?? 0) + 2,
         createdAt: previous?.createdAt ?? new Date().toISOString(),
@@ -683,6 +725,31 @@ export function Chat() {
           response: fallbackResponse,
         },
       ]);
+
+      // Still try to animate the avatar even when the main stream fails
+      if (avatarMode) {
+        try {
+          const avatarResponse = await fetch(`${Backend_Url.replace(/\/api.*$/, "")}/api/avatar/analyze`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: authToken,
+            },
+            body: JSON.stringify({
+              text: "Take a breath. Something went wrong on our end, but you can try again.",
+            }),
+          });
+
+          if (avatarResponse.ok) {
+            const json = await avatarResponse.json();
+            if (json?.id) {
+              setAvatarMessage(json);
+            }
+          }
+        } catch (avatarErr) {
+          console.error("avatar fallback error:", avatarErr);
+        }
+      }
     } finally {
       streamAbortRef.current = null;
       setIsStreaming(false);
@@ -787,8 +854,24 @@ export function Chat() {
                   </div>
                 </div>
 
-                <div className="rounded-full border border-border/70 bg-white/60 px-3 py-1.5 text-xs text-muted-foreground">
-                  {listening ? "Listening..." : "Enter to send · Shift+Enter for a new line"}
+                <div className="flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setAvatarMode((previous) => !previous)}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors",
+                      avatarMode
+                        ? "border-primary/60 bg-primary/10 text-primary"
+                        : "border-border/70 bg-white/60 text-muted-foreground hover:border-primary/40 hover:text-primary"
+                    )}
+                  >
+                    <Wand2 className="h-3.5 w-3.5" />
+                    {avatarMode ? "Avatar mode · On" : "Avatar mode · Off"}
+                  </button>
+
+                  <div className="rounded-full border border-border/70 bg-white/60 px-3 py-1.5 text-xs text-muted-foreground">
+                    {listening ? "Listening..." : "Enter to send · Shift+Enter for a new line"}
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -1061,97 +1144,165 @@ export function Chat() {
           transition={{ duration: 0.4, delay: 0.06, ease: easeOutCurve }}
           className="chat-scroll order-3 flex flex-col gap-6 overflow-y-auto lg:pr-2"
         >
-          <Card className="app-surface shrink-0 border-none bg-card/82">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
-                  <Sparkles className="h-3.5 w-3.5" />
+          {avatarMode ? (
+            <Card className="app-surface shrink-0 border-none bg-card/82">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
+                    <Sparkles className="h-3.5 w-3.5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">Sage Avatar</CardTitle>
+                    <p className="text-[11px] text-muted-foreground">
+                      3D guide with streamed thinking.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle className="text-base">Thinking Trace</CardTitle>
-                  <p className="text-[11px] text-muted-foreground">Streamed reasoning stages</p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <AvatarCanvas
+                  avatarMessage={avatarMessage}
+                  isStreaming={isStreaming}
+                  onMessagePlayed={() => setAvatarMessage(null)}
+                />
+                <div className="rounded-[16px] border border-border/70 bg-white/60 px-3 py-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground mb-1">
+                    Thinking trace
+                  </p>
+                  <AnimatePresence mode="popLayout">
+                    {thinkingSteps.length ? (
+                      thinkingSteps.map((step, index) => (
+                        <motion.div
+                          key={step.id}
+                          initial={{ opacity: 0, y: 4, scale: 0.97 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.2, ease: easeOutCurve }}
+                          className="flex items-center gap-2 py-1"
+                        >
+                          <span
+                            className={cn(
+                              "inline-flex h-2 w-2 rounded-full",
+                              index === thinkingSteps.length - 1 && isStreaming ? "animate-pulse-dot bg-primary" : "bg-primary/40"
+                            )}
+                          />
+                          <div className="min-w-0">
+                            <p className="truncate text-[11px] text-foreground">{step.label}</p>
+                          </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <motion.p
+                        key="empty-avatar-trace"
+                        variants={fadeIn}
+                        initial="hidden"
+                        animate="visible"
+                        className="text-[11px] leading-5 text-muted-foreground"
+                      >
+                        Send a message to see Sage think here.
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <AnimatePresence mode="popLayout">
-                {thinkingSteps.length ? (
-                  thinkingSteps.map((step, index) => (
-                    <motion.div
-                      key={step.id}
-                      initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.22, ease: easeOutCurve }}
-                      className="rounded-[16px] border border-border/70 bg-white/60 px-3 py-2"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={cn(
-                            "inline-flex h-2 w-2 rounded-full",
-                            index === thinkingSteps.length - 1 && isStreaming ? "animate-pulse-dot bg-primary" : "bg-primary/40"
-                          )}
-                        />
-                        <div className="min-w-0">
-                          <p className="text-xs font-medium text-foreground">{step.label}</p>
-                          <p className="text-[10px] text-muted-foreground">{formatClock(step.timestamp)}</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))
-                ) : (
-                  <motion.div
-                    key="empty-trace"
-                    variants={fadeIn}
-                    initial="hidden"
-                    animate="visible"
-                    className="rounded-[18px] border border-border/70 bg-white/55 p-3 text-xs leading-5 text-muted-foreground"
-                  >
-                    Send a message to see reasoning stages here.
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              <Card className="app-surface shrink-0 border-none bg-card/82">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
+                      <Sparkles className="h-3.5 w-3.5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Thinking Trace</CardTitle>
+                      <p className="text-[11px] text-muted-foreground">Streamed reasoning stages</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <AnimatePresence mode="popLayout">
+                    {thinkingSteps.length ? (
+                      thinkingSteps.map((step, index) => (
+                        <motion.div
+                          key={step.id}
+                          initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.22, ease: easeOutCurve }}
+                          className="rounded-[16px] border border-border/70 bg-white/60 px-3 py-2"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                "inline-flex h-2 w-2 rounded-full",
+                                index === thinkingSteps.length - 1 && isStreaming ? "animate-pulse-dot bg-primary" : "bg-primary/40"
+                              )}
+                            />
+                            <div className="min-w-0">
+                              <p className="text-xs font-medium text-foreground">{step.label}</p>
+                              <p className="text-[10px] text-muted-foreground">{formatClock(step.timestamp)}</p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <motion.div
+                        key="empty-trace"
+                        variants={fadeIn}
+                        initial="hidden"
+                        animate="visible"
+                        className="rounded-[18px] border border-border/70 bg-white/55 p-3 text-xs leading-5 text-muted-foreground"
+                      >
+                        Send a message to see reasoning stages here.
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
 
-          <Card className="app-surface shrink-0 border-none bg-card/82">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
-                  <BookOpenText className="h-3.5 w-3.5" />
-                </div>
-                <div>
-                  <CardTitle className="text-base">Session Notes</CardTitle>
-                  <p className="text-[11px] text-muted-foreground">Session metadata</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Created</p>
-                <p className="mt-1 text-xs font-semibold text-foreground">{formatDate(sessionMeta?.createdAt)}</p>
-              </div>
+              <Card className="app-surface shrink-0 border-none bg-card/82">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
+                      <BookOpenText className="h-3.5 w-3.5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Session Notes</CardTitle>
+                      <p className="text-[11px] text-muted-foreground">Session metadata</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Created</p>
+                    <p className="mt-1 text-xs font-semibold text-foreground">{formatDate(sessionMeta?.createdAt)}</p>
+                  </div>
 
-              <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Latest mood signal</p>
-                <p className="mt-1 text-xs font-semibold capitalize text-foreground">{sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.emotion ?? "Not available yet"}</p>
-                <p className="text-[11px] text-muted-foreground">
-                  {typeof sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.severity === "number"
-                    ? `Severity ${sessionMeta.moodTimeline[sessionMeta.moodTimeline.length - 1]?.severity}/5`
-                    : "Severity will appear after enough turns."}
-                </p>
-              </div>
+                  <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Latest mood signal</p>
+                    <p className="mt-1 text-xs font-semibold capitalize text-foreground">
+                      {sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.emotion ?? "Not available yet"}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {typeof sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.severity === "number"
+                        ? `Severity ${sessionMeta.moodTimeline[sessionMeta.moodTimeline.length - 1]?.severity}/5`
+                        : "Severity will appear after enough turns."}
+                    </p>
+                  </div>
 
-              <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">What you should notice</p>
-                <ul className="mt-1.5 space-y-1 text-xs leading-5 text-muted-foreground">
-                  <li>Streamed thinking events display in real-time.</li>
-                  <li>Responses preserve component type & verse badges.</li>
-                  <li>Voice playback available on each response.</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">What you should notice</p>
+                    <ul className="mt-1.5 space-y-1 text-xs leading-5 text-muted-foreground">
+                      <li>Streamed thinking events display in real-time.</li>
+                      <li>Responses preserve component type & verse badges.</li>
+                      <li>Voice playback available on each response.</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </motion.aside>
       </div>
     </div>

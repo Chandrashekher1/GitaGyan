@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { Header } from "./components/Header";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LanguageProvider } from "./context/Language";
 import { Toaster } from "sonner";
 import { Home } from "./pages/Home";
@@ -46,21 +47,21 @@ function App() {
               <Suspense fallback={<RouteLoader />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                  <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/about" element={<About />} />
-                  <Route path="/chapters" element={<Chapters />} />
-                  <Route path="/verses" element={<Verses />} />
-                  <Route path="/verses/:chapterNumber" element={<Verses />} />
-                  <Route path="/meditation" element={<Meditation />} />
-                  <Route path="/yoga" element={<Yoga />} />
+                  <Route path="/chapters" element={<ProtectedRoute><Chapters /></ProtectedRoute>} />
+                  <Route path="/verses" element={<ProtectedRoute><Verses /></ProtectedRoute>} />
+                  <Route path="/verses/:chapterNumber" element={<ProtectedRoute><Verses /></ProtectedRoute>} />
+                  <Route path="/meditation" element={<ProtectedRoute><Meditation /></ProtectedRoute>} />
+                  <Route path="/yoga" element={<ProtectedRoute><Yoga /></ProtectedRoute>} />
                   
                   {/* Check-in Routes */}
-                  <Route path="/check-in" element={<MoodSelection />} />
-                  <Route path="/check-in/survey" element={<AdaptiveSurvey />} />
-                  <Route path="/check-in/result" element={<MoodResult />} />
+                  <Route path="/check-in" element={<ProtectedRoute><MoodSelection /></ProtectedRoute>} />
+                  <Route path="/check-in/survey" element={<ProtectedRoute><AdaptiveSurvey /></ProtectedRoute>} />
+                  <Route path="/check-in/result" element={<ProtectedRoute><MoodResult /></ProtectedRoute>} />
                 </Routes>
               </Suspense>
             </main>

@@ -10,12 +10,13 @@ const app = express()
 
 // CORS middleware
 app.use(cors({
-    origin: '*', 
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], 
-    allowedHeaders: ["Content-Type", "Authorization"], 
+    origin: ["http://localhost:5173", "https://gitagyan-frontend.vercel.app"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Authorization"],
-    credentials: true 
+    credentials: true
 }))
+
 startup(app)
 
 // mongoDB connection   

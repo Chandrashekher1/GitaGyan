@@ -20,41 +20,7 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (!id.includes("node_modules")) {
-            return;
-          }
-
-          if (
-            id.includes("@mediapipe") ||
-            id.includes("@mui") ||
-            id.includes("@emotion")
-          ) {
-            return "yoga-vendor";
-          }
-
-          if (id.includes("@radix-ui")) {
-            return "radix-vendor";
-          }
-
-          if (id.includes("react") || id.includes("react-dom") || id.includes("scheduler")) {
-            return "react-vendor";
-          }
-
-          if (id.includes("motion")) {
-            return "motion-vendor";
-          }
-
-          if (id.includes("lucide-react") || id.includes("sonner") || id.includes("@vercel")) {
-            return "ui-vendor";
-          }
-
-          return "vendor";
-        },
-      },
-    },
+    chunkSizeWarningLimit: 1000,
   },
   base: "/",
 })

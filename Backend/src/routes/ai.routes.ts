@@ -251,7 +251,8 @@ function buildEnrichedPrompt(
     recentActions: string[];
     helpfulPatterns: string[];
     recommendedPractices: string[];
-  }
+  },
+  moodContext?: any
 ) {
   const historyContext = [
     ...ragData.recentHistory.slice(-4).map((item) => `[${item.role}]: ${item.content}`),
@@ -284,9 +285,17 @@ function buildEnrichedPrompt(
     .filter(Boolean)
     .join("\n\n");
 
+  const moodInstruction = moodContext ? `
+User's Latest Mood Check-in:
+- Type: ${moodContext.moodType}
+- Severity: ${moodContext.severityLevel} (Score: ${moodContext.severityScore}/15)
+- Survey Highlights: ${moodContext.answers?.map((a: any) => `${a.question}: ${a.response}`).join("; ")}
+Please acknowledge this mood gently in your guidance.` : "";
+
   return `
 ${historyContext ? `Conversation context:\n${historyContext}\n` : ""}
 ${wellnessContext ? `${wellnessContext}\n` : ""}
+${moodInstruction}
 Current message: "${message}"
 Detected emotion: ${emotionData.emotion} (severity: ${emotionData.severity}/5)
 Themes: ${emotionData.themes.join(", ") || "none"}
@@ -329,7 +338,7 @@ const FALLBACK_RESPONSE: AssistantResponse = {
 //@ts-ignore
 router.post("/chat", auth, async (req: any, res: any) => {
   try {
-    const { message, sessionId } = req.body;
+    const { message, sessionId, moodContext } = req.body;
     const userId = resolveUserId(req.user);
 
     if (!message || !sessionId) {
@@ -351,7 +360,8 @@ router.post("/chat", auth, async (req: any, res: any) => {
       message,
       emotionData,
       ragData,
-      wellnessData
+      wellnessData,
+      moodContext
     );
 
     const result = await ai.models.generateContent({
@@ -410,48 +420,49 @@ router.post("/chat", auth, async (req: any, res: any) => {
 
 //@ts-ignore
 router.post("/chat/stream", auth, async (req: any, res: any) => {
-  const { message, sessionId } = req.body;
-  const userId = resolveUserId(req.user);
+    const { message, sessionId, moodContext } = req.body;
+    const userId = resolveUserId(req.user);
 
-  if (!message || !sessionId) {
-    return res.status(400).json({ error: "message and sessionId are required" });
-  }
-
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-  res.setHeader("X-Accel-Buffering", "no");
-  res.flushHeaders();
-
-  const send = (event: string, data: any) => {
-    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
-  };
-
-  try {
-    send("thinking", { message: "Thinking..." });
-
-    const safety = await classifySafety(message);
-    if (safety.level === "crisis") {
-      send("done", CRISIS_RESPONSE);
-      return res.end();
+    if (!message || !sessionId) {
+      return res.status(400).json({ error: "message and sessionId are required" });
     }
 
-    send("thinking", { message: "Understanding your message..." });
-    const emotionData = await detectEmotion(message);
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders();
 
-    send("thinking", { message: "Finding relevant guidance..." });
-    const [ragData, wellnessData] = await Promise.all([
-      tripleRAGQuery(message, emotionData.emotion, sessionId),
-      getUserWellnessSnapshot(userId, emotionData),
-    ]);
+    const send = (event: string, data: any) => {
+      res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    };
 
-    send("thinking", { message: "Reviewing what helped before..." });
-    const enrichedPrompt = buildEnrichedPrompt(
-      message,
-      emotionData,
-      ragData,
-      wellnessData
-    );
+    try {
+      send("thinking", { message: "Thinking..." });
+
+      const safety = await classifySafety(message);
+      if (safety.level === "crisis") {
+        send("done", CRISIS_RESPONSE);
+        return res.end();
+      }
+
+      send("thinking", { message: "Understanding your message..." });
+      const emotionData = await detectEmotion(message);
+
+      send("thinking", { message: "Finding relevant guidance..." });
+      const [ragData, wellnessData] = await Promise.all([
+        tripleRAGQuery(message, emotionData.emotion, sessionId),
+        getUserWellnessSnapshot(userId, emotionData),
+      ]);
+
+      send("thinking", { message: "Reviewing what helped before..." });
+      const enrichedPrompt = buildEnrichedPrompt(
+        message,
+        emotionData,
+        ragData,
+        wellnessData,
+        moodContext
+      );
 
     send("thinking", { message: "Crafting a response..." });
     const streamResult = await ai.models.generateContentStream({

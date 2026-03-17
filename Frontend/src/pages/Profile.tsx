@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Calendar,
   ChevronRight,
@@ -12,6 +12,10 @@ import {
   Star,
   Trash2,
   TrendingUp,
+  Activity,
+  ShieldAlert,
+  AlertCircle,
+  CheckCircle2,
 } from "lucide-react";
 import {
   motion,
@@ -63,6 +67,14 @@ interface YogaSession {
   completedAt: string;
   duration: number;
   steps: number;
+}
+
+interface MoodEntry {
+  _id: string;
+  moodType: "HEU" | "LEU" | "HEP" | "LEP";
+  severityLevel: "Mild" | "Moderate" | "Severe";
+  severityScore: number;
+  createdAt: string;
 }
 
 interface UserData {
@@ -194,7 +206,8 @@ function Profile() {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [yogaSessions, setYogaSessions] = useState<YogaSession[]>([]);
-  const [activeTab, setActiveTab] = useState<"chat" | "yoga">("chat");
+  const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([]);
+  const [activeTab, setActiveTab] = useState<"chat" | "yoga" | "mood">("chat");
 
   /* ---- Fetch real user ---- */
   useEffect(() => {
@@ -296,6 +309,27 @@ function Profile() {
     };
 
     fetchYogaHistory();
+  }, []);
+
+  /* ---- Fetch mood history ---- */
+  useEffect(() => {
+    async function fetchMoodHistory() {
+      const uid = localStorage.getItem("uid");
+      if (!uid) return;
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${Backend_Url}/mood-check/result/${uid}`, {
+          headers: { Authorization: token || "" }
+        });
+        const data = await response.json();
+        if (data.success) {
+          setMoodHistory(data.history);
+        }
+      } catch (error) {
+        console.error("Error fetching mood history:", error);
+      }
+    }
+    fetchMoodHistory();
   }, []);
 
   /* ---- Load chat sessions ---- */
@@ -765,7 +799,7 @@ function Profile() {
                   {/* Tabs with animated indicator */}
                   <LayoutGroup>
                     <div className="relative flex flex-wrap gap-2">
-                      {(["chat", "yoga"] as const).map((tab) => (
+                      {(["chat", "yoga", "mood"] as const).map((tab) => (
                         <button
                           key={tab}
                           type="button"
@@ -792,10 +826,12 @@ function Profile() {
                           )}
                           {tab === "chat" ? (
                             <MessageCircle className="h-4 w-4" />
-                          ) : (
+                          ) : tab === "yoga" ? (
                             <Flower2 className="h-4 w-4" />
+                          ) : (
+                            <Activity className="h-4 w-4" />
                           )}
-                          {tab === "chat" ? "Chat history" : "Yoga activity"}
+                          {tab === "chat" ? "Chat history" : tab === "yoga" ? "Yoga activity" : "Daily Check-ins"}
                         </button>
                       ))}
                     </div>
@@ -1091,7 +1127,7 @@ function Profile() {
                         </div>
                       )}
                     </motion.div>
-                  ) : (
+                  ) : activeTab === "yoga" ? (
                     /* ---- Yoga tab ---- */
                     <motion.div
                       key="yoga-content"
@@ -1191,7 +1227,7 @@ function Profile() {
 
                           {/* Yoga session cards */}
                           <motion.div
-                            className="mt-6 grid gap-4"
+                            className="mt-6 grid gap-4 max-h-[500px] overflow-y-auto chat-scroll pr-2"
                             variants={staggerContainer}
                             initial="hidden"
                             animate="visible"
@@ -1262,6 +1298,86 @@ function Profile() {
                             ))}
                           </motion.div>
                         </>
+                      )}
+                    </motion.div>
+                  ) : (
+                    /* ---- Mood tab ---- */
+                    <motion.div
+                      key="mood-content"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {moodHistory.length === 0 ? (
+                        <div className="rounded-[28px] border border-border/70 bg-white/55 p-10 text-center">
+                          <Activity className="mx-auto h-10 w-10 text-muted-foreground" />
+                          <h3 className="mt-4 text-xl font-semibold text-foreground">
+                            No check-ins yet
+                          </h3>
+                          <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                            Complete your first daily reflection to see your progress here.
+                          </p>
+                          <Button asChild className="mt-6 rounded-full px-8">
+                            <Link to="/check-in">Start Check-in</Link>
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4 lg:max-h-[600px] lg:overflow-y-auto chat-scroll pr-2">
+                          {moodHistory.map((entry) => {
+                            const isSevere = entry.severityLevel === "Severe";
+                            const isModerate = entry.severityLevel === "Moderate";
+                            return (
+                              <motion.div
+                                key={entry._id}
+                                variants={staggerItem}
+                                whileHover={
+                                  shouldReduce
+                                    ? {}
+                                    : { scale: 1.01, boxShadow: "0 14px 40px -18px rgba(44,33,18,0.3)" }
+                                }
+                                className="flex items-center justify-between rounded-[26px] border border-border/70 bg-white/60 p-5"
+                              >
+                                <div className="flex items-center gap-4">
+                                  <div className={cn(
+                                    "p-3 rounded-2xl",
+                                    isSevere ? "bg-destructive/10 text-destructive" :
+                                    isModerate ? "bg-amber-500/10 text-amber-600" :
+                                    "bg-emerald-500/10 text-emerald-600"
+                                  )}>
+                                    {isSevere ? <ShieldAlert className="w-6 h-6" /> :
+                                     isModerate ? <AlertCircle className="w-6 h-6" /> :
+                                     <CheckCircle2 className="w-6 h-6" />}
+                                  </div>
+                                  <div>
+                                    <div className="flex items-center gap-2">
+                                      <h4 className="font-bold text-foreground">
+                                        {entry.moodType === "HEU" ? "High Energy Unpleasant" :
+                                         entry.moodType === "LEU" ? "Low Energy Unpleasant" :
+                                         entry.moodType === "HEP" ? "High Energy Pleasant" :
+                                         "Low Energy Pleasant"}
+                                      </h4>
+                                      <Badge className={cn(
+                                        "text-[10px]",
+                                        isSevere ? "bg-destructive/10 text-destructive border-destructive/20" :
+                                        isModerate ? "bg-amber-500/10 text-amber-600 border-amber-500/20" :
+                                        "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                                      )}>
+                                        {entry.severityLevel}
+                                      </Badge>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                      {new Date(entry.createdAt).toLocaleDateString()} at {new Date(entry.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="hidden sm:block text-right">
+                                  <p className="text-sm font-black text-foreground/80">Score: {entry.severityScore}</p>
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
                       )}
                     </motion.div>
                   )}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   BookOpenText,
@@ -298,12 +298,21 @@ export function Chat() {
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+  const [moodContext, setMoodContext] = useState<any>(null);
   const messagesViewportRef = useRef<HTMLDivElement>(null);
   const streamAbortRef = useRef<AbortController | null>(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { language } = useLanguage();
   const { listening, transcript, startListening } = useSpeechToText();
+
+  useEffect(() => {
+    if (location.state?.moodContext) {
+      setMoodContext(location.state.moodContext);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const suggestions =
     language === "hi"
@@ -556,7 +565,7 @@ export function Chat() {
           "Content-Type": "application/json",
           Authorization: authToken,
         },
-        body: JSON.stringify({ message: content, sessionId }),
+        body: JSON.stringify({ message: content, sessionId, moodContext }),
         signal: controller.signal,
       });
 

@@ -159,6 +159,13 @@ export function Home() {
                     </Link>
                   </Button>
 
+                  <Button asChild variant="secondary" size="lg" className="rounded-full px-7 shadow-[0_0_20px_rgba(214,174,88,0.2)] border-primary/20 bg-primary/10 text-primary hover:bg-primary/20">
+                    <Link to="/check-in">
+                      Daily Check-in
+                      <Sparkles className="h-4 w-4" />
+                    </Link>
+                  </Button>
+
                   <Button asChild variant="outline" size="lg" className="rounded-full border-border/70 bg-white/72 px-7">
                     <Link to="/chapters">
                       Explore the chapters

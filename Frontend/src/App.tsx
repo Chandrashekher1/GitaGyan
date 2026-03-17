@@ -17,6 +17,11 @@ const Meditation = lazy(() => import("./pages/Meditations"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Yoga = lazy(() => import("./features/yoga/YogaPage"));
 
+// Check-in Feature
+const MoodSelection = lazy(() => import("./features/checkin/MoodSelection").then(m => ({ default: m.MoodSelection })));
+const AdaptiveSurvey = lazy(() => import("./features/checkin/AdaptiveSurvey").then(m => ({ default: m.AdaptiveSurvey })));
+const MoodResult = lazy(() => import("./features/checkin/MoodResult").then(m => ({ default: m.MoodResult })));
+
 function RouteLoader() {
   return (
     <div className="px-4 pt-6 sm:px-6 lg:px-8">
@@ -51,6 +56,11 @@ function App() {
                   <Route path="/verses/:chapterNumber" element={<Verses />} />
                   <Route path="/meditation" element={<Meditation />} />
                   <Route path="/yoga" element={<Yoga />} />
+                  
+                  {/* Check-in Routes */}
+                  <Route path="/check-in" element={<MoodSelection />} />
+                  <Route path="/check-in/survey" element={<AdaptiveSurvey />} />
+                  <Route path="/check-in/result" element={<MoodResult />} />
                 </Routes>
               </Suspense>
             </main>

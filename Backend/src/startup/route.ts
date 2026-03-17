@@ -6,6 +6,7 @@ import googleTTS from "../routes/google.tts.js"
 import yogaRoutes from "../routes/yoga.routes.js"
 import aiRoutes from "../routes/ai.routes.js"
 import meditationRoutes from "../routes/meditation.routes.js"
+import moodRoutes from "../routes/mood.routes.js"
 
 import { Application } from "express"
 
@@ -19,5 +20,6 @@ export default function(app: Application) {
     app.use('/api/yoga', yogaRoutes)
     app.use('/api/meditation', meditationRoutes)
     app.use('/api/ai', aiRoutes)
+    app.use('/api/mood-check', moodRoutes)
 
 }

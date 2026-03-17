@@ -247,7 +247,7 @@ export function Avatar(props: Record<string, any>) {
     if (isSpeaking) {
       const time = clock.getElapsedTime();
       const visemeIndex = Math.floor(time * 8) % SPEECH_VISEMES.length;
-      const currentViseme = SPEECH_VISEMES[visemeIndex]!;
+      // const currentViseme = SPEECH_VISEMES[visemeIndex]!;
 
       SPEECH_VISEMES.forEach((viseme, i) => {
         if (i === visemeIndex) {
@@ -270,7 +270,7 @@ export function Avatar(props: Record<string, any>) {
 
   /* ── Leva debug controls (hidden in production) ── */
   useControls("FacialExpressions", {
-    chat: button(() => {}),
+    chat: button(() => { }),
     winkLeft: button(() => {
       setWinkLeft(true);
       setTimeout(() => setWinkLeft(false), 300);

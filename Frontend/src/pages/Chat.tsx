@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/context/Language";
-import { cn } from "@/lib/utils";
+import { cn, stripHtml } from "@/lib/utils";
 import { Backend_Url } from "@/utils/constant";
 import { AvatarCanvas } from "@/components/AvatarCanvas";
 
@@ -507,7 +507,7 @@ export function Chat() {
           "Content-Type": "application/json",
           Authorization: authToken,
         },
-        body: JSON.stringify({ text, language }),
+        body: JSON.stringify({ text: stripHtml(text), language }),
       });
 
       const blob = await response.blob();

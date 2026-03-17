@@ -9,6 +9,7 @@ import meditationRoutes from "../routes/meditation.routes.js"
 import moodRoutes from "../routes/mood.routes.js"
 
 import avatarRoutes from "../routes/avatar.routes.js"
+import verseRoutes from "../routes/verse.routes.js"
 
 
 import { Application } from "express"
@@ -25,5 +26,6 @@ export default function(app: Application) {
     app.use('/api/avatar', avatarRoutes)
     app.use('/api/ai', aiRoutes)
     app.use('/api/mood-check', moodRoutes)
+    app.use('/api/verses', verseRoutes)
 
 }

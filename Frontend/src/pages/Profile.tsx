@@ -384,10 +384,9 @@ function Profile() {
     const content = `Chat Session: ${session.title}\nDate: ${session.createdAt.toLocaleDateString()}\n\n${session.messages
       .map(
         (m) =>
-          `${m.type === "user" ? "You" : "GitaGyan"}: ${m.content}${
-            m.verse
-              ? `\n\nVerse: ${m.verse.sanskrit}\nTranslation: ${m.verse.meaning}`
-              : ""
+          `${m.type === "user" ? "You" : "GitaGyan"}: ${m.content}${m.verse
+            ? `\n\nVerse: ${m.verse.sanskrit}\nTranslation: ${m.verse.meaning}`
+            : ""
           }`
       )
       .join("\n\n")}`;
@@ -410,11 +409,11 @@ function Profile() {
   /* ---- Avatar initials ---- */
   const initials = userData?.name
     ? userData.name
-        .split(" ")
-        .map((w) => w[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
     : "?";
 
   /* ---- Stagger variants ---- */
@@ -538,7 +537,6 @@ function Profile() {
                   <motion.div
                     className="hidden sm:block"
                     animate={shouldReduce ? {} : { y: [0, -6, 0] }}
-                    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
                   >
                     <div
                       className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg"
@@ -566,12 +564,10 @@ function Profile() {
                   </p>
                 </div>
 
-                {/* Inline mini-stats */}
                 <div className="flex flex-wrap gap-3">
                   {[
                     { label: "Chats", val: chatSessions.length },
                     { label: "Questions", val: totalQuestions },
-                    { label: "Yoga", val: yogaSessions.length },
                   ].map((m) => (
                     <div
                       key={m.label}
@@ -587,7 +583,6 @@ function Profile() {
             </div>
           </ScrollReveal>
 
-          {/* Stat cards */}
           <motion.div
             className="grid gap-4 sm:grid-cols-3"
             variants={staggerContainer}
@@ -629,10 +624,10 @@ function Profile() {
                     shouldReduce
                       ? {}
                       : {
-                          y: -6,
-                          scale: 1.02,
-                          boxShadow: `0 32px 64px -20px ${item.glow}`,
-                        }
+                        y: -6,
+                        scale: 1.02,
+                        boxShadow: `0 32px 64px -20px ${item.glow}`,
+                      }
                   }
                   className="app-surface group relative flex cursor-default flex-col overflow-hidden p-7 transition-all duration-300"
                 >
@@ -726,12 +721,12 @@ function Profile() {
                     {[
                       ...(userData?.joinDate
                         ? [
-                            {
-                              icon: Calendar,
-                              label: "Joined",
-                              value: relativeTime(userData.joinDate),
-                            },
-                          ]
+                          {
+                            icon: Calendar,
+                            label: "Joined",
+                            value: relativeTime(userData.joinDate),
+                          },
+                        ]
                         : []),
                       {
                         icon: MessageCircle,
@@ -901,10 +896,10 @@ function Profile() {
                                     shouldReduce
                                       ? {}
                                       : {
-                                          scale: 1.015,
-                                          boxShadow:
-                                            "0 8px 24px -12px rgba(44,33,18,0.25)",
-                                        }
+                                        scale: 1.015,
+                                        boxShadow:
+                                          "0 8px 24px -12px rgba(44,33,18,0.25)",
+                                      }
                                   }
                                   whileTap={shouldReduce ? {} : { scale: 0.98 }}
                                   onClick={() =>
@@ -1021,18 +1016,16 @@ function Profile() {
                                           delay: idx * 0.04,
                                           duration: 0.3,
                                         }}
-                                        className={`flex ${
-                                          message.type === "user"
+                                        className={`flex ${message.type === "user"
                                             ? "justify-end"
                                             : "justify-start"
-                                        }`}
+                                          }`}
                                       >
                                         <div
-                                          className={`max-w-3xl ${
-                                            message.type === "user"
+                                          className={`max-w-3xl ${message.type === "user"
                                               ? "ml-12"
                                               : "mr-12"
-                                          }`}
+                                            }`}
                                         >
                                           <div
                                             className={cn(
@@ -1073,7 +1066,7 @@ function Profile() {
                                                 </Badge>
                                               )}
                                             </div>
-                                            <div 
+                                            <div
                                               className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm leading-7 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>h1]:mt-4 [&>h1:first-child]:mt-0 [&>h2]:mt-3 [&>h3]:mt-2 [&>p]:mb-2 [&>p:last-child]:mb-0"
                                               dangerouslySetInnerHTML={{ __html: message.content }}
                                             />
@@ -1184,10 +1177,10 @@ function Profile() {
                                     shouldReduce
                                       ? {}
                                       : {
-                                          y: -3,
-                                          boxShadow:
-                                            "0 14px 36px -16px rgba(44,33,18,0.3)",
-                                        }
+                                        y: -3,
+                                        boxShadow:
+                                          "0 14px 36px -16px rgba(44,33,18,0.3)",
+                                      }
                                   }
                                   className="rounded-[24px] border border-border/70 bg-white/55 p-5 transition-shadow"
                                 >
@@ -1208,8 +1201,8 @@ function Profile() {
                                         shouldReduce
                                           ? {}
                                           : {
-                                              scale: [1, 1.08, 1],
-                                            }
+                                            scale: [1, 1.08, 1],
+                                          }
                                       }
                                       transition={{
                                         repeat: Infinity,
@@ -1240,10 +1233,10 @@ function Profile() {
                                   shouldReduce
                                     ? {}
                                     : {
-                                        scale: 1.01,
-                                        boxShadow:
-                                          "0 14px 40px -18px rgba(44,33,18,0.3)",
-                                      }
+                                      scale: 1.01,
+                                      boxShadow:
+                                        "0 14px 40px -18px rgba(44,33,18,0.3)",
+                                    }
                                 }
                                 className="rounded-[26px] border border-border/70 bg-white/60 p-5 transition-shadow"
                               >
@@ -1342,26 +1335,26 @@ function Profile() {
                                   <div className={cn(
                                     "p-3 rounded-2xl",
                                     isSevere ? "bg-destructive/10 text-destructive" :
-                                    isModerate ? "bg-amber-500/10 text-amber-600" :
-                                    "bg-emerald-500/10 text-emerald-600"
+                                      isModerate ? "bg-amber-500/10 text-amber-600" :
+                                        "bg-emerald-500/10 text-emerald-600"
                                   )}>
                                     {isSevere ? <ShieldAlert className="w-6 h-6" /> :
-                                     isModerate ? <AlertCircle className="w-6 h-6" /> :
-                                     <CheckCircle2 className="w-6 h-6" />}
+                                      isModerate ? <AlertCircle className="w-6 h-6" /> :
+                                        <CheckCircle2 className="w-6 h-6" />}
                                   </div>
                                   <div>
                                     <div className="flex items-center gap-2">
                                       <h4 className="font-bold text-foreground">
                                         {entry.moodType === "HEU" ? "High Energy Unpleasant" :
-                                         entry.moodType === "LEU" ? "Low Energy Unpleasant" :
-                                         entry.moodType === "HEP" ? "High Energy Pleasant" :
-                                         "Low Energy Pleasant"}
+                                          entry.moodType === "LEU" ? "Low Energy Unpleasant" :
+                                            entry.moodType === "HEP" ? "High Energy Pleasant" :
+                                              "Low Energy Pleasant"}
                                       </h4>
                                       <Badge className={cn(
                                         "text-[10px]",
                                         isSevere ? "bg-destructive/10 text-destructive border-destructive/20" :
-                                        isModerate ? "bg-amber-500/10 text-amber-600 border-amber-500/20" :
-                                        "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                                          isModerate ? "bg-amber-500/10 text-amber-600 border-amber-500/20" :
+                                            "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                                       )}>
                                         {entry.severityLevel}
                                       </Badge>

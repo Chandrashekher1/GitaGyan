@@ -14,10 +14,7 @@ export default function useFocusMode(active: boolean) {
         console.error("Fullscreen request failed:", err);
       }
     };
-
-    
     enterFullscreen();
-
     // Disable right-click
     const blockContextMenu = (e: MouseEvent) => e.preventDefault();
     document.addEventListener("contextmenu", blockContextMenu);

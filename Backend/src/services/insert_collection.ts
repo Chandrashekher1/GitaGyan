@@ -12,6 +12,7 @@ const require = createRequire(import.meta.url);
 const BATCH_SIZE = 200
 
 
+
 export async function InsertCollection() {
   const database = await connectToDatabase();
   const collection = database.collection("Bhagwat_Gita_As_It_Is");
@@ -22,7 +23,7 @@ export async function InsertCollection() {
   const pdf: typeof pdfParse = require("pdf-parse");
   const parsed = await pdf(dataBuffer);
   console.log(parsed);
-  
+
 
   const splitter = new TokenTextSplitter({
     encodingName: "cl100k_base",
@@ -32,10 +33,10 @@ export async function InsertCollection() {
   const chunks = await splitter.splitText(parsed.text);
   console.log(`Split document into ${chunks.length} chunks`);
   const documents = chunks.map((chunk, index) => ({
-    title: "Bhagavad_gita", 
+    title: "Bhagavad_gita",
     path: pdfPath,
-    text: chunk, 
-    $vectorize: chunk, 
+    text: chunk,
+    $vectorize: chunk,
     chunkIndex: index,
     totalChunks: chunks.length,
     created_at: new Date(),
@@ -52,5 +53,5 @@ export async function InsertCollection() {
     }
   }
 
- 
+
 }

@@ -36,7 +36,14 @@ export function Login() {
         localStorage.setItem("uid", json.data._id);
       }
       toast.success("Login successfully.");
-      navigate("/chat");
+      
+      const redirectPath = localStorage.getItem("redirectPath");
+      if (redirectPath) {
+        localStorage.removeItem("redirectPath");
+        navigate(redirectPath);
+      } else {
+        navigate("/chat");
+      }
     } else {
       toast.error(json?.message);
     }
@@ -64,8 +71,14 @@ export function Login() {
         toast.info("Guest session expired. Please register to continue.");
         navigate("/login");
       }, data.expiresIn * 1000);
-
-      navigate("/chat");
+      
+      const redirectPath = localStorage.getItem("redirectPath");
+      if (redirectPath) {
+        localStorage.removeItem("redirectPath");
+        navigate(redirectPath);
+      } else {
+        navigate("/chat");
+      }
     }
   };
 

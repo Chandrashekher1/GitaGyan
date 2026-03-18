@@ -1,107 +1,164 @@
-##  GitaGyan – AI-Powered Spiritual Companion
+# GitaGyan 
+### Generative AI for Youth Mental Wellness & Spiritual Guidance
 
-```
-  Connect with the timeless teachings of the Bhagavad Gita through AI-powered conversations. Discover insights, save meaningful responses, and embark on your spiritual journey.
-```
-#  About the Project
-GitaGyan is an AI-powered web application that allows users to interact with the wisdom of the Bhagavad Gita.
-Using Retrieval-Augmented Generation (RAG), the system fetches the most relevant verses and explains them in simple, personalized language.
+[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
 
-It’s designed for:
- - Students seeking clarity on life decisions
- - Spiritual seekers wanting to explore scriptures
- - Anyone curious about Indian philosophy in an interactive way
- - Bhakts, elders, and aged individuals who wish to ask their problems directly and receive guidance from the Gita
+---
 
-# Features
- - Verse Retrieval – Get context-based answers directly from the Bhagavad Gita
- - AI Conversations – Chat with an AI persona of Lord Krishna
- - Multi-language Support – Choose from multiple Indian & global languages
- - Save & Share – Bookmark insightful responses
- - Immersive UI – Includes background music (Krishna’s flute) for focus
- - Responsive Design – Works smoothly on mobile and desktop
+## 🌟 The Vision
+**GitaGyan** is an empathetic, AI-powered mental wellness solution designed specifically for the Indian youth. By bridging the gap between **ancient Vedic wisdom (Bhagavad Gita)** and **modern psychological practices**, GitaGyan provides a confidential, non-judgmental, and culturally sensitive outlet for students and young adults facing academic pressure, social anxiety, and existential confusion.
 
-# The Problem
-While the Bhagavad Gita is one of the most profound spiritual texts, accessing and understanding its wisdom in the modern world comes with several challenges:
-- Complex Language & Interpretation – Many translations are difficult to understand without a teacher or guru, especially for beginners.
-- Scattered Resources – Knowledge is spread across books, commentaries, and websites, making it hard to find a consolidated source.
-- Time-Consuming – Reading and studying all 700 verses requires time, patience, and deep focus, which most people struggle to dedicate.
-- Lack of Personalized Guidance – Different people face different problems (students, professionals, elders, seekers), but finding verses relevant to one’s life situation is not easy.
-- Language Barrier – Not everyone is comfortable with Sanskrit or English; accessibility in native languages is limited.
-- Digital Disconnect – In today’s fast-paced lifestyle, younger generations often prefer quick, conversational learning instead of traditional long reading.
-- Practical Application Gap – Many struggle to apply the teachings of the Gita to modern challenges like career confusion, stress, relationships, and decision-making.
+## 🔴 The Challenge: Mental Health Stigma in India
+In India, mental health remains a significant societal taboo. High costs, limited availability of professionals, and pervasive social stigma prevent millions of young adults from seeking help. Amidst intense academic and social pressures, they often lack a safe space to express their concerns without fear of judgment.
 
-# Our Solution
-To address these challenges, GitaGyan provides an AI-powered platform that makes the wisdom of the Bhagavad Gita more accessible, personalized, and practical:
-- Simplified Understanding – AI explains verses in clear, easy-to-understand language, removing barriers of complex translations.
-- Consolidated Knowledge – All verses and interpretations are organized in one platform, eliminating the need to search across multiple sources.
-- Quick Access – Instead of reading all 700 shlokas, users can directly ask questions and get relevant, contextual answers instantly.
-- Personalized Guidance – Responses are tailored to individual life problems (students, professionals, elders, seekers), ensuring relevance.
-- Multilingual Support – The platform supports multiple Indian languages, breaking down the language barrier.
-- Modern Conversational Format – Offers an interactive chat interface with Lord Krishna’s persona, appealing to both young and old generations.
-- Practical Applications – Provides actionable insights by mapping teachings of the Gita to real-life challenges like stress, career decisions, and relationships.
+## ✅ Our Solution
+Leveraging **Google Cloud’s Generative AI**, GitaGyan offers a holistic wellness ecosystem:
+- **Triple RAG Architecture:** A unique AI engine that retrieves context from the Bhagavad Gita, curated mental health resources, and the user's own semantic history.
+- **3D Interactive Sage:** An immersive, empathetic AI companion (Sage-Avatar) providing real-time emotional support through speech and visuals.
+- **AI Yoga & Meditation:** Real-time pose correction using MediaPipe and guided mindfulness sessions to reduce stress.
+- **Confidential & Empathetic:** A safe, anonymous space to discuss concerns, destigmatizing mental health discussions through a familiar spiritual lens.
 
-# Screenshots
-<img width="1902" height="871" alt="image" src="https://github.com/user-attachments/assets/b0034fb3-a68a-4f6c-8e16-17560d8202d9" />
-<img width="1920" height="882" alt="image" src="https://github.com/user-attachments/assets/105eb590-c8a5-42b7-8aa4-355a23367a19" />
+---
 
-# Tech Stack
-Frontend:
-- React.js/ TypeScript, Tailwind CSS and ShadCN UI
-  
-Backend:
-- Node.js + Express.js
-- MongoDB (user data)
-  
-AI Layer:
-- Gemini API (for response generation)
-  
- Vector Database (Astra DB) for RAG
+## 🚀 Key Features
 
-Deployment:
-- Vercel (Frontend)
-- Render  (Backend)
+### 🧠 Triple-RAG AI Engine
+Unlike standard chatbots, GitaGyan uses a **Triple-Retrieval-Augmented Generation** pipeline:
+1.  **Scriptural Context:** Extracts relevant verses from the Bhagavad Gita to provide timeless wisdom.
+2.  **Clinical Context:** Integrates modern mental health resources for evidence-based guidance.
+3.  **User Context:** Remembers past conversations semantically to build a long-term empathetic relationship.
 
-#  Installation & Setup
-Clone the repo:
-```
-git clone https://github.com/Chandrashekher1/gitagyan.git
-cd chat-with-gita
-```
-Frontend Setup
-```
-cd frontend
-npm install
-npm run dev
-```
-Backend Setup
-```
-cd backend
-npm install
-npm run dev
-```
-# Example API Endpoint
-```
-POST /api/chat
-Content-Type: application/json
-Authorization: `${token}`
+### 🧘‍♂️ AI-Powered Yoga Coach
+Real-time yoga pose detection and correction powered by **MediaPipe**. 
+- 8+ essential yoga poses (Tadasana, Vrikshasana, etc.)
+- Real-time feedback on posture accuracy.
+- Progress tracking and wellness sessions.
 
-{
-  "query": "What does the Gita say about karma?"
-}
-```
-# Response
-```
-{
-  "answer": "According to Bhagavad Gita 2.47, you have the right to perform your duty, but not to the fruits of action..."
-}
+### 🎭 Interactive 3D Sage Avatar
+A visually rich, Three.js-based 3D avatar that acts as a digital companion.
+- **Emotionally Aware:** The avatar responds with appropriate gestures based on the user's sentiment.
+- **Voice Interactive:** Integrated with Google Cloud Text-to-Speech and Speech-to-Text for natural conversations.
+
+### 📊 Holistic Wellness Check-ins
+- **Adaptive Surveys:** Daily mood tracking and mental health screenings.
+- **Personalized Insights:** Longitudinal data analysis to provide wellness trends and suggestions.
+- **Language Support:** Accessible in multiple Indian languages to break cultural barriers.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework:** React 19 (TypeScript) + Vite
+- **Styling:** Tailwind CSS + Framer Motion + MagicUI (Shadcn/UI based)
+- **3D Rendering:** Three.js (@react-three/fiber, @react-three/drei)
+- **Computer Vision:** MediaPipe (Pose Detection)
+
+
+### Backend
+- **Runtime:** Node.js (Express)
+- **Databases:** 
+    - **Astra DB (DataStax):** Vector Search for RAG pipeline.
+    - **MongoDB (Mongoose):** User profiles and longitudinal data.
+- **AI/ML Integration:**
+    - **Google Generative AI (Gemini):** Core reasoning and response generation.
+    - **Hugging Face:** Emotion detection and safety classification.
+    - **LangChain:** Document splitting and RAG orchestration.
+- **Audio:** Google Cloud TTS.
+
+---
+
+## 🏗️ Architecture Overview
+
+```mermaid
+graph TD
+    User((User)) --> Frontend[React Frontend]
+    
+    subgraph "Client Side"
+        Frontend --> |Video Stream| MP[MediaPipe Pose]
+        MP --> |Landmarks| YogaLogic[Yoga Engine]
+        Frontend --> |User Query| ChatUI[Chat Interface]
+        Frontend --> |Voice Input| STT[Speech-to-Text]
+    end
+
+    subgraph "Cloud Backend"
+        YogaLogic --> |Analyze Landmarks| YogaAPI[Node.js Yoga Route]
+        YogaAPI --> |Rule-based Analysis| PoseService[Pose Analysis Service]
+        
+        ChatUI --> |Text Query| AIAPI[Node.js AI Route]
+        AIAPI --> |Triple RAG| RAG[RAG Pipeline]
+        
+        RAG --> |Vector Search| Astra[Astra DB]
+        Astra -.-> |Bhagavad Gita| RAG
+        Astra -.-> |Mental Health Docs| RAG
+        Astra -.-> |Chat History| RAG
+        
+        RAG --> |Contextual Prompt| Gemini[Google Gemini 1.5 Pro]
+        Gemini --> |Empathetic Response| AIAPI
+        
+        AIAPI --> |Text-to-Speech| GTTS[Google Cloud TTS]
+    end
+
+    PoseService --> |Feedback & Scores| Frontend
+    AIAPI --> |Text + Audio| Frontend
+    Frontend --> |3D Gestures| Sage[3D Sage Avatar]
+    Sage --> |Visual Support| User
 ```
 
-# License
-This project is licensed under the MIT License.
+---
 
-# Quote 
-```
-✨ May this project spread wisdom and clarity from the eternal Gita to the modern world.
-```
+## 💻 Getting Started
 
+### Prerequisites
+- Node.js (v18+)
+- MongoDB & Astra DB Accounts
+- Google Cloud API Key (Gemini & TTS)
+
+### Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/GitaGyan.git
+   cd GitaGyan
+   ```
+
+2. **Backend Setup**
+   ```bash
+   cd Backend
+   npm install
+   # Create a .env file with your API keys (see .env.example)
+   npm run dev
+   ```
+
+3. **Frontend Setup**
+   ```bash
+   cd ../Frontend
+   npm install
+   # Create a .env file with your Firebase & Backend URL
+   npm run dev
+   ```
+
+---
+
+## 🛡️ Safety & Ethics
+GitaGyan is designed with safety as a priority:
+- **Safety Classifier:** Every user message is screened for crisis indicators (self-harm, etc.).
+- **Escalation Path:** If a crisis is detected, the AI provides emergency helpline numbers immediately.
+- **Confidentiality:** No PII (Personally Identifiable Information) is used in the RAG vectorization process.
+- **Disclaimer:** GitaGyan is an AI-powered wellness tool and **not a substitute for professional clinical therapy**.
+
+---
+
+
+## 🤝 Acknowledgments
+- **Google Cloud** for the Generative AI tools.
+- **DataStax Astra DB** for the high-performance vector search.
+- **MediaPipe** for the open-source pose detection models.
+
+---
+**✨ Bridging tradition with technology for a healthier, more mindful youth. ✨**

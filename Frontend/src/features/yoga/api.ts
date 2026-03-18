@@ -38,15 +38,15 @@ function getApiRoots(): string[] {
   if (import.meta.env.DEV) {
     return unique([
       '/api',
-      'http://127.0.0.1:3000/api',
-      'http://localhost:3000/api',
-      'https://gitagyan-c4zq.onrender.com/api',
+      'https://gitagyan-hackathon-1.onrender.com/api',
+      'https://gitagyan-hackathon-1.onrender.com/api',
+      'https://gitagyan-hackathon-1.onrender.com/api',
     ]);
   }
 
   return unique([
     '/api',
-    'https://gitagyan-c4zq.onrender.com/api',
+    'https://gitagyan-hackathon-1.onrender.com/api',
   ]);
 }
 
@@ -87,10 +87,6 @@ async function fetchYoga<T>(path: string, init?: RequestInit): Promise<T> {
 export async function getYogaPoses(): Promise<YogaPose[]> {
   const poses = await fetchYoga<Partial<YogaPose>[]>('/poses', {
     cache: 'no-store',
-    headers: {
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache',
-    },
   });
 
   return Array.isArray(poses) ? poses.map(normalizeYogaPose) : [];

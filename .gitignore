@@ -2,6 +2,7 @@
 **/.DS_Store
 node_modules
 .env
-.agents
+.agents/
 .gitignore
-.idea
+.idea/
+*.iml

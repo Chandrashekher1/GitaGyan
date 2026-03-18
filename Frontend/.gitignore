@@ -22,11 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-<<<<<<< HEAD
-*.agent
-*.agents
-*.claude
-*.junie
-=======
-.vercel
->>>>>>> e3a1b6a4986f482d72bc97604a6f82d49db043dd
+*.agent/
+*.agents/
+*.claude/
+*.junie/

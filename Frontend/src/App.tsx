@@ -16,6 +16,7 @@ const Chapters = lazy(() => import("./pages/Chapters"));
 const Verses = lazy(() => import("./pages/Verses"));
 const Meditation = lazy(() => import("./pages/Meditations"));
 const Profile = lazy(() => import("./pages/Profile"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Yoga = lazy(() => import("./features/yoga/YogaPage"));
 
 // Check-in Feature
@@ -49,6 +50,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                   <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/about" element={<About />} />
@@ -57,8 +59,7 @@ function App() {
                   <Route path="/verses/:chapterNumber" element={<ProtectedRoute><Verses /></ProtectedRoute>} />
                   <Route path="/meditation" element={<ProtectedRoute><Meditation /></ProtectedRoute>} />
                   <Route path="/yoga" element={<ProtectedRoute><Yoga /></ProtectedRoute>} />
-                  
-                  {/* Check-in Routes */}
+
                   <Route path="/check-in" element={<ProtectedRoute><MoodSelection /></ProtectedRoute>} />
                   <Route path="/check-in/survey" element={<ProtectedRoute><AdaptiveSurvey /></ProtectedRoute>} />
                   <Route path="/check-in/result" element={<ProtectedRoute><MoodResult /></ProtectedRoute>} />

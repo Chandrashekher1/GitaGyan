@@ -18,11 +18,14 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
         minlength: 5,
         maxlength: 1024,
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true,
     }
-   
 })
 UserSchema.methods.generateAuthToken = function(){
     const jwtPrivateKey = process.env.jwtPrivateKey;

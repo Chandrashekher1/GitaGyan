@@ -29,7 +29,6 @@ import { cn } from "@/lib/utils";
 import { Backend_Url } from "@/utils/constant";
 import { AvatarCanvas } from "@/components/AvatarCanvas";
 
-/* ── animation variants (matching Home.tsx) ── */
 const easeOutCurve = [0.22, 1, 0.36, 1] as const;
 
 const fadeUp = {
@@ -875,7 +874,7 @@ export function Chat() {
                     )}
                   >
                     <Wand2 className="h-3.5 w-3.5" />
-                    {/* {avatarMode ? "Avatar mode · On" : "Avatar mode · Off"} */}
+                    {avatarMode ? "Avatar mode · On" : "Avatar mode · Off"}
                   </button>
 
                   <div className="rounded-full border border-border/70 bg-white/60 px-3 py-1.5 text-xs text-muted-foreground">
@@ -1152,7 +1151,7 @@ export function Chat() {
           transition={{ duration: 0.4, delay: 0.06, ease: easeOutCurve }}
           className="chat-scroll order-3 flex flex-col gap-6 overflow-y-auto lg:pr-2"
         >
-          {/* {avatarMode ? (
+          {avatarMode ? (
             <Card className="app-surface shrink-0 border-none bg-card/82">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2.5">
@@ -1214,103 +1213,103 @@ export function Chat() {
                 </div>
               </CardContent>
             </Card>
-          ) : ( */}
-          <>
-            <Card className="app-surface shrink-0 border-none bg-card/82">
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
-                    <Sparkles className="h-3.5 w-3.5" />
+          ) : (
+            <>
+              <Card className="app-surface shrink-0 border-none bg-card/82">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
+                      <Sparkles className="h-3.5 w-3.5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Thinking Trace</CardTitle>
+                      <p className="text-[11px] text-muted-foreground">Streamed reasoning stages</p>
+                    </div>
                   </div>
-                  <div>
-                    <CardTitle className="text-base">Thinking Trace</CardTitle>
-                    <p className="text-[11px] text-muted-foreground">Streamed reasoning stages</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <AnimatePresence mode="popLayout">
-                  {thinkingSteps.length ? (
-                    thinkingSteps.map((step, index) => (
-                      <motion.div
-                        key={step.id}
-                        initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.22, ease: easeOutCurve }}
-                        className="rounded-[16px] border border-border/70 bg-white/60 px-3 py-2"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={cn(
-                              "inline-flex h-2 w-2 rounded-full",
-                              index === thinkingSteps.length - 1 && isStreaming ? "animate-pulse-dot bg-primary" : "bg-primary/40"
-                            )}
-                          />
-                          <div className="min-w-0">
-                            <p className="text-xs font-medium text-foreground">{step.label}</p>
-                            <p className="text-[10px] text-muted-foreground">{formatClock(step.timestamp)}</p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <AnimatePresence mode="popLayout">
+                    {thinkingSteps.length ? (
+                      thinkingSteps.map((step, index) => (
+                        <motion.div
+                          key={step.id}
+                          initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.22, ease: easeOutCurve }}
+                          className="rounded-[16px] border border-border/70 bg-white/60 px-3 py-2"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                "inline-flex h-2 w-2 rounded-full",
+                                index === thinkingSteps.length - 1 && isStreaming ? "animate-pulse-dot bg-primary" : "bg-primary/40"
+                              )}
+                            />
+                            <div className="min-w-0">
+                              <p className="text-xs font-medium text-foreground">{step.label}</p>
+                              <p className="text-[10px] text-muted-foreground">{formatClock(step.timestamp)}</p>
+                            </div>
                           </div>
-                        </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <motion.div
+                        key="empty-trace"
+                        variants={fadeIn}
+                        initial="hidden"
+                        animate="visible"
+                        className="rounded-[18px] border border-border/70 bg-white/55 p-3 text-xs leading-5 text-muted-foreground"
+                      >
+                        Send a message to see reasoning stages here.
                       </motion.div>
-                    ))
-                  ) : (
-                    <motion.div
-                      key="empty-trace"
-                      variants={fadeIn}
-                      initial="hidden"
-                      animate="visible"
-                      className="rounded-[18px] border border-border/70 bg-white/55 p-3 text-xs leading-5 text-muted-foreground"
-                    >
-                      Send a message to see reasoning stages here.
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </CardContent>
-            </Card>
+                    )}
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
 
-            <Card className="app-surface shrink-0 border-none bg-card/82">
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
-                    <BookOpenText className="h-3.5 w-3.5" />
+              <Card className="app-surface shrink-0 border-none bg-card/82">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="rounded-[16px] border border-primary/15 bg-primary/8 p-2.5 text-primary">
+                      <BookOpenText className="h-3.5 w-3.5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Session Notes</CardTitle>
+                      <p className="text-[11px] text-muted-foreground">Session metadata</p>
+                    </div>
                   </div>
-                  <div>
-                    <CardTitle className="text-base">Session Notes</CardTitle>
-                    <p className="text-[11px] text-muted-foreground">Session metadata</p>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Created</p>
+                    <p className="mt-1 text-xs font-semibold text-foreground">{formatDate(sessionMeta?.createdAt)}</p>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Created</p>
-                  <p className="mt-1 text-xs font-semibold text-foreground">{formatDate(sessionMeta?.createdAt)}</p>
-                </div>
 
-                <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Latest mood signal</p>
-                  <p className="mt-1 text-xs font-semibold capitalize text-foreground">
-                    {sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.emotion ?? "Not available yet"}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {typeof sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.severity === "number"
-                      ? `Severity ${sessionMeta.moodTimeline[sessionMeta.moodTimeline.length - 1]?.severity}/5`
-                      : "Severity will appear after enough turns."}
-                  </p>
-                </div>
+                  <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Latest mood signal</p>
+                    <p className="mt-1 text-xs font-semibold capitalize text-foreground">
+                      {sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.emotion ?? "Not available yet"}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {typeof sessionMeta?.moodTimeline?.[sessionMeta.moodTimeline.length - 1]?.severity === "number"
+                        ? `Severity ${sessionMeta.moodTimeline[sessionMeta.moodTimeline.length - 1]?.severity}/5`
+                        : "Severity will appear after enough turns."}
+                    </p>
+                  </div>
 
-                <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">What you should notice</p>
-                  <ul className="mt-1.5 space-y-1 text-xs leading-5 text-muted-foreground">
-                    <li>Streamed thinking events display in real-time.</li>
-                    <li>Responses preserve component type & verse badges.</li>
-                    <li>Voice playback available on each response.</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </>
-
+                  <div className="rounded-[18px] border border-border/70 bg-white/55 p-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">What you should notice</p>
+                    <ul className="mt-1.5 space-y-1 text-xs leading-5 text-muted-foreground">
+                      <li>Streamed thinking events display in real-time.</li>
+                      <li>Responses preserve component type & verse badges.</li>
+                      <li>Voice playback available on each response.</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </motion.aside>
       </div>
     </div>

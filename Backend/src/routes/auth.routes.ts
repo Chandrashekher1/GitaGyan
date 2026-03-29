@@ -42,8 +42,8 @@ router.post('/', async (req, res) => {
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/api/login/auth/google/callback"
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173"
+const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || "https://gitagyan-hackathon-1.onrender.com/api/login/auth/google/callback"
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://gita-gyan-rust.vercel.app"
 
 router.get('/auth/google', (req, res) => {
     const params = new URLSearchParams({
@@ -63,7 +63,6 @@ router.get('/auth/google/callback', async (req, res) => {
         if (!code) {
             return res.redirect(`${FRONTEND_URL}/login?error=missing_code`)
         }
-
         const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -76,21 +75,17 @@ router.get('/auth/google/callback', async (req, res) => {
             }),
         })
         const tokenData = await tokenResponse.json() as { access_token?: string; error?: string }
-
         if (tokenData.error || !tokenData.access_token) {
             console.error("Google token error:", tokenData)
             return res.redirect(`${FRONTEND_URL}/login?error=token_exchange_failed`)
         }
-
         const profileResponse = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
             headers: { Authorization: `Bearer ${tokenData.access_token}` },
         })
         const profile = await profileResponse.json() as {
             id: string; email: string; name: string; picture?: string
         }
-
         let user = await Users.findOne({ googleId: profile.id })
-
         if (!user) {
             user = await Users.findOne({ email: profile.email })
             if (user) {
@@ -104,17 +99,14 @@ router.get('/auth/google/callback', async (req, res) => {
                 })
             }
         }
-
         //@ts-ignore
         const token = user.generateAuthToken()
-
         res.redirect(`${FRONTEND_URL}/auth/callback?token=${token}&uid=${user._id}`)
     } catch (err: any) {
         console.error("Google OAuth error:", err)
         res.redirect(`${FRONTEND_URL}/login?error=oauth_failed`)
     }
 })
-
 
 function validate(user: any) {
     const Schema = Joi.object({

@@ -164,7 +164,7 @@ function Verses() {
               hidden: {},
               visible: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
             }}
-            className="grid gap-4 lg:grid-cols-2"
+            className="grid gap-4 items-start lg:grid-cols-2"
           >
             {versesToRender.map((verse) => {
               const key = `${verse.chapter}-${verse.verse}`;
@@ -182,7 +182,7 @@ function Verses() {
                   onClick={() => setSelectedVerse(isSelected ? null : key)}
                   className={`rounded-[28px] border p-6 text-left transition-all duration-200 ${
                     isSelected
-                      ? "border-primary/30 bg-primary/8 shadow-sm"
+                      ? "border-primary2/30 bg-primary/8 shadow-sm"
                       : "border-border/70 bg-white/60 hover:border-primary/25 hover:bg-white/82"
                   }`}
                 >

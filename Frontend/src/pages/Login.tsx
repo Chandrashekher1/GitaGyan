@@ -196,7 +196,7 @@ export function Login() {
             <Button
               variant="outline"
               type="button"
-              className="h-11 w-full rounded-full border-border/70 bg-white/65"
+              className="h-11 w-full rounded-full border-border/70 bg-white/65 cursor-pointer "
               disabled={loading}
               onClick={handleGuest}
             >

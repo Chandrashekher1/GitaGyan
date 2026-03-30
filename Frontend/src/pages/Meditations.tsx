@@ -59,14 +59,6 @@ const fadeUp = {
   },
 };
 
-const staggerContainer = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
 
 const moodAfterOptions = [
   { label: "Calmer", icon: <Wind className="w-4 h-4" /> },
@@ -607,42 +599,6 @@ const Meditation: React.FC = () => {
                 </div>
 
                 {/* Tips */}
-                <motion.div
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={staggerContainer}
-                  className="grid gap-3"
-                >
-                  {[
-                    {
-                      title: "Posture",
-                      desc: "Keep your spine upright but relaxed, like a mountain.",
-                      icon: <ArrowRight className="w-4 h-4" />,
-                    },
-                    {
-                      title: "Breath",
-                      desc: "Follow the natural rhythm without trying to control it.",
-                      icon: <Wind className="w-4 h-4" />,
-                    },
-                  ].map((tip) => (
-                    <motion.div
-                      key={tip.title}
-                      variants={fadeUp}
-                      className="app-surface !rounded-[1.5rem] p-5 flex gap-4 items-start"
-                    >
-                      <div className="shrink-0 rounded-xl border border-primary/15 bg-primary/8 p-2.5 text-primary">
-                        {tip.icon}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-sm text-foreground">{tip.title}</h3>
-                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                          {tip.desc}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
               </div>
             </motion.div>
           ) : (

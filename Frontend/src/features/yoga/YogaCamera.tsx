@@ -82,6 +82,29 @@ const YogaCamera: React.FC = () => {
     setState('camera');
   }, [analysis]);
 
+  // Auto-capture when perfect
+  useEffect(() => {
+    if (
+      state === 'camera' &&
+      camera.isStable &&
+      camera.realTimeFeedback.length === 0 &&
+      camera.latestLandmarksRef.current
+    ) {
+      const timer = setTimeout(() => {
+        void analysis.captureAndAnalyze();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [
+    state,
+    camera.isStable,
+    camera.realTimeFeedback.length,
+    camera.latestLandmarksRef,
+    // explicitly omitting analysis to avoid rapid firing, or we use analysis.captureAndAnalyze carefully
+    // actually, let's just use analysis reference, but since we fixed the rapid state updates in useYogaCamera, analysis won't change as often.
+    analysis
+  ]);
+
   return (
     <>
       <AnimatePresence mode="wait">

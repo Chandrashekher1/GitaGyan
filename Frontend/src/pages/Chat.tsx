@@ -273,7 +273,6 @@ function persistLocalSessionArchive(sessionId: string, messages: ChatMessage[]) 
   localStorage.setItem(LOCAL_CHAT_ARCHIVE_KEY, JSON.stringify(archive.slice(0, 15)));
 }
 
-/* ── shimmer skeleton rows ── */
 function ShimmerSkeleton() {
   return (
     <motion.div
@@ -929,7 +928,6 @@ export function Chat() {
                       </div>
                     </motion.div>
                   ) : (
-                    /* ── messages list ── */
                     <motion.div
                       key="messages"
                       initial="hidden"

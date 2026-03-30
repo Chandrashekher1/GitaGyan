@@ -156,7 +156,12 @@ export function useYogaCamera(
         });
 
         if (poseName) {
-          setRealTimeFeedback(getRealtimeCorrections(poseName, landmarks));
+          const newFeedback = getRealtimeCorrections(poseName, landmarks);
+          setRealTimeFeedback(prev => {
+            if (prev.length === 0 && newFeedback.length === 0) return prev;
+            if (prev.join() === newFeedback.join()) return prev;
+            return newFeedback;
+          });
         }
 
         stabilityHistoryRef.current.push(landmarks);

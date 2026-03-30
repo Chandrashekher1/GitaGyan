@@ -116,8 +116,12 @@ const CameraView: React.FC<CameraViewProps> = ({
                   autoPlay
                   playsInline
                   muted
-                  className={`absolute inset-0 w-full h-full object-contain rounded-2xl shadow-2xl border border-white/10 transition-all duration-700 ${
+                  className={`absolute inset-0 w-full h-full object-contain rounded-2xl shadow-2xl transition-all duration-700 ${
                     isAnalyzing ? 'filter contrast-110 brightness-110 scale-[1.02]' : 'scale-100'
+                  } ${
+                    realTimeFeedback.length > 0 && !isAnalyzing
+                      ? 'border-4 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.5)]'
+                      : 'border border-white/10'
                   }`}
                   style={{ transform: isAnalyzing ? 'scaleX(-1) scale(1.02)' : 'scaleX(-1)' }}
                 />
@@ -128,7 +132,11 @@ const CameraView: React.FC<CameraViewProps> = ({
                 />
 
                 {/* Guide border */}
-                <div className="absolute inset-4 md:inset-6 border border-white/10 border-dashed rounded-xl pointer-events-none transition-all duration-300 z-20" />
+                <div className={`absolute inset-4 md:inset-6 border-2 border-dashed rounded-xl pointer-events-none transition-all duration-300 z-20 ${
+                  realTimeFeedback.length > 0 && !isAnalyzing
+                    ? 'border-red-500/50'
+                    : 'border-white/10'
+                }`} />
 
                 {/* Real-time feedback overlays */}
                 <div className="absolute top-4 left-4 right-4 z-30 flex flex-col gap-2 pointer-events-none">

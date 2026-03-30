@@ -31,7 +31,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Backend_Url } from "@/utils/constant";
-import { asanasData } from "@/components/yoga/data/asanasData";
+import { asanasData } from "@/features/data/asanasData";
 
 interface Verse {
   sanskrit: string;
@@ -1017,14 +1017,14 @@ function Profile() {
                                           duration: 0.3,
                                         }}
                                         className={`flex ${message.type === "user"
-                                            ? "justify-end"
-                                            : "justify-start"
+                                          ? "justify-end"
+                                          : "justify-start"
                                           }`}
                                       >
                                         <div
                                           className={`max-w-3xl ${message.type === "user"
-                                              ? "ml-12"
-                                              : "mr-12"
+                                            ? "ml-12"
+                                            : "mr-12"
                                             }`}
                                         >
                                           <div
@@ -1072,7 +1072,7 @@ function Profile() {
                                             />
                                           </div>
 
-                                          {message.verse && (
+                                          {/* {message.verse && (
                                             <motion.div
                                               initial={
                                                 shouldReduce
@@ -1103,7 +1103,7 @@ function Profile() {
                                                 {message.verse.meaning}
                                               </p>
                                             </motion.div>
-                                          )}
+                                          )} */}
                                         </div>
                                       </motion.div>
                                     )

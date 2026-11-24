@@ -38,15 +38,13 @@ function getApiRoots(): string[] {
   if (import.meta.env.DEV) {
     return unique([
       '/api',
-      'https://gitagyan-hackathon-1.onrender.com/api',
-      'https://gitagyan-hackathon-1.onrender.com/api',
-      'https://gitagyan-hackathon-1.onrender.com/api',
+      'https://gitagyan-1.onrender.com/api',
     ]);
   }
 
   return unique([
     '/api',
-    'https://gitagyan-hackathon-1.onrender.com/api',
+    'https://gitagyan-1.onrender.com/api',
   ]);
 }
 
